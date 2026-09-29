@@ -3495,7 +3495,7 @@ function renderDaily(){
    <td><select class="daily-project-select" data-day="${d}" data-f="project">
       <option value="">現場を選択</option>
       <option value="__OFF__" ${String(r.projectId||"")==="__OFF__"?"selected":""}>休み</option>
-      ${(data||[]).map(p=>`<option value="${String(p.id)}" ${String(r.projectId||"")===String(p.id)?"selected":""}>${String((p.name||"")+(p.client?" ／ "+p.client:"")).replace(/</g,"&lt;")}</option>`).join("")}
+      ${(data||[]).filter(p=>monthOf(p)===mon.value).map(p=>`<option value="${String(p.id)}" ${String(r.projectId||"")===String(p.id)?"selected":""}>${String((p.name||"")+(p.client?" ／ "+p.client:"")).replace(/</g,"&lt;")}</option>`).join("")}
    </select></td>
    <td><select class="daily-man-select" data-day="${d}" data-f="man" ${r.projectId==="__OFF__"?"disabled":""}>
       <option value="" ${r.man===""||r.man==null?"selected":""}></option>
