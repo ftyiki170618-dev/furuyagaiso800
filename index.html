@@ -4458,7 +4458,7 @@ function renderEmployeeTabs(){
   let e=employees.find(x=>x.id===cfg.id)||employees.find(x=>(x.name||'').includes(cfg.title.includes('ダニエル')?'ダニエル':'岡本'));
   let rows=employeeCards.filter(x=>e&&String(x.employeeId)===String(e.id)).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   let cardTotal=rows.filter(x=>x.type==='カード代'||x.type==='プライベートのカード代').reduce((a,x)=>a+Number(x.amount||0),0);
-  let salary=info.base*cfg.pct-cardTotal;
+  let salary=info.base*cfg.pct-cardTotal-(cfg.id==='osei-daniel'?25000:0);
   let details=rows.map(x=>`<div class="expense"><div class="row between"><div><b>${x.date||''}｜${esc(x.type)}</b><div class="small">${esc(x.memo||'')}</div></div><div><b>${yen(x.amount)}</b><button class="btn danger" style="margin-left:6px;padding:6px 8px" onclick="delEmpCard('${x.id}')">削除</button></div></div></div>`).join('');
   let el=document.getElementById(cfg.target);if(!el)return;
   el.innerHTML=`<div class="section-title">${cfg.title}</div><div class="employee-premium-card"><div class="employee-card-grid"><div><span>給料</span><strong>${yen(Math.round(salary))}</strong></div><div><span>カード代</span><strong>${yen(cardTotal)}</strong></div></div>${e?`<button class="btn primary" onclick="openEmpCard('${e.id}')">＋ カード利用を入力</button>`:''}${details}</div>`;
@@ -4572,7 +4572,7 @@ function renderDash(){
    if(nm.includes('ダニエル')||nm.includes('オセイ'))danielPrivate+=amt;
    if(nm.includes('岡本')||nm.includes('啓矢'))okamotoPrivate+=amt;
  });
- let daniel=base*.25-danielPrivate,okamoto=base*.33-okamotoPrivate;
+ let daniel=base*.25-danielPrivate-25000,okamoto=base*.33-okamotoPrivate;
  let card=(label,value,cls,onclick='')=>`<div class="card dash-card"><div class="label ${(label.includes("ダニエル")||label.includes("岡本"))?"employee-dash-name":""}">${label}</div><div class="value ${cls}">${yen(Math.round(value))}</div>${onclick?`<button class="btn gray dash-edit" onclick="${onclick}">変更</button>`:''}</div>`;
  document.getElementById('dash').innerHTML=`<div class="dash-clean-grid">
    <div class="dash-sales-wide">${card('売上',sales,'sales-gold')}</div>
@@ -4731,7 +4731,8 @@ function renderMonthly(){
    let shownCats=['従業員人工','材料費','外注費','車両経費','駐車場代','ガソリン代','高速代','道具代','飲食代'];
    let other=Number(otherMonthly||0)+(mc.filter(x=>!shownCats.includes(x.category)).reduce((a,x)=>a+Number(x.amount||0),0)+mg.filter(x=>!['駐車場代','高速代','ガソリン代','道具代','飲食代'].includes(x.category)).reduce((a,x)=>a+Number(x.amount||0),0));
    let cost=mc.reduce((a,x)=>a+Number(x.amount||0),0)+mg.reduce((a,x)=>a+Number(x.amount||0),0)+Number(vehicleMonthly||0);
-   let displayedExpenses=subcontract+vehicle+parking+gasoline+highway+tools+food+other;
+   let danielShare=-25000;
+   let displayedExpenses=subcontract+vehicle+parking+gasoline+highway+tools+food+other+danielShare;
    let finalTotal=sales-displayedExpenses;
    let profit=finalTotal;
    let invoices=data.filter(p=>(((p.invoice&&p.invoice.date)||'').slice(0,7)===month));
@@ -4754,6 +4755,7 @@ function renderMonthly(){
    ${row('道具代',tools)}
    ${row('飲食代',food)}
    ${row('その他',other)}
+   ${row('ダニエル持分',danielShare)}
    ${row('合計',finalTotal,'total')}
   </div>`;
   }).join('');
