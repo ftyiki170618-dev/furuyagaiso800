@@ -5101,6 +5101,26 @@ nav button,nav button.active{
  #dash .dash-clean-grid .dash-card .dash-edit{margin-top:8px!important}
 }
 </style>
+
+<style id="project-parking-name-readability-v1">
+#projectList .rebuilt-project-card .project-name,
+#projectList .project .project-name,
+#projectList .card .project-name{
+  color:#f1cf83 !important;
+  -webkit-text-fill-color:#f1cf83 !important;
+  -webkit-text-stroke:.18px rgba(255,240,190,.72) !important;
+  text-shadow:0 1px 2px rgba(0,0,0,.95) !important;
+}
+#receipts .parking-project .row.between > .small{
+  color:#f1cf83 !important;
+  -webkit-text-fill-color:#f1cf83 !important;
+  -webkit-text-stroke:.18px rgba(255,240,190,.72) !important;
+  text-shadow:0 1px 2px rgba(0,0,0,.95) !important;
+  font-weight:900 !important;
+  font-size:16px !important;
+}
+</style>
+
 </head><body>${body.innerHTML}</body></html>`;
  let frame=document.getElementById("dailyPrintFrame");
  if(!frame){frame=document.createElement("iframe");frame.id="dailyPrintFrame";frame.setAttribute("title","印刷");frame.style.position="fixed";frame.style.left="-10000px";frame.style.top="0";frame.style.width="1px";frame.style.height="1px";frame.style.border="0";document.body.appendChild(frame);}
