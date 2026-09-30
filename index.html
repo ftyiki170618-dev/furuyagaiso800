@@ -5106,18 +5106,44 @@ nav button,nav button.active{
 #projectList .rebuilt-project-card .project-name,
 #projectList .project .project-name,
 #projectList .card .project-name{
-  color:#f1cf83 !important;
-  -webkit-text-fill-color:#f1cf83 !important;
-  -webkit-text-stroke:.18px rgba(255,240,190,.72) !important;
-  text-shadow:0 1px 2px rgba(0,0,0,.95) !important;
+  color:#ffe08a !important;
+  -webkit-text-fill-color:#ffe08a !important;
+  -webkit-text-stroke:.22px rgba(255,248,205,.95) !important;
+  text-shadow:0 1px 2px rgba(0,0,0,1),0 0 5px rgba(255,205,80,.28) !important;
 }
 #receipts .parking-project .row.between > .small{
-  color:#f1cf83 !important;
-  -webkit-text-fill-color:#f1cf83 !important;
-  -webkit-text-stroke:.18px rgba(255,240,190,.72) !important;
-  text-shadow:0 1px 2px rgba(0,0,0,.95) !important;
+  color:#ffe08a !important;
+  -webkit-text-fill-color:#ffe08a !important;
+  -webkit-text-stroke:.22px rgba(255,248,205,.95) !important;
+  text-shadow:0 1px 2px rgba(0,0,0,1),0 0 5px rgba(255,205,80,.28) !important;
   font-weight:900 !important;
   font-size:16px !important;
+}
+</style>
+
+
+<style id="mobile-readability-font-v1">
+/* 小さい補助文字を読みやすく。レイアウトを崩さない範囲だけ拡大 */
+.small{font-size:14px !important; line-height:1.45 !important;}
+.muted{font-size:max(14px,1em) !important; line-height:1.45 !important;}
+label{font-size:14px !important;}
+input,select,textarea,button{font-size:16px !important;}
+#projectList .project-name,
+#projectList .rebuilt-project-card .project-name,
+#receipts .parking-project .row.between > .small{
+  font-size:18px !important;
+  line-height:1.4 !important;
+  font-weight:900 !important;
+}
+@media(max-width:520px){
+  .small{font-size:14px !important;}
+  label{font-size:14px !important;}
+  input,select,textarea,button{font-size:16px !important;}
+  #projectList .project-name,
+  #projectList .rebuilt-project-card .project-name,
+  #receipts .parking-project .row.between > .small{
+    font-size:18px !important;
+  }
 }
 </style>
 
