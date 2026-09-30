@@ -2584,13 +2584,51 @@ body.daily-printing{overflow:visible!important}
 <style id="month-history-v46">
 .month-history-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 .month-history-bar input[type="month"]{max-width:190px}
-</style></head>
+</style>
+<style id="v52-open-tab-text">
+/* v52: タブ見出しはそのまま。タブ内は「数字だけ」の表示を除き黒＋金の極細縁取り */
+main section .v52-text-gold{
+  color:#050505!important;
+  -webkit-text-fill-color:#050505!important;
+  -webkit-text-stroke:.18px #c89b2b!important;
+  text-shadow:none!important;
+}
+main section input.v52-text-gold::placeholder,
+main section textarea.v52-text-gold::placeholder{
+  color:#050505!important;-webkit-text-fill-color:#050505!important;
+  -webkit-text-stroke:.18px #c89b2b!important;opacity:.72!important;
+}
+nav button,nav button.active{-webkit-text-stroke:initial!important;}
+</style>
+<script>
+(function(){
+ const numericOnly=/^[\s¥￥$€£+\-−△▲▼()（）\[\],，.．:%％\/\\]*[0-9０-９][0-9０-９\s¥￥$€£+\-−△▲▼()（）\[\],，.．:%％\/\\]*$/;
+ function mark(){
+  document.querySelectorAll('main section *').forEach(el=>{
+   if(el.closest('nav'))return;
+   const tag=el.tagName;
+   let t='';
+   if(tag==='INPUT'||tag==='TEXTAREA') t=el.getAttribute('placeholder')||'';
+   else if(tag==='SELECT') t='select';
+   else {
+    const hasElement=[...el.childNodes].some(n=>n.nodeType===1);
+    if(hasElement)return;
+    t=(el.textContent||'').trim();
+   }
+   if(t && !numericOnly.test(t)) el.classList.add('v52-text-gold');
+   else el.classList.remove('v52-text-gold');
+  });
+ }
+ document.addEventListener('DOMContentLoaded',()=>{mark();new MutationObserver(mark).observe(document.body,{childList:true,subtree:true,characterData:true});});
+})();
+</script>
+</head>
 <body>
 <header>
 <h1 class="fg-script">Furuya gaiso</h1>
 </header>
 <nav>
-<button id="tProjects" class="active" onclick="tab('projects')">現場</button><button id="tMonthly" onclick="tab('monthly')">月別</button><button id="tReceipts" onclick="tab('receipts')">経費</button><button id="tEmployees" onclick="tab('employees')">従業員</button>
+<button id="tProjects" class="active" onclick="tab('projects')">現場</button><button id="tMonthly" onclick="tab('monthly')">月別</button><button id="tReceipts" onclick="tab('receipts')">経費</button><button id="tDaniel" onclick="tab('daniel')">オセイダニエル</button><button id="tOkamoto" onclick="tab('okamoto')">岡本啓矢</button>
 
 
 <button id="tAnnual" onclick="tab('annual')">年間比較</button><button id="tDash" onclick="openProtectedDash()">全体</button><button id="tDaily" onclick="tab('daily')">日報</button></nav>
@@ -2613,7 +2651,7 @@ body.daily-printing{overflow:visible!important}
     <button type="button" class="btn primary project-add-btn" id="projectAddButton" onclick="createProjectDirect()">追加する</button>
   </div>
   <div id="projectList"></div>
-</section><section id="monthly" style="display:none"></section><section id="employees" style="display:none"></section><section id="receipts" style="display:none"></section><section id="annual" style="display:none">
+</section><section id="monthly" style="display:none"></section><section id="daniel" style="display:none"></section><section id="okamoto" style="display:none"></section><section id="employees" style="display:none"></section><section id="receipts" style="display:none"></section><section id="annual" style="display:none">
   <div class="section-title">年間 売上・経費比較</div>
   <div class="card annual-chart-card">
     <div class="row between">
@@ -2851,12 +2889,12 @@ function checkDashPass(){
    input.select();
  }
 }
-function tab(t){['dash','projects','monthly','employees','receipts','annual','daily'].forEach(x=>{let el=document.getElementById(x);if(el)el.style.display=x===t?'block':'none'});document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));if(t==='dash')document.getElementById('tDash').classList.add('active');if(t==='projects')document.getElementById('tProjects').classList.add('active');if(t==='monthly')document.getElementById('tMonthly').classList.add('active');if(t==='employees')document.getElementById('tEmployees').classList.add('active');if(t==='receipts')document.getElementById('tReceipts').classList.add('active');if(t==='annual')document.getElementById('tAnnual').classList.add('active');if(t==='daily'){document.getElementById('tDaily').classList.add('active');if(typeof initDaily==='function')initDaily();}render();if(t==='annual')renderAnnualChart()}
+function tab(t){if(t==='daniel'||t==='okamoto'){const code=prompt((t==='daniel'?'オセイダニエル':'岡本啓矢')+'のパスコードを入力してください');const correct=t==='daniel'?'1423':'0219';if(code!==correct){if(code!==null)alert('パスコードが違います');return;}}['dash','projects','monthly','employees','daniel','okamoto','receipts','annual','daily'].forEach(x=>{let el=document.getElementById(x);if(el)el.style.display=x===t?'block':'none'});document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));if(t==='dash')document.getElementById('tDash').classList.add('active');if(t==='projects')document.getElementById('tProjects').classList.add('active');if(t==='monthly')document.getElementById('tMonthly').classList.add('active');if(t==='daniel')document.getElementById('tDaniel').classList.add('active');if(t==='okamoto')document.getElementById('tOkamoto').classList.add('active');if(t==='receipts')document.getElementById('tReceipts').classList.add('active');if(t==='annual')document.getElementById('tAnnual').classList.add('active');if(t==='daily'){document.getElementById('tDaily').classList.add('active');if(typeof initDaily==='function')initDaily();}render();if(t==='annual')renderAnnualChart()}
 function render(){
  try{renderDash()}catch(e){console.error('dash',e)}
  try{renderProjects()}catch(e){console.error('projects',e)}
  try{renderMonthly()}catch(e){console.error('monthly',e)}
- try{renderEmployees()}catch(e){console.error('employees',e)}
+ try{renderEmployeeTabs()}catch(e){console.error('employee tabs',e)}
  try{renderReceipts()}catch(e){console.error('receipts',e)}
  try{updateWorkerSelect()}catch(e){console.error('workers',e)}
  try{renderAnnualChart()}catch(e){console.error('annual',e)}
@@ -2884,6 +2922,31 @@ function renderEmployees(){
   return `<div class="employee-premium-card"><div class="employee-name">${esc(e.name)}</div><div class="employee-card-grid single-card-grid"><div><span>カード代</span><strong>${yen(priv)}</strong></div></div><button class="btn primary" onclick="openEmpCard('${e.id}')">＋ カード利用を入力</button>${details}</div>`;
  }).join('');
  document.getElementById('employees').innerHTML=`<div class="section-title">従業員カード管理</div>${html}`;
+}
+function employeeSalaryInfo(){
+ let month=new Date().toISOString().slice(0,7);
+ let jobs=(Array.isArray(data)?data:[]).filter(p=>monthOf(p)===month);
+ let sales=jobs.reduce((a,p)=>a+Number(p.amount||0),0);
+ let mc=(Array.isArray(data)?data:[]).flatMap(p=>{try{return ex(p)||[]}catch(e){return []}}).filter(x=>(x.date||'').slice(0,7)===month);
+ let mg=(Array.isArray(globalCosts)?globalCosts:[]).filter(x=>(x.date||'').slice(0,7)===month);
+ let sum=c=>mc.filter(x=>x.category===c).reduce((a,x)=>a+Number(x.amount||0),0),gsum=c=>mg.filter(x=>x.category===c).reduce((a,x)=>a+Number(x.amount||0),0);
+ let shown=['従業員人工','材料費','外注費','車両経費','駐車場代','ガソリン代','高速代','道具代','飲食代'];
+ let misc=mc.filter(x=>!shown.includes(x.category)).reduce((a,x)=>a+Number(x.amount||0),0)+mg.filter(x=>!['駐車場代','高速代','ガソリン代','道具代','飲食代'].includes(x.category)).reduce((a,x)=>a+Number(x.amount||0),0);
+ let expenses=Number(subcontractMonthly||0)+sum('外注費')+Number(vehicleMonthly||0)+sum('車両経費')+sum('駐車場代')+gsum('駐車場代')+sum('ガソリン代')+gsum('ガソリン代')+sum('高速代')+gsum('高速代')+sum('道具代')+gsum('道具代')+sum('飲食代')+gsum('飲食代')+Number(otherMonthly||0)+misc;
+ let base=sales-sales*.10-(sales-sales*.10)*.15-expenses;
+ return {month,base};
+}
+function renderEmployeeTabs(){
+ let info=employeeSalaryInfo();
+ [{id:'osei-daniel',target:'daniel',title:'オセイダニエル',pct:.25},{id:'okamoto-keiya',target:'okamoto',title:'岡本啓矢',pct:.33}].forEach(cfg=>{
+  let e=employees.find(x=>x.id===cfg.id)||employees.find(x=>(x.name||'').includes(cfg.title.includes('ダニエル')?'ダニエル':'岡本'));
+  let rows=employeeCards.filter(x=>e&&String(x.employeeId)===String(e.id)).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  let cardTotal=rows.filter(x=>x.type==='カード代'||x.type==='プライベートのカード代').reduce((a,x)=>a+Number(x.amount||0),0);
+  let salary=info.base*cfg.pct-cardTotal;
+  let details=rows.map(x=>`<div class="expense"><div class="row between"><div><b>${x.date||''}｜${esc(x.type)}</b><div class="small">${esc(x.memo||'')}</div></div><div><b>${yen(x.amount)}</b><button class="btn danger" style="margin-left:6px;padding:6px 8px" onclick="delEmpCard('${x.id}')">削除</button></div></div></div>`).join('');
+  let el=document.getElementById(cfg.target);if(!el)return;
+  el.innerHTML=`<div class="section-title">${cfg.title}</div><div class="employee-premium-card"><div class="employee-card-grid"><div><span>給料</span><strong>${yen(Math.round(salary))}</strong></div><div><span>カード代</span><strong>${yen(cardTotal)}</strong></div></div>${e?`<button class="btn primary" onclick="openEmpCard('${e.id}')">＋ カード利用を入力</button>`:''}${details}</div>`;
+ });
 }
 function openEmployee(id=null){
  editingEmp=id;
@@ -3001,13 +3064,11 @@ function renderDash(){
    ${card('消費税',tax,'expense-red')}
    ${card('事務手数料',admin,'expense-red')}
    ${card('経費',expenses,'expense-red')}
-   ${card('オセイ　ダニエル',daniel,'sales-gold')}
   </div>
   <div class="dash-col">
    ${card('その他',other,'expense-red',"openDashAmount('other','その他')")}
    ${card('外注',subcontract,'expense-red',"openSubcontractMonthly()")}
    ${card('車両',vehicle,'expense-red',"openVehicleMonthly()")}
-   ${card('岡本　啓矢',okamoto,'sales-gold')}
   </div>
  </div>`;
 }
@@ -3209,17 +3270,31 @@ function openCost(){document.getElementById('eCat').value='従業員人工';upda
 document.getElementById('eWorker').onchange=updateWorkerRate;document.getElementById('eCat').onchange=toggleCost;function toggleCost(){let labor=document.getElementById('eCat').value==='従業員人工';document.getElementById('laborFields').style.display=labor?'block':'none';document.getElementById('normalFields').style.display=labor?'none':'block'}
 function saveExpense(){let p=data.find(x=>x.id===current),cat=document.getElementById('eCat').value,obj={category:cat,date:document.getElementById('eDate').value,memo:document.getElementById('eMemo').value};if(cat==='従業員人工'){let d=Number(document.getElementById('eDays').value),r=Number(document.getElementById('eRate').value);if(!d||!r)return alert('人工数と1人工単価を入力してください');let emp=employees.find(x=>x.id===document.getElementById('eWorker').value);if(!emp)return alert('従業員を選択してください');obj.employeeId=emp.id;obj.worker=emp.name;obj.days=d;obj.rate=r;obj.amount=d*r}else{let a=Number(document.getElementById('eAmount').value);if(!a)return alert('金額を入力してください');obj.amount=a}p.costs=p.costs||[];p.costs.push(obj);persist();closeM('expenseModal');openDetail(current);render();toast('原価を追加しました')}
 
+function receiptSelectedMonth(){
+ return window.receiptsSelectedMonth||new Date().toISOString().slice(0,7);
+}
+function setReceiptsMonth(v){window.receiptsSelectedMonth=v||new Date().toISOString().slice(0,7);renderReceipts();}
+function receiptProjectOptions(preferredId=''){
+ let sel=document.getElementById('rProject'); if(!sel)return;
+ let date=document.getElementById('rDate')?.value||'';
+ let month=(date&&date.length>=7)?date.slice(0,7):receiptSelectedMonth();
+ let ps=data.filter(p=>monthOf(p)===month);
+ sel.innerHTML='<option value="">現場を選択</option>'+ps.map(p=>`<option value="${p.id}">${esc(p.name||'現場')}</option>`).join('');
+ if(preferredId&&ps.some(p=>String(p.id)===String(preferredId)))sel.value=preferredId;
+}
 function toggleReceiptProject(){
- let wrap=document.getElementById('rProjectWrap');
+ let wrap=document.getElementById('rProjectField');
  let cat=document.getElementById('rCat')?.value||'';
  if(wrap)wrap.style.display=cat==='駐車場代'?'block':'none';
+ if(cat==='駐車場代')receiptProjectOptions(document.getElementById('rProject')?.value||'');
 }
-function openReceipt(projectId=null,cat='駐車場代'){let ps=document.getElementById('rProject');if(ps)ps.innerHTML='<option value="">現場を選択</option>'+data.map(p=>`<option value="${p.id}">${esc(p.name||'現場')}</option>`).join('');
- document.getElementById('rProject').innerHTML=data.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
- if(projectId)document.getElementById('rProject').value=projectId;
- document.getElementById('rCat').value=cat;toggleReceiptProject();
- document.getElementById('rDate').value=new Date().toISOString().slice(0,10);
+function openReceipt(projectId=null,cat='駐車場代'){
+ let month=receiptSelectedMonth();
+ document.getElementById('rCat').value=cat;
+ document.getElementById('rDate').value=month+'-01';
  document.getElementById('rAmount').value='';
+ receiptProjectOptions(projectId||'');
+ toggleReceiptProject();
  document.getElementById('receiptModal').classList.add('show');
 }
 function compressImage(file){
@@ -3254,20 +3329,38 @@ function delReceipt(id){
 function receiptList(rr){
  return rr.map(r=>`<div class="expense"><div class="row between"><span class="small">${r.date||''}</span><b class="expense-red">${yen(r.amount)}</b><button class="btn danger" onclick="delReceipt('${r.id}')">削除</button></div></div>`).join('');
 }
+function deleteAllReceiptsForMonth(){
+ let month=receiptSelectedMonth();
+ let title=month.slice(0,4)+'年'+Number(month.slice(5,7))+'月';
+ let ids=new Set(receipts.filter(r=>(r.date||'').slice(0,7)===month).map(r=>String(r.id)));
+ if(!ids.size)return alert(title+'の経費入力はありません');
+ if(!confirm(title+'の経費欄に入力した情報を一括削除しますか？\nこの操作は元に戻せません。'))return;
+ receipts=receipts.filter(r=>!ids.has(String(r.id)));
+ globalCosts=globalCosts.filter(c=>!ids.has(String(c.receiptId||'')));
+ data.forEach(p=>{
+   p.costs=(p.costs||[]).filter(c=>!ids.has(String(c.receiptId||'')));
+   p.expenses=(p.expenses||[]).filter(c=>!ids.has(String(c.receiptId||'')));
+ });
+ persist();render();toast(title+'の経費を一括削除しました');
+}
 function renderReceipts(){
+ let month=receiptSelectedMonth();
+ let monthReceipts=receipts.filter(r=>(r.date||'').slice(0,7)===month);
  let global=['ガソリン代','高速代','道具代','飲食代'].map(cat=>{
-   let rr=receipts.filter(r=>!r.projectId&&r.category===cat),sum=rr.reduce((a,r)=>a+Number(r.amount||0),0);
+   let rr=monthReceipts.filter(r=>!r.projectId&&r.category===cat),sum=rr.reduce((a,r)=>a+Number(r.amount||0),0);
    return `<div class="card" style="margin-bottom:10px"><div class="row between"><div><b>${cat}</b><div class="value expense-red" style="font-size:18px">${yen(sum)}</div></div><button class="btn primary" onclick="openReceipt(null,'${cat}')">＋追加</button></div>${receiptList(rr)}</div>`;
  }).join('');
- let pr=receipts.filter(r=>r.category==='駐車場代'),psum=pr.reduce((a,r)=>a+Number(r.amount||0),0);
- let parkingGroups=data.map(p=>{
-   let list=pr.filter(r=>r.projectId===p.id);
+ let pr=monthReceipts.filter(r=>r.category==='駐車場代'),psum=pr.reduce((a,r)=>a+Number(r.amount||0),0);
+ let monthProjects=data.filter(p=>monthOf(p)===month);
+ let parkingGroups=monthProjects.map(p=>{
+   let list=pr.filter(r=>String(r.projectId)===String(p.id));
    if(!list.length)return '';
    let total=list.reduce((a,r)=>a+Number(r.amount||0),0);
    return `<div class="parking-project"><div class="row between"><span class="small">${esc(p.name||'現場')}</span><b class="expense-red">${yen(total)}</b></div>${receiptList(list)}</div>`;
  }).join('');
  let parking=`<div class="card" style="margin-bottom:10px"><div class="row between"><div><b>駐車場代</b><div class="value expense-red" style="font-size:18px">${yen(psum)}</div></div><button class="btn primary" onclick="openReceipt(null,'駐車場代')">＋追加</button></div>${parkingGroups||'<div class="small">まだ入力がありません</div>'}</div>`;
- document.getElementById('receipts').innerHTML=`<div class="section-title">経費</div>${parking}${global}<div class="small">※駐車場代は現場ごとに分けて管理します。追加時に現場を選択してください。</div>`;
+ let title=month.slice(0,4)+'年'+Number(month.slice(5,7))+'月';
+ document.getElementById('receipts').innerHTML=`<div class="section-title">経費</div><div class="card month-history-bar"><b>表示する月</b><input type="month" value="${month}" onchange="setReceiptsMonth(this.value)"><button class="btn danger" type="button" onclick="deleteAllReceiptsForMonth()">${title}を一括削除</button></div>${parking}${global}<div class="small">※駐車場代の現場名は、選択した月に登録されている現場だけ表示します。</div>`;
 }
 function openInvoice(){let p=data.find(x=>x.id===current),i=p.invoice||{};document.getElementById('iAmount').value=i.amount||p.amount;document.getElementById('iDate').value=i.date||new Date().toISOString().slice(0,10);document.getElementById('iDue').value=i.due||'';document.getElementById('iPaidDate').value=i.paidDate||'';document.getElementById('invoiceModal').classList.add('show')}
 function saveInvoice(){let p=data.find(x=>x.id===current);p.invoice={amount:Number(document.getElementById('iAmount').value),date:document.getElementById('iDate').value,due:document.getElementById('iDue').value,paidDate:document.getElementById('iPaidDate').value};persist();closeM('invoiceModal');openDetail(current);render();toast('請求・入金情報を保存しました')}
@@ -3313,6 +3406,7 @@ document.addEventListener('keydown',function(e){
 <script>
 document.addEventListener('DOMContentLoaded', function(){
   if (typeof tab === 'function') tab('projects');
+  var rd=document.getElementById('rDate'); if(rd)rd.addEventListener('change',function(){if(document.getElementById('rCat')?.value==='駐車場代')receiptProjectOptions(document.getElementById('rProject')?.value||'');});
 });
 </script>
 
@@ -3441,6 +3535,28 @@ function actualPrintNow(){
 .annual-value.cost-value{color:#aaa}
 </style>
 
+
+<style id="v51-open-tab-text">
+/* v51: タブ見出しの色は維持。開いたタブ内の文字は黒＋金の極細縁取り */
+main section,
+main section *{
+  color:#050505!important;
+  -webkit-text-fill-color:#050505!important;
+  -webkit-text-stroke:.18px #c89b2b!important;
+  text-shadow:none!important;
+}
+main section input::placeholder,
+main section textarea::placeholder{
+  color:#050505!important;
+  -webkit-text-fill-color:#050505!important;
+  -webkit-text-stroke:.18px #c89b2b!important;
+  opacity:.72!important;
+}
+/* ナビゲーション（タブ）の文字色は既存設定をそのまま使う */
+nav button,nav button.active{
+  -webkit-text-stroke:initial!important;
+}
+</style>
 </head><body>${body.innerHTML}</body></html>`;
  let frame=document.getElementById("dailyPrintFrame");
  if(!frame){frame=document.createElement("iframe");frame.id="dailyPrintFrame";frame.setAttribute("title","印刷");frame.style.position="fixed";frame.style.left="-10000px";frame.style.top="0";frame.style.width="1px";frame.style.height="1px";frame.style.border="0";document.body.appendChild(frame);}
@@ -3537,4 +3653,26 @@ window.addEventListener("load",()=>setTimeout(initDaily,250));
 
 
 
-</body></html>
+</body></html><style id="v56-daniel-tab-fullname-fix">
+/* Keep Daniel's full name visible in the top navigation */
+nav button#tDaniel{
+  min-width:132px!important;
+  width:auto!important;
+  flex:0 0 auto!important;
+  padding-left:10px!important;
+  padding-right:10px!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  font-size:12px!important;
+}
+</style>
+<style>
+/* v57: ダニエル・岡本の給料／カード代ボックスを各欄の背景色に統一 */
+#daniel .employee-card-grid>div,
+#okamoto .employee-card-grid>div{
+  background:transparent!important;
+  box-shadow:none!important;
+  border-color:rgba(198,154,58,.28)!important;
+}
+</style>
