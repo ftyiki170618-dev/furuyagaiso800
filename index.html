@@ -3063,7 +3063,9 @@ function renderDash(){
   +mg.filter(x=>!['駐車場代','高速代','ガソリン代','道具代','飲食代'].includes(x.category)).reduce((a,x)=>a+Number(x.amount||0),0);
  let subcontract=Number(subcontractMonthly||0)+sum('外注費');
  let vehicle=Number(vehicleMonthly||0)+sum('車両経費');
- let parking=sum('駐車場代')+gsum('駐車場代');
+ let parking=(Array.isArray(receipts)?receipts:[])
+   .filter(r=>r.category==='駐車場代' && String(r.date||'').slice(0,7)===month)
+   .reduce((a,r)=>a+Number(r.amount||0),0);
  let gasoline=sum('ガソリン代')+gsum('ガソリン代');
  let highway=sum('高速代')+gsum('高速代');
  let tools=sum('道具代')+gsum('道具代');
@@ -3240,7 +3242,10 @@ function renderMonthly(){
    let gsum=c=>mg.filter(x=>x.category===c).reduce((a,x)=>a+Number(x.amount||0),0);
    let labor=sum('従業員人工'),material=sum('材料費'),subcontract=subcontractMonthly+sum('外注費');
    let vehicle=Number(vehicleMonthly||0)+sum('車両経費');
-   let parking=sum('駐車場代')+gsum('駐車場代'),gasoline=sum('ガソリン代')+gsum('ガソリン代');
+   let parking=(Array.isArray(receipts)?receipts:[])
+      .filter(r=>r.category==='駐車場代' && String(r.date||'').slice(0,7)===month)
+      .reduce((a,r)=>a+Number(r.amount||0),0),
+        gasoline=sum('ガソリン代')+gsum('ガソリン代');
    let highway=sum('高速代')+gsum('高速代'),tools=sum('道具代')+gsum('道具代'),food=sum('飲食代')+gsum('飲食代');
    let shownCats=['従業員人工','材料費','外注費','車両経費','駐車場代','ガソリン代','高速代','道具代','飲食代'];
    let other=Number(otherMonthly||0)+(mc.filter(x=>!shownCats.includes(x.category)).reduce((a,x)=>a+Number(x.amount||0),0)+mg.filter(x=>!['駐車場代','高速代','ガソリン代','道具代','飲食代'].includes(x.category)).reduce((a,x)=>a+Number(x.amount||0),0));
@@ -3340,7 +3345,7 @@ async function saveReceipt(){
  let id=Date.now().toString();
  receipts.push({id,projectId,category:cat,date,amount:a});
  if(projectId){
-   let p=data.find(x=>x.id===projectId);
+   let p=data.find(x=>String(x.id)===String(projectId));
    if(p){
      if(!Array.isArray(p.costs))p.costs=[];
      p.costs.push({id:'e'+id,receiptId:id,category:cat,date,amount:a});
