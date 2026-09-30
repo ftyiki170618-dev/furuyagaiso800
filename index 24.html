@@ -1,0 +1,3680 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>フルヤガイソウ 現場・原価管理</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;background:#f5f6f8;color:#172033}
+header{background:#172033;color:#fff;padding:17px 15px 13px;position:sticky;top:0;z-index:10}h1{font-size:19px;margin:0 0 10px}.sub{font-size:11px;opacity:.75}
+nav{display:flex;background:#fff;border-bottom:1px solid #ddd;position:sticky;top:67px;z-index:9;overflow:auto}nav button{flex:1;min-width:95px;border:0;background:#fff;padding:12px 5px;font-weight:700;color:#667085;white-space:nowrap}nav button.active{color:#172033;border-bottom:3px solid #172033}
+main{max-width:800px;margin:auto;padding:13px 12px 70px}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:12px}.card{background:#fff;border-radius:12px;padding:13px;box-shadow:0 1px 4px #00000010}.label{font-size:11px;color:#667085}.value{font-size:20px;font-weight:800;margin-top:4px}.profit{color:#16803c}.loss{color:#c43232}
+.section-title{font-size:15px;font-weight:800;margin:17px 2px 9px}.btn{border:0;border-radius:8px;padding:10px 13px;font-weight:700;cursor:pointer}.primary{background:#172033;color:#fff}.danger{background:#fee2e2;color:#b42318}.gray{background:#eef1f5;color:#344054}.green{background:#e8f7ed;color:#147a3d}
+.row{display:flex;gap:8px;align-items:center}.between{justify-content:space-between}.wrap{flex-wrap:wrap}
+.project{background:#fff;border-radius:12px;padding:14px;margin:8px 0;box-shadow:0 1px 5px #0000000e;cursor:pointer}.project .name{font-size:16px;font-weight:800}.money{font-weight:800}.small{font-size:11px;color:#667085}.tiny{font-size:10px;color:#98a2b3}
+.bar{height:6px;background:#e8ebef;border-radius:8px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:#172033}
+input,select,textarea{width:100%;padding:10px;border:1px solid #d0d5dd;border-radius:8px;font-size:15px;background:#fff}textarea{min-height:70px}.form{display:grid;gap:10px}.field label{display:block;font-size:11px;font-weight:700;margin-bottom:4px;color:#475467}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;z-index:30}.modal.show{display:flex}.sheet{background:#fff;width:100%;max-height:93vh;overflow:auto;border-radius:18px 18px 0 0;padding:17px 14px 150px;scroll-padding-bottom:150px}
+.expense{border:1px solid #eaecf0;border-radius:9px;padding:9px;margin:6px 0;background:#fafafa}.receipt-img{width:100%;max-height:260px;object-fit:contain;border-radius:10px;background:#f2f4f7;margin-top:8px}.okbox{padding:10px;border-radius:10px;font-weight:800}.okyes{background:#e8f7ed;color:#147a3d}.okno{background:#fee2e2;color:#b42318}.tag{font-size:10px;background:#eef1f5;padding:3px 6px;border-radius:20px}.status{font-size:11px;font-weight:800;padding:4px 7px;border-radius:20px}.paid{background:#e8f7ed;color:#147a3d}.unpaid{background:#fff4e5;color:#9a5b00}
+hr{border:0;border-top:1px solid #eaecf0;margin:14px 0}.empty{text-align:center;padding:30px 10px;color:#98a2b3}.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#172033;color:#fff;padding:10px 15px;border-radius:99px;display:none;z-index:50;font-size:12px}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;font-size:12px}th,td{padding:9px 7px;border-bottom:1px solid #eaecf0;text-align:right}th:first-child,td:first-child{text-align:left}th{background:#f2f4f7;color:#475467}
+footer{font-size:10px;color:#98a2b3;text-align:center;margin-top:20px}
+@media(min-width:650px){.cards{grid-template-columns:repeat(4,1fr)}.modal{align-items:center}.sheet{max-width:620px;border-radius:18px;padding-bottom:40px}}
+</style><style>
+:root{--navy:#0b1220;--gold:#b89455;--ink:#172033;--muted:#697386}
+body{background:linear-gradient(180deg,#ebe8e1,#f7f6f3 240px,#f5f5f4);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Sans","Yu Gothic",sans-serif}
+header{background:linear-gradient(135deg,#09111f,#172640);box-shadow:0 12px 32px rgba(11,18,32,.2);padding-top:22px}
+header h1{letter-spacing:.06em}.card{border:1px solid rgba(184,148,85,.18);border-radius:17px;box-shadow:0 8px 25px rgba(20,28,42,.07);background:rgba(255,255,255,.97)}
+nav{background:rgba(255,255,255,.95);backdrop-filter:blur(12px)}nav button{border-radius:999px}nav button.active{background:linear-gradient(135deg,#172640,#09111f);box-shadow:0 5px 14px rgba(11,18,32,.18)}
+.section-title{letter-spacing:.04em}.section-title:before{content:"";display:inline-block;width:4px;height:15px;background:linear-gradient(#d7bd86,#b89455);border-radius:3px;margin-right:8px;vertical-align:-2px}
+.btn{border-radius:11px}.btn.primary{background:linear-gradient(135deg,#172640,#09111f);box-shadow:0 5px 14px rgba(11,18,32,.18)}
+input,select,textarea{border-radius:11px!important}.expense{border-radius:12px;background:#fbfaf8}
+.month-stack{display:grid;gap:14px}.month-card{background:#fff;border:1px solid rgba(184,148,85,.22);border-radius:18px;padding:16px;box-shadow:0 9px 26px rgba(20,28,42,.07)}
+.month-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ece8df;padding-bottom:11px;margin-bottom:5px}.month-title{font-size:19px;font-weight:900}.month-profit{font-size:18px;font-weight:900}
+.month-row{display:flex;justify-content:space-between;gap:16px;padding:9px 2px;border-bottom:1px solid #f0f1f2}.month-row span{color:#6b7280;font-weight:700}.month-row b{font-weight:850}.month-row.total{margin-top:5px;border-top:1px solid #d9d4c9;padding-top:12px}
+</style>
+<style>
+body{background:
+radial-gradient(circle at 15% 0%,rgba(255,201,91,.20),transparent 28%),
+radial-gradient(circle at 90% 15%,rgba(70,123,255,.18),transparent 32%),
+linear-gradient(145deg,#050810 0%,#0b1020 32%,#111827 48%,#eceff4 48.2%,#f7f7f8 100%);
+background-attachment:fixed}
+header{background:linear-gradient(115deg,#02040a 0%,#111c35 42%,#05070c 68%,#3b2a08 100%);border-bottom:1px solid rgba(255,210,111,.55);box-shadow:0 8px 32px rgba(0,0,0,.38),0 1px 0 rgba(255,219,133,.25) inset}
+header h1{background:linear-gradient(90deg,#fff,#f7d78e,#fff);-webkit-background-clip:text;color:transparent;text-shadow:0 0 22px rgba(255,210,100,.18)}
+nav{border-bottom:1px solid rgba(184,148,85,.35);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+nav button.active,.btn.primary{background:linear-gradient(120deg,#03060d,#182b50 45%,#070a10 70%,#6b4c12);border:1px solid rgba(230,192,108,.55)!important;box-shadow:0 6px 18px rgba(3,8,20,.28),0 0 14px rgba(196,150,57,.12)}
+.card,.month-card,.employee-premium-card{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,.99),rgba(246,247,250,.96));border:1px solid rgba(177,134,45,.34);box-shadow:0 12px 30px rgba(10,18,35,.12),0 1px 0 #fff inset}
+.card:before,.month-card:before,.employee-premium-card:before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#d8ad55,#fff2be,#d8ad55,transparent)}
+.value,.month-profit,.employee-card-grid strong{background:linear-gradient(100deg,#101828,#9a6b13,#171f31);-webkit-background-clip:text;color:transparent}
+.employee-premium-card{border-radius:20px;padding:18px;margin-bottom:14px}
+.employee-name{font-size:21px;font-weight:950;letter-spacing:.04em;margin-bottom:13px}
+.employee-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.employee-card-grid>div{background:linear-gradient(145deg,#0a1020,#17233d);border:1px solid rgba(218,177,87,.4);border-radius:14px;padding:13px;box-shadow:inset 0 1px rgba(255,255,255,.08)}
+.employee-card-grid span{display:block;color:#c7cfdd;font-size:11px;font-weight:800;margin-bottom:5px}
+.employee-card-grid strong{display:block;font-size:18px;background:linear-gradient(90deg,#fff,#e5bd69);-webkit-background-clip:text;color:transparent}
+.section-title:before{box-shadow:0 0 12px rgba(218,173,77,.7)}
+</style>
+
+<style>
+.fg-script{
+  margin:0!important;
+  font-family:"Snell Roundhand","Apple Chancery","Segoe Script","Brush Script MT",cursive!important;
+  font-size:34px!important;
+  font-weight:500!important;
+  letter-spacing:.02em!important;
+  line-height:1.05!important;
+  background:linear-gradient(90deg,#fff7da 0%,#d7a947 30%,#fff3bf 55%,#b77a18 80%,#fff 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  color:transparent!important;
+  filter:drop-shadow(0 2px 8px rgba(216,173,77,.28));
+}
+header{padding-top:20px!important;padding-bottom:18px!important}
+</style>
+
+<style>
+.month-sales-amount{
+ font-size:28px;font-weight:950;margin-top:6px;
+ background:linear-gradient(90deg,#fff0b5,#c99227,#fff3c6);
+ -webkit-background-clip:text;background-clip:text;color:transparent;
+ filter:drop-shadow(0 2px 7px rgba(201,146,39,.18));
+}
+.month-head{align-items:flex-start}
+</style>
+
+<style>
+.month-sales-amount{
+ -webkit-text-stroke:1px #0b1d3a;
+ text-shadow:
+  -1px -1px 0 #0b1d3a,1px -1px 0 #0b1d3a,
+  -1px 1px 0 #0b1d3a,1px 1px 0 #0b1d3a,
+  0 3px 10px rgba(11,29,58,.22);
+}
+.expense{padding:7px 9px!important;margin:5px 0!important}
+.expense .small{font-size:10px!important}
+.expense b{font-size:13px!important}
+.expense .btn{padding:4px 7px!important;font-size:11px!important}
+</style>
+
+<style>
+.month-sales-amount{
+ background:linear-gradient(90deg,#b77a18 0%,#f5d77d 28%,#d5a63d 55%,#fff0a8 72%,#b77a18 100%)!important;
+ -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;
+ -webkit-text-stroke:.35px #0a1b36!important;
+ text-shadow:0 1px 2px rgba(10,27,54,.18)!important;
+}
+</style>
+
+<style>
+.sales-gold{
+ background:linear-gradient(90deg,#a86b0c 0%,#ffe18a 28%,#d69e2e 52%,#fff0a7 72%,#ad710f 100%)!important;
+ -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;
+ -webkit-text-stroke:.35px #0a1b36!important;
+ text-shadow:0 1px 2px rgba(10,27,54,.16)!important;
+}
+.expense-red{
+ background:linear-gradient(90deg,#8f0d18 0%,#ff5b65 23%,#c51628 48%,#ff8a8f 68%,#8e0716 100%)!important;
+ -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;
+ -webkit-text-stroke:.35px #0a1b36!important;
+ text-shadow:0 1px 2px rgba(10,27,54,.15)!important;
+ font-weight:900!important;
+}
+</style>
+
+<style>
+.sales-gold,.month-sales-amount{
+ background:linear-gradient(90deg,#9b6208 0%,#ffd75e 22%,#fff0a1 40%,#c98b16 58%,#ffe57d 78%,#9b6208 100%)!important;
+ -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;
+ -webkit-text-stroke:.3px #071a38!important;
+ text-shadow:0 .5px 1px rgba(7,26,56,.18)!important;
+ font-weight:950!important;
+}
+.expense-red{
+ background:linear-gradient(90deg,#820713 0%,#ff3347 20%,#ff8992 40%,#bd0b1d 58%,#ff4a58 78%,#7f0612 100%)!important;
+ -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;
+ -webkit-text-stroke:.3px #071a38!important;
+ text-shadow:0 .5px 1px rgba(7,26,56,.18)!important;
+ font-weight:950!important;
+}
+</style>
+
+<style>
+.dash-two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+.dash-col{display:flex;flex-direction:column;gap:12px}
+.dash-card{margin:0!important;min-width:0}
+.dash-edit{padding:5px 10px!important;margin-top:7px!important}
+.sales-gold{
+ background:linear-gradient(90deg,#986006 0%,#ffd75c 22%,#fff0a0 42%,#c88a14 60%,#ffe47b 80%,#986006 100%)!important;
+ -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;
+ -webkit-text-stroke:.3px #071a38!important;
+ text-shadow:0 .5px 1px rgba(7,26,56,.16)!important;
+ font-weight:950!important;
+}
+@media(max-width:420px){.dash-two-col{gap:8px}.dash-col{gap:8px}.dash-card{padding:12px!important}}
+</style>
+
+<style>
+.sales-gold{
+ background:linear-gradient(90deg,#936006 0%,#ffd55a 20%,#fff0a0 40%,#c98a13 58%,#ffe67e 79%,#936006 100%)!important;
+ -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;
+ -webkit-text-stroke:.28px #061a38!important;
+ text-shadow:0 .4px .8px rgba(6,26,56,.16)!important;
+ font-weight:950!important;
+}
+</style>
+
+<style>
+.dash-two-col{
+ display:grid!important;
+ grid-template-columns:1fr 1fr!important;
+ gap:10px!important;
+ align-items:stretch!important;
+}
+.dash-col{
+ display:grid!important;
+ grid-template-rows:repeat(5,92px)!important;
+ gap:10px!important;
+}
+.dash-card{
+ height:92px!important;
+ min-height:92px!important;
+ box-sizing:border-box!important;
+ padding:12px!important;
+ display:flex!important;
+ flex-direction:column!important;
+ justify-content:center!important;
+ margin:0!important;
+}
+.dash-card .label{margin-bottom:4px!important}
+.dash-card .value{font-size:20px!important;line-height:1.15!important}
+.dash-card .dash-edit{margin-top:5px!important;padding:3px 8px!important;font-size:10px!important}
+/* 右列の岡本を5段目へ置き、左列ダニエルと完全に横位置を合わせる */
+.dash-col:nth-child(2) .dash-card:last-child{grid-row:5}
+@media(max-width:420px){
+ .dash-two-col{gap:7px!important}
+ .dash-col{grid-template-rows:repeat(5,88px)!important;gap:7px!important}
+ .dash-card{height:88px!important;min-height:88px!important;padding:9px!important}
+ .dash-card .value{font-size:18px!important}
+}
+</style>
+
+<style>
+.project-sales-gold,
+.project-sales-gold *{
+ font-weight:950!important;
+ color:#e0ad32!important;
+ -webkit-text-fill-color:transparent!important;
+ background:linear-gradient(90deg,#8f5900 0%,#ffd45a 18%,#fff2a6 38%,#c4850a 57%,#ffe681 78%,#9b6100 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-stroke:.32px #061a38!important;
+ text-shadow:0 .5px .8px rgba(6,26,56,.18)!important;
+}
+</style>
+
+<style>
+.annual-chart-card{overflow:hidden}
+.annual-chart-wrap{overflow-x:auto;padding-top:8px}
+.annual-chart{height:280px;min-width:620px;display:flex;align-items:stretch;gap:8px;padding:16px 8px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+.annual-month{flex:1;min-width:40px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.annual-bars{height:235px;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:4px}
+.annual-bar{width:42%;min-height:2px;border-radius:5px 5px 1px 1px;box-shadow:0 0 10px rgba(255,255,255,.08)}
+.sales-bar{background:linear-gradient(180deg,#fff1a0,#d49a21 55%,#875300);border:.3px solid #071a38}
+.cost-bar{background:linear-gradient(180deg,#ff8c94,#d1192b 55%,#780713);border:.3px solid #071a38}
+.annual-month-label{font-size:11px;margin-top:7px;white-space:nowrap}
+.annual-legend{display:flex;gap:16px;margin-top:12px;font-size:11px}
+.annual-legend span{display:flex;align-items:center;gap:5px}
+.annual-legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.legend-sales{background:linear-gradient(180deg,#fff1a0,#d49a21)}
+.legend-cost{background:linear-gradient(180deg,#ff8c94,#d1192b)}
+#annualYear{max-width:105px}
+</style>
+
+<style>
+.annual-chart{height:330px!important}
+.annual-bars{height:225px!important}
+.annual-values{width:100%;height:48px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:1px;font-size:8px;white-space:nowrap}
+.annual-values span{font-size:8px!important}
+</style>
+
+<style>
+.parking-project{margin-top:9px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08)}
+.parking-project:first-of-type{margin-top:10px}
+</style>
+
+<style>
+.project-delete{margin-left:6px!important;padding:5px 9px!important;font-size:11px!important}
+</style>
+
+<style>
+.project-delete{background:linear-gradient(180deg,#b91e31,#720b18)!important;color:#fff!important;border:1px solid rgba(255,255,255,.14)!important;padding:6px 12px!important;font-size:11px!important}
+.project-delete-row{display:flex;justify-content:flex-end;margin-top:9px}
+</style>
+
+<style>
+#projectList{display:flex;flex-direction:column;gap:10px}
+.rebuilt-project-card{padding:14px!important}
+.project-top{align-items:flex-start!important}
+.project-name{font-size:17px;font-weight:900;letter-spacing:.2px}
+.project-sales-block{display:flex;align-items:flex-end;justify-content:space-between;margin-top:14px;padding-top:11px;border-top:1px solid rgba(255,255,255,.08)}
+.project-sales-label{font-size:11px;opacity:.72}
+.project-sales-number{
+ font-size:24px!important;
+ line-height:1!important;
+ font-weight:950!important;
+ color:#d9a82e!important;
+ -webkit-text-fill-color:transparent!important;
+ background:linear-gradient(90deg,#8f5900 0%,#ffd45a 18%,#fff2a6 38%,#c4850a 57%,#ffe681 78%,#9b6100 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-stroke:.30px #061a38!important;
+ text-shadow:0 .5px .8px rgba(6,26,56,.18)!important;
+}
+.project-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:12px}
+.project-delete-btn{background:linear-gradient(180deg,#b91e31,#720b18)!important;color:#fff!important}
+</style>
+
+<style>
+.project-create-card{margin-bottom:14px!important;padding:14px!important}
+.project-create-title{font-size:16px;font-weight:900;margin-bottom:10px}
+.project-create-card .field{margin-bottom:9px}
+.project-create-card input{width:100%;box-sizing:border-box}
+.project-add-btn{width:100%;margin-top:4px}
+</style>
+
+<style>
+.project-create-card{padding:14px!important;margin-bottom:14px!important}
+.project-create-card .field{margin-bottom:10px!important}
+.project-create-card input{width:100%!important;box-sizing:border-box!important}
+.project-add-btn{width:100%!important;margin-top:2px!important}
+.rebuilt-project-card{margin-bottom:10px!important}
+.project-name{font-size:16px!important;font-weight:900!important}
+.project-sales-block{display:flex;justify-content:space-between;align-items:flex-end;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08)}
+.project-sales-number{
+ font-size:23px!important;font-weight:950!important;
+ color:#d9a82e!important;-webkit-text-fill-color:transparent!important;
+ background:linear-gradient(90deg,#8f5900,#ffd45a 20%,#fff2a6 40%,#c4850a 60%,#ffe681 80%,#9b6100)!important;
+ -webkit-background-clip:text!important;background-clip:text!important;
+ -webkit-text-stroke:.3px #061a38!important;
+}
+.project-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:11px}
+</style>
+
+<style>
+.single-card-grid{grid-template-columns:1fr!important}
+.single-card-grid>div{width:100%!important}
+</style>
+
+<style>
+:root{
+ --metal-dark:#07111c;
+ --metal-mid:#101f2e;
+ --metal-edge:#33485b;
+ --metal-highlight:#7890a3;
+ --brass:#c69a3a;
+}
+body{
+ background:
+ linear-gradient(115deg,rgba(255,255,255,.018) 0 1px,transparent 1px 7px),
+ linear-gradient(180deg,#07111c 0%,#0c1824 45%,#071019 100%)!important;
+ background-size:8px 100%,100% 100%!important;
+}
+.card,.employee-premium-card{
+ background:
+ linear-gradient(105deg,rgba(255,255,255,.045),transparent 22%,rgba(255,255,255,.018) 45%,transparent 72%),
+ linear-gradient(180deg,#132433,#0b1722)!important;
+ border:1px solid #31475a!important;
+ box-shadow:
+ inset 0 1px 0 rgba(255,255,255,.09),
+ inset 0 -1px 0 rgba(0,0,0,.5),
+ 0 8px 22px rgba(0,0,0,.22)!important;
+}
+.section-title{
+ letter-spacing:.08em!important;
+ text-shadow:0 1px 0 #000,0 0 12px rgba(198,154,58,.12)!important;
+}
+.rebuilt-project-card{
+ padding:9px 11px!important;
+ margin-bottom:7px!important;
+ border-left:2px solid #c69a3a!important;
+}
+.rebuilt-project-card .project-name{
+ font-size:14px!important;
+ line-height:1.15!important;
+}
+.rebuilt-project-card .project-sales-block{
+ margin-top:6px!important;
+ padding-top:6px!important;
+}
+.rebuilt-project-card .project-sales-label{font-size:9px!important}
+.rebuilt-project-card .project-sales-number{font-size:18px!important}
+.rebuilt-project-card .project-actions{
+ margin-top:6px!important;
+ gap:5px!important;
+}
+.rebuilt-project-card .project-actions .btn{
+ padding:4px 8px!important;
+ font-size:10px!important;
+ min-height:0!important;
+}
+.project-create-card{
+ padding:10px 11px!important;
+ margin-bottom:9px!important;
+}
+.project-create-card .field{margin-bottom:6px!important}
+.project-create-card label{font-size:10px!important}
+.project-create-card input{padding:8px 9px!important;min-height:0!important}
+.project-add-btn{padding:8px!important}
+nav{
+ background:linear-gradient(180deg,#132433,#09141e)!important;
+ border:1px solid #30465a!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 7px 20px rgba(0,0,0,.25)!important;
+}
+nav button.active{
+ background:linear-gradient(180deg,#d7b45a,#9a6e19)!important;
+ color:#08121c!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 12px rgba(198,154,58,.18)!important;
+}
+input,select{
+ background:linear-gradient(180deg,#0c1823,#09131c)!important;
+ border-color:#344b5e!important;
+ box-shadow:inset 0 1px 3px rgba(0,0,0,.45)!important;
+}
+.btn.primary{
+ background:linear-gradient(180deg,#d0aa4e,#926616)!important;
+ color:#07111c!important;
+ border:1px solid #e1c36e!important;
+ font-weight:900!important;
+}
+</style>
+
+<style>
+/* 月別も他画面と同じ濃紺メタル背景へ統一 */
+#monthly{
+ background:transparent!important;
+ color:#f3f6f8!important;
+}
+#monthly .card,
+#monthly .month-card,
+#monthly [class*="monthly"]{
+ color:#f3f6f8!important;
+}
+
+/* 背景と同化していた文字を全画面で読みやすく調整 */
+body,section,.card,.employee-premium-card{
+ color:#f3f6f8!important;
+}
+.label,.small,.project-sales-label,
+.card label,.field label,.annual-month-label{
+ color:#b9c7d3!important;
+ opacity:1!important;
+}
+.section-title,.project-name,.employee-name,
+.card b,.card strong{
+ color:#f7f9fb!important;
+}
+input,select,textarea{
+ color:#f7f9fb!important;
+}
+input::placeholder,textarea::placeholder{
+ color:#8293a3!important;
+ opacity:1!important;
+}
+.btn.gray{
+ color:#e8eef3!important;
+ background:linear-gradient(180deg,#26394a,#172634)!important;
+ border-color:#465e71!important;
+}
+.expense-red{
+ color:#ff5968!important;
+ -webkit-text-fill-color:#ff5968!important;
+ text-shadow:0 1px 0 #06101a,0 0 5px rgba(255,89,104,.2)!important;
+}
+.sales-gold{
+ color:#e7ba4e!important;
+ text-shadow:0 1px 0 #06101a,0 0 5px rgba(231,186,78,.18)!important;
+}
+</style>
+
+<style>
+/* 全体パスコード画面：「全体を開く」を明るく */
+#dashPassModal h2{
+ color:#ffffff!important;
+ -webkit-text-fill-color:#ffffff!important;
+ text-shadow:0 1px 2px #000,0 0 10px rgba(255,255,255,.18)!important;
+ font-weight:900!important;
+}
+#dashPassModal label{
+ color:#dce6ee!important;
+}
+
+/* 月別：白っぽくなった上書きを撤去して、他画面と同じ濃紺メタルに固定 */
+#monthly{
+ background:transparent!important;
+ color:#f3f6f8!important;
+}
+#monthly .card,
+#monthly .month-card,
+#monthly [class*="month"]{
+ background:
+ linear-gradient(105deg,rgba(255,255,255,.045),transparent 22%,rgba(255,255,255,.018) 45%,transparent 72%),
+ linear-gradient(180deg,#132433 0%,#0b1722 100%)!important;
+ border:1px solid #31475a!important;
+ box-shadow:
+ inset 0 1px 0 rgba(255,255,255,.09),
+ inset 0 -1px 0 rgba(0,0,0,.5),
+ 0 8px 22px rgba(0,0,0,.22)!important;
+ color:#f3f6f8!important;
+}
+#monthly .label,
+#monthly .small,
+#monthly label{
+ color:#b9c7d3!important;
+ -webkit-text-fill-color:#b9c7d3!important;
+}
+#monthly b,#monthly strong{
+ color:#f7f9fb!important;
+ -webkit-text-fill-color:#f7f9fb!important;
+}
+/* 月別の金額色だけは指定色を維持 */
+#monthly .sales-gold{
+ color:#e7ba4e!important;
+ -webkit-text-fill-color:#e7ba4e!important;
+}
+#monthly .expense-red{
+ color:#ff5968!important;
+ -webkit-text-fill-color:#ff5968!important;
+}
+</style>
+
+<style>
+#monthly .month-sales-head,
+#monthly .monthly-sales-head,
+#monthly .sales-head,
+#monthly .month-sales,
+#monthly .monthly-sales{
+ white-space:nowrap!important;
+ flex-wrap:nowrap!important;
+}
+#monthly .sales-gold,
+#monthly .month-sales .value,
+#monthly .monthly-sales .value{
+ white-space:nowrap!important;
+ color:#e2ad31!important;
+ -webkit-text-fill-color:transparent!important;
+ background:linear-gradient(90deg,#8f5900 0%,#ffd45a 18%,#fff2a6 38%,#c4850a 57%,#ffe681 78%,#9b6100 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-stroke:.30px #061a38!important;
+ text-shadow:0 .5px .8px rgba(6,26,56,.2)!important;
+ font-weight:950!important;
+}
+#monthly .month-title,
+#monthly .monthly-title{
+ white-space:nowrap!important;
+ color:#e2ad31!important;
+ -webkit-text-stroke:.25px #061a38!important;
+}
+</style>
+
+<style>
+#monthly .monthly-sales-right{
+ display:flex!important;
+ justify-content:flex-end!important;
+ text-align:right!important;
+ width:100%!important;
+}
+#monthly .monthly-sales-inner{
+ margin-left:auto!important;
+ text-align:right!important;
+ white-space:nowrap!important;
+}
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount{
+ text-align:right!important;
+ white-space:nowrap!important;
+}
+/* 合計と完全に同じ金色＋紺の縁取り */
+#monthly .monthly-sales-inner .sales-gold{
+ color:#e7ba4e!important;
+ -webkit-text-fill-color:transparent!important;
+ background:linear-gradient(90deg,#8f5900 0%,#ffd45a 18%,#fff2a6 38%,#c4850a 57%,#ffe681 78%,#9b6100 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-stroke:.30px #061a38!important;
+ text-shadow:0 .5px .8px rgba(6,26,56,.2)!important;
+ font-weight:950!important;
+}
+</style>
+
+<style>
+/* 全体欄の金色を月別の合計・売上と完全に統一 */
+#dash .sales-gold{
+ color:#e7ba4e!important;
+ -webkit-text-fill-color:transparent!important;
+ background:linear-gradient(90deg,#8f5900 0%,#ffd45a 18%,#fff2a6 38%,#c4850a 57%,#ffe681 78%,#9b6100 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-stroke:.30px #061a38!important;
+ text-shadow:0 .5px .8px rgba(6,26,56,.2)!important;
+ font-weight:950!important;
+}
+
+/* 全画面の赤い数字を光沢のある赤＋紺の極細縁取りに統一 */
+.expense-red,
+#monthly .expense-red,
+#dash .expense-red,
+#receipts .expense-red,
+.expense .expense-red{
+ color:#e92b3c!important;
+ -webkit-text-fill-color:transparent!important;
+ background:linear-gradient(90deg,#790712 0%,#e31d31 18%,#ff9aa3 37%,#d10f25 55%,#ff6673 76%,#8a0815 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-stroke:.28px #061a38!important;
+ text-shadow:0 .5px .8px rgba(6,26,56,.22),0 0 5px rgba(255,55,75,.15)!important;
+ font-weight:950!important;
+}
+</style>
+
+<style>
+/* 月別売上を左寄せ */
+#monthly .monthly-sales-right{
+ justify-content:flex-start!important;
+ text-align:left!important;
+}
+#monthly .monthly-sales-inner{
+ margin-left:0!important;
+ margin-right:auto!important;
+ text-align:left!important;
+}
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount{
+ text-align:left!important;
+}
+
+/* 月別欄：より上質なダークメタル＋シャンパンゴールド */
+#monthly .month-card{
+ position:relative!important;
+ overflow:hidden!important;
+ padding:16px 15px!important;
+ margin-bottom:12px!important;
+ border:1px solid rgba(164,190,211,.28)!important;
+ border-top:1px solid rgba(231,186,78,.38)!important;
+ border-left:2px solid #b98a2e!important;
+ border-radius:13px!important;
+ background:
+   linear-gradient(112deg,rgba(255,255,255,.055) 0%,transparent 20%,rgba(255,255,255,.018) 44%,transparent 70%),
+   linear-gradient(180deg,#152938 0%,#0c1b28 52%,#09141e 100%)!important;
+ box-shadow:
+   inset 0 1px 0 rgba(255,255,255,.10),
+   inset 0 -1px 0 rgba(0,0,0,.55),
+   0 10px 28px rgba(0,0,0,.30)!important;
+}
+#monthly .month-card:before{
+ content:"";
+ position:absolute;
+ top:0;left:12px;right:12px;
+ height:1px;
+ background:linear-gradient(90deg,transparent,rgba(255,224,139,.65),transparent);
+}
+#monthly .month-head{
+ padding-bottom:12px!important;
+ margin-bottom:5px!important;
+ border-bottom:1px solid rgba(177,198,215,.16)!important;
+}
+#monthly .month-title{
+ font-size:13px!important;
+ letter-spacing:.05em!important;
+}
+#monthly .month-sales-amount{
+ font-size:27px!important;
+ line-height:1.15!important;
+ margin-top:3px!important;
+}
+#monthly .month-row{
+ padding:9px 2px!important;
+ border-bottom:1px solid rgba(181,202,218,.085)!important;
+}
+#monthly .month-row span{
+ font-size:12px!important;
+ letter-spacing:.025em!important;
+ color:#c3d0da!important;
+}
+#monthly .month-row b{
+ font-size:15px!important;
+}
+#monthly .month-row.total{
+ margin-top:5px!important;
+ padding:12px 3px 5px!important;
+ border-top:1px solid rgba(231,186,78,.28)!important;
+ border-bottom:0!important;
+}
+#monthly .month-row.total span{
+ color:#f1d487!important;
+ font-weight:800!important;
+ letter-spacing:.08em!important;
+}
+#monthly .month-row.total b{
+ font-size:20px!important;
+}
+#monthly .section-title{
+ margin-bottom:12px!important;
+ color:#f4f7f9!important;
+ letter-spacing:.12em!important;
+}
+</style>
+
+<style>
+/* 月別：年月売上の文字は左、売上金額だけ右寄せ */
+#monthly .monthly-sales-inner{
+ width:100%!important;
+}
+#monthly .monthly-sales-inner .month-title{
+ text-align:left!important;
+}
+#monthly .monthly-sales-inner .month-sales-amount{
+ text-align:right!important;
+ width:100%!important;
+}
+</style>
+
+<style>
+/* 月別：年月売上と売上金額を大きく、合計と同じゴールドへ */
+#monthly .monthly-sales-inner .month-title{
+ font-size:18px!important;
+ line-height:1.2!important;
+ font-weight:950!important;
+ color:#e7ba4e!important;
+ -webkit-text-fill-color:transparent!important;
+ background:linear-gradient(90deg,#8f5900 0%,#ffd45a 18%,#fff2a6 38%,#c4850a 57%,#ffe681 78%,#9b6100 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-stroke:.30px #061a38!important;
+ text-shadow:0 .5px .8px rgba(6,26,56,.2)!important;
+}
+#monthly .monthly-sales-inner .month-sales-amount{
+ font-size:31px!important;
+ line-height:1.12!important;
+ margin-top:5px!important;
+ font-weight:950!important;
+ color:#e7ba4e!important;
+ -webkit-text-fill-color:transparent!important;
+ background:linear-gradient(90deg,#8f5900 0%,#ffd45a 18%,#fff2a6 38%,#c4850a 57%,#ffe681 78%,#9b6100 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-stroke:.30px #061a38!important;
+ text-shadow:0 .5px .8px rgba(6,26,56,.2)!important;
+}
+
+/* 全体をほんの少し明るく、金属の反射感を上品に追加 */
+body{
+ background:
+ linear-gradient(115deg,rgba(255,255,255,.025) 0 1px,transparent 1px 7px),
+ linear-gradient(180deg,#0a1723 0%,#102130 45%,#0a1621 100%)!important;
+}
+.card,.employee-premium-card,#monthly .month-card{
+ background:
+ linear-gradient(108deg,rgba(255,255,255,.075),transparent 21%,rgba(255,255,255,.025) 46%,transparent 72%),
+ linear-gradient(180deg,#193041 0%,#102332 52%,#0c1b27 100%)!important;
+ border-color:#3c566a!important;
+ box-shadow:
+ inset 0 1px 0 rgba(255,255,255,.13),
+ inset 0 -1px 0 rgba(0,0,0,.45),
+ 0 9px 24px rgba(0,0,0,.24)!important;
+}
+nav{
+ background:linear-gradient(180deg,#193041,#0d1e2b)!important;
+ border-color:#3b5569!important;
+}
+</style>
+
+<style>
+/* 全ての主要な数字に、金属表面を光が横切る反射エフェクト */
+.value,
+.project-sales-number,
+.month-sales-amount,
+.month-row b,
+.employee-premium-card strong,
+.expense b,
+.annual-values span,
+.sales-gold,
+.expense-red{
+ position:relative!important;
+ overflow:hidden!important;
+}
+
+/* テキスト自体の光沢・反射感を強化 */
+.value,
+.project-sales-number,
+.month-sales-amount,
+.month-row b,
+.employee-premium-card strong,
+.expense b,
+.annual-values span{
+ filter:drop-shadow(0 1px 0 rgba(255,255,255,.12))
+        drop-shadow(0 2px 2px rgba(0,0,0,.28))!important;
+}
+
+/* ゴールド数字：明暗差を増やした鏡面反射 */
+.sales-gold,
+.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount{
+ background:
+ linear-gradient(105deg,
+ #7c4b00 0%,
+ #d99d20 12%,
+ #fff5b6 24%,
+ #c17c08 35%,
+ #ffe784 47%,
+ #fff9d4 51%,
+ #d59817 57%,
+ #ffe17a 72%,
+ #8b5400 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+}
+
+/* 赤数字：鏡面の白いハイライトを追加 */
+.expense-red{
+ background:
+ linear-gradient(105deg,
+ #710610 0%,
+ #c80f23 13%,
+ #ff6c79 24%,
+ #ffbbc1 31%,
+ #c80b20 42%,
+ #ff8993 51%,
+ #fff0f1 54%,
+ #e21a30 60%,
+ #ff5968 76%,
+ #780712 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+}
+
+/* 数字にゆっくり反射光が走る */
+@keyframes numberShine{
+ 0%{filter:brightness(1) drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+ 45%{filter:brightness(1) drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+ 52%{filter:brightness(1.32) drop-shadow(0 0 4px rgba(255,255,255,.28))}
+ 59%{filter:brightness(1) drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+ 100%{filter:brightness(1) drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+}
+.value,
+.project-sales-number,
+.month-sales-amount,
+.month-row b,
+.employee-premium-card strong,
+.expense b,
+.annual-values span{
+ animation:numberShine 4.8s ease-in-out infinite!important;
+}
+</style>
+
+<style>
+/* 全体を一段明るいプレミアム・ネイビーメタルへ */
+body{
+ background:
+   linear-gradient(115deg,rgba(255,255,255,.035) 0 1px,transparent 1px 7px),
+   radial-gradient(circle at 50% -15%,rgba(91,139,174,.24),transparent 42%),
+   linear-gradient(180deg,#11283a 0%,#173247 42%,#102638 100%)!important;
+}
+.card,.employee-premium-card{
+ background:
+   linear-gradient(110deg,rgba(255,255,255,.105),transparent 18%,rgba(255,255,255,.035) 44%,transparent 70%),
+   linear-gradient(180deg,#24475e 0%,#17364c 48%,#112a3c 100%)!important;
+ border:1px solid #57758b!important;
+ box-shadow:
+   inset 0 1px 0 rgba(255,255,255,.20),
+   inset 0 -1px 0 rgba(0,0,0,.34),
+   0 10px 25px rgba(0,0,0,.20)!important;
+}
+nav{
+ background:linear-gradient(180deg,#294d64 0%,#17364b 100%)!important;
+ border:1px solid #5b788e!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.17),0 8px 22px rgba(0,0,0,.22)!important;
+}
+input,select,textarea{
+ background:linear-gradient(180deg,#17364a,#10293b)!important;
+ border-color:#58778d!important;
+}
+
+/* 月別：二重枠＋金属エッジ＋シャンパンゴールドで格上げ */
+#monthly .month-card{
+ position:relative!important;
+ padding:18px 17px!important;
+ margin:0 2px 15px!important;
+ border:1px solid rgba(213,229,239,.46)!important;
+ border-radius:15px!important;
+ background:
+   linear-gradient(112deg,rgba(255,255,255,.14) 0%,transparent 17%,rgba(255,255,255,.04) 39%,transparent 67%),
+   linear-gradient(180deg,#294e65 0%,#193b51 48%,#122e41 100%)!important;
+ box-shadow:
+   inset 0 1px 0 rgba(255,255,255,.25),
+   inset 0 0 0 3px rgba(7,25,39,.36),
+   inset 0 0 0 4px rgba(210,171,77,.20),
+   0 12px 28px rgba(0,0,0,.26),
+   0 0 0 1px rgba(213,177,87,.16)!important;
+}
+#monthly .month-card:before{
+ content:"";
+ position:absolute;
+ left:14px;right:14px;top:0;
+ height:2px;
+ background:linear-gradient(90deg,transparent,#b27b20 8%,#fff0a6 48%,#bd8728 92%,transparent);
+ box-shadow:0 1px 6px rgba(255,220,128,.22);
+}
+#monthly .month-card:after{
+ content:"";
+ position:absolute;
+ pointer-events:none;
+ inset:7px;
+ border:1px solid rgba(210,229,241,.11);
+ border-radius:10px;
+}
+#monthly .month-head{
+ position:relative!important;
+ z-index:1!important;
+ padding-bottom:14px!important;
+ border-bottom:1px solid rgba(239,205,119,.28)!important;
+}
+#monthly .month-row{
+ position:relative!important;
+ z-index:1!important;
+ padding:10px 3px!important;
+ border-bottom:1px solid rgba(211,228,239,.12)!important;
+}
+#monthly .month-row.total{
+ margin-top:7px!important;
+ padding:14px 4px 7px!important;
+ border-top:1px solid rgba(255,221,133,.44)!important;
+ background:linear-gradient(90deg,transparent,rgba(209,169,70,.07),transparent)!important;
+}
+#monthly .section-title{
+ font-size:18px!important;
+ text-shadow:0 1px 0 #000,0 0 14px rgba(255,220,130,.20)!important;
+}
+</style>
+
+<style>
+/* 数字を全体的に明るく、宝飾メタル風に */
+.sales-gold,
+.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount{
+ background:linear-gradient(105deg,
+ #b87800 0%,#ffd95b 13%,#fffbd0 28%,#f0b92d 40%,
+ #fff5a0 50%,#ffffff 53%,#ffd75b 61%,#fff0a0 78%,#c98908 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;
+ -webkit-text-stroke:.22px #071a31!important;
+ text-shadow:0 0 6px rgba(255,220,92,.22)!important;
+}
+.expense-red{
+ background:linear-gradient(105deg,
+ #b20b1d 0%,#ff4357 14%,#ffc0c6 27%,#ff5364 40%,
+ #fff0f2 51%,#ff7b88 57%,#ff3048 70%,#ff9ca6 84%,#a50919 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;
+ -webkit-text-stroke:.20px #071a31!important;
+ text-shadow:0 0 5px rgba(255,78,96,.20)!important;
+}
+
+/* 通常の数字も明るく */
+.value,
+.month-row b,
+.employee-premium-card strong,
+.expense b,
+.annual-values span{
+ filter:brightness(1.16) contrast(1.04) drop-shadow(0 1px 1px rgba(0,0,0,.22))!important;
+}
+
+/* 文字の視認性を全体的に向上 */
+body,section,.card,.employee-premium-card{
+ color:#ffffff!important;
+}
+.section-title,.project-name,.employee-name,
+.card b,.card strong,h1,h2,h3{
+ color:#ffffff!important;
+ -webkit-text-fill-color:#ffffff;
+ text-shadow:0 1px 2px rgba(0,0,0,.58)!important;
+}
+.label,.small,.field label,.project-sales-label,
+.month-row span,#monthly .month-row span{
+ color:#e4edf4!important;
+ -webkit-text-fill-color:#e4edf4!important;
+ opacity:1!important;
+ text-shadow:0 1px 1px rgba(0,0,0,.48)!important;
+}
+#monthly .month-row.total span{
+ color:#ffe59a!important;
+ -webkit-text-fill-color:#ffe59a!important;
+}
+input,select,textarea{
+ color:#ffffff!important;
+ font-weight:650!important;
+}
+input::placeholder,textarea::placeholder{
+ color:#aebfcb!important;
+ opacity:1!important;
+}
+.btn.gray{
+ color:#ffffff!important;
+ font-weight:800!important;
+}
+</style>
+
+<style>
+/* ギラギラ反射 + 極細シルバー縁 */
+.sales-gold,
+.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount{
+ background:linear-gradient(100deg,
+ #ffb400 0%,#fff06a 9%,#ffffff 17%,#ffd21f 26%,
+ #fffbd5 35%,#ffad00 43%,#ffffff 50%,#fff36f 56%,
+ #ffbf00 66%,#fff8ba 77%,#ffffff 84%,#ffc400 92%,#fff06c 100%)!important;
+ background-size:230% 100%!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;
+ -webkit-text-stroke:.32px #e7edf2!important;
+ text-shadow:0 0 2px rgba(255,255,255,.9),0 0 7px rgba(255,220,40,.58),0 0 13px rgba(255,181,0,.34)!important;
+ animation:goldGlitter 2.15s linear infinite!important;
+}
+.expense-red{
+ background:linear-gradient(100deg,
+ #ff1734 0%,#ff7080 10%,#ffffff 18%,#ff2945 27%,
+ #ffd5d9 36%,#ff001f 44%,#ffffff 51%,#ff7c8a 58%,
+ #ff1837 68%,#ffc3ca 78%,#ffffff 85%,#ff2440 93%,#ff8490 100%)!important;
+ background-size:230% 100%!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;
+ -webkit-text-stroke:.30px #e7edf2!important;
+ text-shadow:0 0 2px rgba(255,255,255,.82),0 0 7px rgba(255,54,78,.52),0 0 12px rgba(255,0,35,.30)!important;
+ animation:redGlitter 2.15s linear infinite!important;
+}
+@keyframes goldGlitter{
+ 0%{background-position:220% 0;filter:brightness(1.12) saturate(1.18)}
+ 50%{filter:brightness(1.55) saturate(1.42)}
+ 100%{background-position:-30% 0;filter:brightness(1.12) saturate(1.18)}
+}
+@keyframes redGlitter{
+ 0%{background-position:220% 0;filter:brightness(1.12) saturate(1.20)}
+ 50%{filter:brightness(1.50) saturate(1.46)}
+ 100%{background-position:-30% 0;filter:brightness(1.12) saturate(1.20)}
+}
+/* 金・赤以外の主要数字にも極細シルバー縁 */
+.value,.month-row b,.employee-premium-card strong,.expense b,.annual-values span{
+ font-weight:950!important;
+ -webkit-text-stroke:.24px rgba(235,241,246,.92);
+}
+</style>
+
+<style>
+/* 数字の発光・点滅・移動反射を停止 */
+.sales-gold,.expense-red,.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount,
+.value,.month-row b,.employee-premium-card strong,.expense b,.annual-values span{
+ animation:none!important;
+ filter:none!important;
+}
+
+/* ゴールド：落ち着いた立体メタル + 極細シルバー縁 */
+.sales-gold,.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount{
+ background:linear-gradient(180deg,
+ #fff1a4 0%,#e9bd45 24%,#b97a0b 49%,#f0ca57 70%,#8e5905 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;
+ -webkit-text-stroke:.32px #e6edf2!important;
+ text-shadow:
+   0 1px 0 rgba(255,255,255,.34),
+   0 2px 0 rgba(79,49,0,.55),
+   0 3px 3px rgba(0,0,0,.34)!important;
+}
+
+/* レッド：落ち着いた立体メタル + 極細シルバー縁 */
+.expense-red{
+ background:linear-gradient(180deg,
+ #ff9aa4 0%,#e9384b 25%,#9f0b1d 50%,#e94b5c 72%,#780715 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;
+ -webkit-text-stroke:.30px #e6edf2!important;
+ text-shadow:
+   0 1px 0 rgba(255,255,255,.25),
+   0 2px 0 rgba(82,0,10,.58),
+   0 3px 3px rgba(0,0,0,.34)!important;
+}
+
+/* その他の数字も立体感 + シルバー極細縁 */
+.value,.month-row b,.employee-premium-card strong,.expense b,.annual-values span{
+ -webkit-text-stroke:.25px rgba(230,237,242,.94)!important;
+ text-shadow:
+   0 1px 0 rgba(255,255,255,.18),
+   0 2px 0 rgba(0,0,0,.42),
+   0 3px 3px rgba(0,0,0,.28)!important;
+}
+</style>
+
+<style>
+/* 月別の年月売上・売上金額を「合計」の数字と完全に同じ見た目へ */
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount,
+#monthly .month-row.total b{
+ background:linear-gradient(180deg,
+ #fff1a4 0%,#e9bd45 24%,#b97a0b 49%,#f0ca57 70%,#8e5905 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;
+ color:transparent!important;
+ -webkit-text-stroke:.32px #e6edf2!important;
+ text-shadow:
+   0 1px 0 rgba(255,255,255,.34),
+   0 2px 0 rgba(79,49,0,.55),
+   0 3px 3px rgba(0,0,0,.34)!important;
+ animation:none!important;
+ filter:none!important;
+}
+
+/* 全欄の数字に極細シルバー縁取り */
+.value,
+.project-sales-number,
+.month-sales-amount,
+.month-row b,
+.employee-premium-card strong,
+.expense b,
+.annual-values span,
+.sales-gold,
+.expense-red,
+#dash .value,
+#projects .project-sales-number,
+#employees strong,
+#receipts b,
+#monthly b,
+#annual b,
+#annual span{
+ -webkit-text-stroke:.28px rgba(232,238,243,.96)!important;
+}
+</style>
+
+<style>
+/* 純金インゴットのような、濃くいやらしいゴールド */
+.sales-gold,
+.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount,
+#monthly .month-row.total b{
+ background:linear-gradient(180deg,
+   #fff7a8 0%,
+   #ffd700 10%,
+   #ffb800 24%,
+   #fff18a 34%,
+   #d98b00 48%,
+   #ffca05 59%,
+   #fff3a0 69%,
+   #e69b00 82%,
+   #ffcf16 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;
+ color:transparent!important;
+ -webkit-text-stroke:.30px #eef3f6!important;
+ text-shadow:
+   0 1px 0 rgba(255,255,255,.42),
+   0 2px 0 rgba(126,72,0,.62),
+   0 3px 3px rgba(0,0,0,.36)!important;
+ animation:none!important;
+ filter:none!important;
+}
+
+/* 赤数字：立体レッドを維持しつつ極細シルバー縁を明確化 */
+.expense-red,
+#dash .expense-red,
+#monthly .expense-red,
+#receipts .expense-red{
+ background:linear-gradient(180deg,
+   #ff9da7 0%,
+   #f2384c 23%,
+   #a9091d 48%,
+   #ed4054 70%,
+   #780614 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;
+ color:transparent!important;
+ -webkit-text-stroke:.32px #eef3f6!important;
+ text-shadow:
+   0 1px 0 rgba(255,255,255,.25),
+   0 2px 0 rgba(85,0,12,.60),
+   0 3px 3px rgba(0,0,0,.34)!important;
+ animation:none!important;
+ filter:none!important;
+}
+</style>
+
+<style>
+/* ゴールドをさらに濃い純金色へ */
+.sales-gold,
+.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount,
+#monthly .month-row.total b{
+ background:linear-gradient(180deg,
+   #ffd21a 0%,
+   #e7a500 14%,
+   #b96f00 30%,
+   #f1b900 43%,
+   #8f4e00 55%,
+   #d89100 68%,
+   #ffcb0a 81%,
+   #a95e00 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;
+ color:transparent!important;
+ -webkit-text-stroke:.30px #e8edf1!important;
+ text-shadow:0 1px 0 rgba(255,225,110,.30),0 2px 0 rgba(74,38,0,.72),0 3px 3px rgba(0,0,0,.38)!important;
+}
+
+/* 赤をさらに深い濃赤へ */
+.expense-red,
+#dash .expense-red,
+#monthly .expense-red,
+#receipts .expense-red{
+ background:linear-gradient(180deg,
+   #f13a4d 0%,
+   #c20b22 20%,
+   #820012 42%,
+   #b6071e 58%,
+   #69000d 76%,
+   #a9061a 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;
+ color:transparent!important;
+ -webkit-text-stroke:.32px #e8edf1!important;
+ text-shadow:0 1px 0 rgba(255,150,160,.20),0 2px 0 rgba(55,0,7,.75),0 3px 3px rgba(0,0,0,.40)!important;
+}
+</style>
+
+<style>
+/* ===== BLACK METALLIC EDITION ===== */
+:root{
+ --black:#050607;
+ --gun:#101317;
+ --steel:#252b31;
+ --edge:#59616a;
+ --silver:#dce2e7;
+}
+body{
+ background:
+   linear-gradient(115deg,rgba(255,255,255,.025) 0 1px,transparent 1px 8px),
+   radial-gradient(circle at 50% -10%,rgba(150,160,170,.14),transparent 38%),
+   linear-gradient(180deg,#14171a 0%,#090b0d 48%,#030405 100%)!important;
+ color:#f5f7f8!important;
+}
+.card,.employee-premium-card,#monthly .month-card{
+ background:
+   linear-gradient(112deg,rgba(255,255,255,.10) 0%,transparent 15%,rgba(255,255,255,.025) 38%,transparent 66%),
+   linear-gradient(180deg,#20252a 0%,#111519 47%,#080a0c 100%)!important;
+ border:1px solid #505860!important;
+ border-top-color:#7a838b!important;
+ box-shadow:
+   inset 0 1px 0 rgba(255,255,255,.17),
+   inset 0 -1px 0 rgba(0,0,0,.8),
+   0 10px 25px rgba(0,0,0,.42)!important;
+}
+nav{
+ background:linear-gradient(180deg,#252a2f 0%,#0b0e11 100%)!important;
+ border:1px solid #596169!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 8px 22px rgba(0,0,0,.45)!important;
+}
+nav button{color:#cbd1d6!important}
+nav button.active{
+ background:linear-gradient(180deg,#e1e5e8 0%,#7d858c 45%,#30363b 100%)!important;
+ color:#050607!important;
+ border:1px solid #eef1f3!important;
+ box-shadow:inset 0 1px 0 #fff,0 2px 7px rgba(0,0,0,.45)!important;
+}
+input,select,textarea{
+ background:linear-gradient(180deg,#171b1f,#080a0c)!important;
+ border:1px solid #555e66!important;
+ color:#fff!important;
+}
+.section-title{
+ color:#f5f7f8!important;
+ text-shadow:0 1px 0 #000,0 0 8px rgba(255,255,255,.08)!important;
+}
+.label,.small,.field label,.month-row span,.project-sales-label{
+ color:#c8cfd5!important;
+ -webkit-text-fill-color:#c8cfd5!important;
+}
+.btn.gray{
+ background:linear-gradient(180deg,#3b4248,#171b1f)!important;
+ border:1px solid #626b73!important;
+ color:#fff!important;
+}
+.btn.primary{
+ background:linear-gradient(180deg,#e0e4e7,#777f86 48%,#343a3f)!important;
+ border:1px solid #eef1f3!important;
+ color:#08090a!important;
+ text-shadow:0 1px 0 rgba(255,255,255,.5)!important;
+}
+
+/* 月別は黒クロームの二重枠 */
+#monthly .month-card{
+ border-radius:14px!important;
+ border:1px solid #737b82!important;
+ box-shadow:
+ inset 0 0 0 3px #0b0d0f,
+ inset 0 0 0 4px rgba(190,198,205,.20),
+ inset 0 1px 0 rgba(255,255,255,.19),
+ 0 12px 28px rgba(0,0,0,.50)!important;
+}
+#monthly .month-card:before{
+ background:linear-gradient(90deg,transparent,#707880,#f4f6f7,#727a81,transparent)!important;
+ height:1px!important;
+}
+#monthly .month-row{
+ border-bottom-color:rgba(205,214,220,.10)!important;
+}
+#monthly .month-row.total{
+ border-top-color:rgba(220,227,232,.32)!important;
+ background:linear-gradient(90deg,transparent,rgba(255,255,255,.035),transparent)!important;
+}
+
+/* 数字は既存の濃い金・赤を黒背景で映えるよう微調整 */
+.sales-gold,.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount,
+#monthly .month-row.total b{
+ -webkit-text-stroke:.30px #eef2f4!important;
+ text-shadow:0 1px 0 rgba(255,220,100,.22),0 2px 0 #3a2100,0 3px 3px rgba(0,0,0,.65)!important;
+}
+.expense-red{
+ -webkit-text-stroke:.30px #eef2f4!important;
+ text-shadow:0 1px 0 rgba(255,150,160,.16),0 2px 0 #370008,0 3px 3px rgba(0,0,0,.65)!important;
+}
+</style>
+
+<style>
+/* ===== SILVER METALLIC EDITION ===== */
+body{
+ background:
+   linear-gradient(115deg,rgba(255,255,255,.16) 0 1px,transparent 1px 8px),
+   radial-gradient(circle at 50% -10%,rgba(255,255,255,.58),transparent 40%),
+   linear-gradient(180deg,#cbd1d6 0%,#9da6ad 44%,#747e86 100%)!important;
+ color:#111820!important;
+}
+.card,.employee-premium-card,#monthly .month-card{
+ background:
+   linear-gradient(110deg,rgba(255,255,255,.62) 0%,rgba(255,255,255,.12) 20%,rgba(255,255,255,.35) 42%,rgba(255,255,255,.08) 68%),
+   linear-gradient(180deg,#d9dee2 0%,#aab2b8 48%,#858f97 100%)!important;
+ border:1px solid #5e6870!important;
+ border-top-color:#f5f7f8!important;
+ box-shadow:
+   inset 0 1px 0 rgba(255,255,255,.90),
+   inset 0 -1px 0 rgba(46,54,60,.50),
+   0 9px 23px rgba(26,32,37,.28)!important;
+}
+nav{
+ background:linear-gradient(180deg,#e2e6e9 0%,#9aa3aa 50%,#717b83 100%)!important;
+ border:1px solid #59636b!important;
+ box-shadow:inset 0 1px 0 #fff,0 8px 20px rgba(24,30,35,.28)!important;
+}
+nav button{
+ color:#18212a!important;
+ text-shadow:0 1px 0 rgba(255,255,255,.65)!important;
+ font-weight:850!important;
+}
+nav button.active{
+ background:linear-gradient(180deg,#333b42 0%,#151a1f 100%)!important;
+ color:#fff!important;
+ text-shadow:0 1px 1px #000!important;
+ border:1px solid #505960!important;
+}
+.section-title,.project-name,.employee-name,
+.card b,.card strong,h1,h2,h3{
+ color:#101820!important;
+ -webkit-text-fill-color:#101820;
+ text-shadow:0 1px 0 rgba(255,255,255,.72)!important;
+}
+.label,.small,.field label,.project-sales-label,
+.month-row span,#monthly .month-row span{
+ color:#26323c!important;
+ -webkit-text-fill-color:#26323c!important;
+ opacity:1!important;
+ text-shadow:0 1px 0 rgba(255,255,255,.55)!important;
+ font-weight:700!important;
+}
+input,select,textarea{
+ background:linear-gradient(180deg,#f3f5f6,#c7cdd1)!important;
+ color:#101820!important;
+ border:1px solid #66717a!important;
+ box-shadow:inset 0 1px 3px rgba(38,46,52,.18)!important;
+}
+input::placeholder,textarea::placeholder{
+ color:#5b6872!important;
+ opacity:1!important;
+}
+.btn.gray{
+ background:linear-gradient(180deg,#f1f3f4,#aeb6bc)!important;
+ color:#17212a!important;
+ border:1px solid #657079!important;
+ text-shadow:0 1px 0 #fff!important;
+}
+.btn.primary{
+ background:linear-gradient(180deg,#454e55,#151b20)!important;
+ color:#fff!important;
+ border:1px solid #626d75!important;
+ text-shadow:0 1px 1px #000!important;
+}
+
+/* 月別は削り出しアルミ風の二重枠 */
+#monthly .month-card{
+ border-radius:15px!important;
+ border:1px solid #58636b!important;
+ box-shadow:
+ inset 0 0 0 3px rgba(245,247,248,.62),
+ inset 0 0 0 4px rgba(73,83,91,.28),
+ inset 0 1px 0 #fff,
+ 0 12px 26px rgba(25,31,36,.30)!important;
+}
+#monthly .month-card:before{
+ background:linear-gradient(90deg,transparent,#69747c,#fff,#727c84,transparent)!important;
+ height:2px!important;
+}
+#monthly .month-row{
+ border-bottom-color:rgba(47,58,67,.17)!important;
+}
+#monthly .month-row.total{
+ border-top-color:rgba(37,47,55,.36)!important;
+ background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent)!important;
+}
+#monthly .month-row.total span{
+ color:#17212a!important;
+ -webkit-text-fill-color:#17212a!important;
+}
+
+/* 数字は明るいシルバー背景でも読めるよう、濃い金・赤＋極細ダーク縁 */
+.sales-gold,.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount,
+#monthly .month-row.total b{
+ -webkit-text-stroke:.34px #263039!important;
+ text-shadow:0 1px 0 rgba(255,255,255,.45),0 2px 1px rgba(57,36,0,.48)!important;
+}
+.expense-red{
+ -webkit-text-stroke:.34px #263039!important;
+ text-shadow:0 1px 0 rgba(255,255,255,.38),0 2px 1px rgba(69,0,8,.42)!important;
+}
+/* 通常数値も濃色で視認性を確保 */
+.value,.month-row b,.employee-premium-card strong,.expense b,.annual-values span{
+ -webkit-text-stroke:.18px rgba(18,25,31,.80)!important;
+}
+</style>
+
+<style>
+/* ===== CHAMPAGNE GOLD METALLIC EDITION ===== */
+body{
+ background:
+   linear-gradient(115deg,rgba(255,255,255,.12) 0 1px,transparent 1px 8px),
+   radial-gradient(circle at 50% -10%,rgba(255,250,225,.50),transparent 40%),
+   linear-gradient(180deg,#d8c89f 0%,#b9a477 45%,#88764f 100%)!important;
+ color:#1d1a14!important;
+}
+.card,.employee-premium-card,#monthly .month-card{
+ background:
+   linear-gradient(110deg,rgba(255,255,255,.48) 0%,transparent 18%,rgba(255,255,255,.16) 40%,transparent 67%),
+   linear-gradient(180deg,#e1d3ae 0%,#bca77a 48%,#927d53 100%)!important;
+ border:1px solid #786842!important;
+ border-top-color:#fff4cf!important;
+ box-shadow:
+   inset 0 1px 0 rgba(255,255,255,.78),
+   inset 0 -1px 0 rgba(71,58,31,.46),
+   0 10px 24px rgba(49,39,21,.28)!important;
+}
+nav{
+ background:linear-gradient(180deg,#eadfbe 0%,#bca87c 50%,#8d794e 100%)!important;
+ border:1px solid #75643f!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 8px 20px rgba(48,38,20,.28)!important;
+}
+nav button{
+ color:#2a2418!important;
+ text-shadow:0 1px 0 rgba(255,255,255,.58)!important;
+ font-weight:850!important;
+}
+nav button.active{
+ background:linear-gradient(180deg,#4a402c,#1d1a14)!important;
+ color:#fff5d8!important;
+ border:1px solid #6e6042!important;
+ text-shadow:0 1px 1px #000!important;
+}
+.section-title,.project-name,.employee-name,.card b,.card strong,h1,h2,h3{
+ color:#211d15!important;
+ -webkit-text-fill-color:#211d15;
+ text-shadow:0 1px 0 rgba(255,255,255,.58)!important;
+}
+.label,.small,.field label,.project-sales-label,.month-row span,#monthly .month-row span{
+ color:#403724!important;
+ -webkit-text-fill-color:#403724!important;
+ opacity:1!important;
+ text-shadow:0 1px 0 rgba(255,255,255,.42)!important;
+ font-weight:700!important;
+}
+input,select,textarea{
+ background:linear-gradient(180deg,#f7efd8,#d7c79f)!important;
+ color:#211d15!important;
+ border:1px solid #806f48!important;
+}
+.btn.gray{
+ background:linear-gradient(180deg,#f0e5c5,#bca87c)!important;
+ color:#241f16!important;
+ border:1px solid #786842!important;
+}
+.btn.primary{
+ background:linear-gradient(180deg,#55492f,#211d15)!important;
+ color:#fff4d0!important;
+ border:1px solid #746442!important;
+}
+
+/* 月別：シャンパンゴールドのジュエリー枠 */
+#monthly .month-card{
+ border-radius:15px!important;
+ border:1px solid #76633c!important;
+ box-shadow:
+ inset 0 0 0 3px rgba(255,247,220,.50),
+ inset 0 0 0 4px rgba(98,80,43,.28),
+ inset 0 1px 0 rgba(255,255,255,.88),
+ 0 12px 27px rgba(52,41,21,.31)!important;
+}
+#monthly .month-card:before{
+ background:linear-gradient(90deg,transparent,#9c7e3c,#fff5c9,#a48743,transparent)!important;
+ height:2px!important;
+}
+#monthly .month-row{
+ border-bottom-color:rgba(73,59,31,.17)!important;
+}
+#monthly .month-row.total{
+ border-top-color:rgba(73,58,28,.36)!important;
+ background:linear-gradient(90deg,transparent,rgba(255,249,224,.20),transparent)!important;
+}
+#monthly .month-row.total span{
+ color:#30291b!important;
+ -webkit-text-fill-color:#30291b!important;
+}
+
+/* 金・赤の数字は濃さを維持して背景から浮かせる */
+.sales-gold,.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount,
+#monthly .month-row.total b{
+ -webkit-text-stroke:.34px #4a402c!important;
+ text-shadow:0 1px 0 rgba(255,255,255,.45),0 2px 1px rgba(75,43,0,.48)!important;
+}
+.expense-red{
+ -webkit-text-stroke:.34px #4a402c!important;
+ text-shadow:0 1px 0 rgba(255,255,255,.35),0 2px 1px rgba(70,0,8,.40)!important;
+}
+</style>
+
+<style id="navy-metallic-premium">
+/* ===== PREMIUM METALLIC NAVY ===== */
+body{
+ background:
+  linear-gradient(118deg,rgba(255,255,255,.025) 0 1px,transparent 1px 8px),
+  radial-gradient(circle at 50% -12%,rgba(91,139,174,.22),transparent 42%),
+  linear-gradient(180deg,#10283b 0%,#081b2b 48%,#04111d 100%)!important;
+ color:#f4f7fa!important;
+}
+.card,.employee-premium-card,#monthly .month-card{
+ background:
+  linear-gradient(110deg,rgba(255,255,255,.10),transparent 18%,rgba(255,255,255,.025) 42%,transparent 70%),
+  linear-gradient(180deg,#1c4059 0%,#102d42 48%,#081d2d 100%)!important;
+ border:1px solid #496a80!important;
+ border-top-color:#7995a7!important;
+ box-shadow:
+  inset 0 1px 0 rgba(255,255,255,.18),
+  inset 0 -1px 0 rgba(0,0,0,.55),
+  0 10px 26px rgba(0,0,0,.34)!important;
+}
+nav{
+ background:linear-gradient(180deg,#21475f,#0b2639 55%,#071a29)!important;
+ border:1px solid #52748a!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 8px 22px rgba(0,0,0,.35)!important;
+}
+nav button{color:#d7e2e9!important}
+nav button.active{
+ background:linear-gradient(180deg,#d9e4ea,#7f9aaa 48%,#315267)!important;
+ color:#071722!important;
+ border:1px solid #e9f0f4!important;
+ text-shadow:0 1px 0 rgba(255,255,255,.5)!important;
+}
+.section-title,.project-name,.employee-name,.card b,.card strong,h1,h2,h3{
+ color:#fff!important;
+ text-shadow:0 1px 2px rgba(0,0,0,.65)!important;
+}
+.label,.small,.field label,.project-sales-label,.month-row span,#monthly .month-row span{
+ color:#d1dee6!important;
+ -webkit-text-fill-color:#d1dee6!important;
+ opacity:1!important;
+}
+input,select,textarea{
+ background:linear-gradient(180deg,#14354a,#0a2233)!important;
+ color:#fff!important;
+ border:1px solid #52758b!important;
+ box-shadow:inset 0 1px 3px rgba(0,0,0,.35)!important;
+}
+input::placeholder,textarea::placeholder{color:#9eb3c0!important;opacity:1!important}
+.btn.gray{
+ background:linear-gradient(180deg,#31566d,#112e41)!important;
+ color:#fff!important;
+ border:1px solid #58798d!important;
+}
+.btn.primary{
+ background:linear-gradient(180deg,#d5e0e6,#718d9e 48%,#294b60)!important;
+ color:#071722!important;
+ border:1px solid #e7eef2!important;
+}
+
+/* 高級クローム風エッジ */
+#monthly .month-card,.card,.employee-premium-card{
+ border-radius:14px!important;
+ box-shadow:
+  inset 0 0 0 1px rgba(209,225,235,.08),
+  inset 0 1px 0 rgba(255,255,255,.18),
+  inset 0 -1px 0 rgba(0,0,0,.58),
+  0 10px 26px rgba(0,0,0,.34)!important;
+}
+#monthly .month-card{
+ border:1px solid #6f8b9d!important;
+ box-shadow:
+  inset 0 0 0 3px rgba(5,21,33,.55),
+  inset 0 0 0 4px rgba(173,199,214,.16),
+  inset 0 1px 0 rgba(255,255,255,.20),
+  0 12px 28px rgba(0,0,0,.38)!important;
+}
+#monthly .month-card:before{
+ background:linear-gradient(90deg,transparent,#7895a7,#e5eef3,#7895a7,transparent)!important;
+ height:1px!important;
+}
+</style>
+
+
+<style id="dash-overlap-fix">
+/* 全体欄：その他・車両・外注の金額と変更ボタンの重なりを解消 */
+#dash .row,
+#dash .dash-row,
+#dash .item-row{
+  gap:8px!important;
+}
+#dash .value,
+#dash .sales-gold,
+#dash .expense-red{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+#dash button,
+#dash .btn{
+  flex:0 0 auto!important;
+  position:relative!important;
+  z-index:2!important;
+}
+/* 入力変更系の項目は金額表示領域を確保 */
+#dash .editable,
+#dash .editable-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  column-gap:8px!important;
+  align-items:center!important;
+}
+</style>
+
+
+<style id="dash-final-layout-fix">
+/* 全体欄：カード内部を確実に縦配置。金額と変更ボタンは絶対に重ねない */
+#dash .dash-card{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  min-width:0!important;
+  overflow:hidden!important;
+  padding:12px 11px!important;
+  box-sizing:border-box!important;
+}
+#dash .dash-card .label{
+  display:block!important;
+  width:100%!important;
+  margin:0 0 5px!important;
+  color:#eef5f9!important;
+  -webkit-text-fill-color:#eef5f9!important;
+  font-weight:800!important;
+  line-height:1.25!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.85)!important;
+}
+#dash .dash-card .value{
+  display:block!important;
+  position:static!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  line-height:1.18!important;
+  font-size:clamp(17px,5.1vw,25px)!important;
+}
+#dash .dash-card .dash-edit{
+  display:block!important;
+  position:static!important;
+  float:none!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:9px 0 0!important;
+  padding:7px 5px!important;
+  box-sizing:border-box!important;
+  line-height:1.15!important;
+  font-size:12px!important;
+  flex:none!important;
+}
+
+/* オセイ ダニエル・岡本 啓矢：極細シルバー縁 */
+#dash .employee-dash-name{
+  color:#f5f8fa!important;
+  -webkit-text-fill-color:#f5f8fa!important;
+  -webkit-text-stroke:.28px #cfd8de!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.9)!important;
+  letter-spacing:.01em!important;
+}
+
+/* 見えづらい文字を全体的に補正 */
+body .small,
+body .label,
+body .field label,
+body .project-sales-label,
+body #monthly .month-row span{
+  opacity:1!important;
+  color:#dbe7ee!important;
+  -webkit-text-fill-color:#dbe7ee!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.75)!important;
+}
+body input,body select,body textarea{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+body input::placeholder,body textarea::placeholder{
+  color:#b5c7d2!important;
+  -webkit-text-fill-color:#b5c7d2!important;
+  opacity:1!important;
+}
+</style>
+
+
+<style id="v120-detail-polish">
+/* 従業員欄：オセイ ダニエル / 岡本 啓矢の名前に極細シルバー縁 */
+#employees .employee-name,
+#employees h3,
+#employees .name{
+  -webkit-text-stroke:.28px #d9e0e5!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.85)!important;
+}
+
+/* 月別：「合計」の文字を「経費」の文字と同じ赤系に */
+#monthly .month-row.total span{
+  color:#dbe7ee!important;
+  -webkit-text-fill-color:#dbe7ee!important;
+}
+#monthly .month-row.total span:first-child{
+  color:#e94756!important;
+  -webkit-text-fill-color:#e94756!important;
+  -webkit-text-stroke:.18px #d9e0e5!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.72)!important;
+}
+
+/* 金色の数字を、より純金らしい濃厚なゴールドへ */
+.sales-gold,
+.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount,
+#monthly .month-row.total b{
+  background:linear-gradient(180deg,
+    #fff066 0%,
+    #ffd000 14%,
+    #e9a600 30%,
+    #ffda16 43%,
+    #b87300 56%,
+    #f2b900 70%,
+    #ffd82b 84%,
+    #9c5b00 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;
+  color:transparent!important;
+  -webkit-text-stroke:.30px #dce3e8!important;
+  text-shadow:
+    0 1px 0 rgba(255,245,170,.38),
+    0 2px 0 rgba(87,48,0,.68),
+    0 3px 3px rgba(0,0,0,.42)!important;
+}
+</style>
+
+
+<style id="v121-font-and-dash-fix">
+/* 全体的に文字を一回り大きく */
+body{font-size:16px!important}
+.section-title{font-size:20px!important}
+.label,.field label,.project-sales-label,#monthly .month-row span{font-size:14px!important}
+.small{font-size:13px!important}
+input,select,textarea,button,.btn{font-size:15px!important}
+.project-name,.employee-name{font-size:17px!important}
+.value,.month-row b,.expense b,.employee-premium-card strong{font-size:18px!important}
+
+/* 全体欄：その他・外注・車両を含む変更可能カード
+   数字→ボタンの完全縦並び。重なりを強制解除 */
+#dash .dash-card{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  height:auto!important;
+  min-height:112px!important;
+  overflow:visible!important;
+  padding:12px 10px!important;
+}
+#dash .dash-card .value{
+  position:static!important;
+  inset:auto!important;
+  float:none!important;
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  margin:2px 0 0!important;
+  padding:0!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:nowrap!important;
+  font-size:clamp(17px,4.6vw,23px)!important;
+  line-height:1.25!important;
+  z-index:auto!important;
+}
+#dash .dash-card .dash-edit,
+#dash .dash-card button{
+  position:static!important;
+  inset:auto!important;
+  transform:none!important;
+  float:none!important;
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  margin:10px 0 0!important;
+  padding:8px 4px!important;
+  box-sizing:border-box!important;
+  font-size:13px!important;
+  line-height:1.2!important;
+  z-index:auto!important;
+  flex:0 0 auto!important;
+}
+/* ボタン付きカードは高さを確保 */
+#dash .dash-card:has(.dash-edit){
+  min-height:130px!important;
+}
+</style>
+
+
+<style id="white-to-gold-v122">
+/* 白系の文字を、数字と同じ純金ゴールドへ統一 */
+.section-title,
+.project-name,
+.employee-name,
+.card b,
+.card strong,
+h1,h2,h3,
+#dash .dash-card .label,
+body .small,
+body .label,
+body .field label,
+body .project-sales-label,
+body #monthly .month-row span,
+nav button,
+.btn.gray{
+  color:#ffd000!important;
+  -webkit-text-fill-color:#ffd000!important;
+  -webkit-text-stroke:.18px #dce3e8!important;
+  text-shadow:
+    0 1px 0 rgba(255,245,170,.30),
+    0 2px 1px rgba(87,48,0,.55),
+    0 2px 3px rgba(0,0,0,.38)!important;
+}
+
+/* 従業員名もゴールド＋既存の極細シルバー縁 */
+#employees .employee-name,
+#employees h3,
+#employees .name,
+#dash .employee-dash-name{
+  color:#ffd000!important;
+  -webkit-text-fill-color:#ffd000!important;
+  -webkit-text-stroke:.28px #dce3e8!important;
+}
+
+/* 入力欄の入力文字は視認性優先でゴールド */
+body input,body select,body textarea{
+  color:#ffd000!important;
+  -webkit-text-fill-color:#ffd000!important;
+}
+body input::placeholder,body textarea::placeholder{
+  color:#d8ad27!important;
+  -webkit-text-fill-color:#d8ad27!important;
+  opacity:1!important;
+}
+</style>
+
+
+<style id="luxury-gold-v123">
+/* 白から金にした文字を、より派手な鏡面純金へ。発光アニメーションは使わない */
+.section-title,.project-name,.employee-name,.card b,.card strong,
+h1,h2,h3,#dash .dash-card .label,body .small,body .label,
+body .field label,body .project-sales-label,body #monthly .month-row span,
+nav button,.btn.gray,
+#employees .employee-name,#employees h3,#employees .name,#dash .employee-dash-name{
+  background:linear-gradient(180deg,
+    #fffbd0 0%,
+    #ffe64d 10%,
+    #ffbd00 22%,
+    #fff39a 34%,
+    #d88a00 47%,
+    #ffcf00 59%,
+    #fff6b0 69%,
+    #e59a00 82%,
+    #ffd51c 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  -webkit-text-stroke:.25px #eef2f4!important;
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.50),
+    0 2px 0 rgba(117,65,0,.60),
+    0 3px 3px rgba(0,0,0,.42)!important;
+}
+
+/* 金色の数字も同じ鏡面ゴールドへ */
+.sales-gold,.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount,
+#monthly .month-row.total b{
+  background:linear-gradient(180deg,
+    #fffbd0 0%,#ffe64d 10%,#ffbd00 22%,#fff39a 34%,
+    #d88a00 47%,#ffcf00 59%,#fff6b0 69%,#e59a00 82%,#ffd51c 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;
+  color:transparent!important;
+  -webkit-text-stroke:.30px #eef2f4!important;
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.52),
+    0 2px 0 rgba(110,61,0,.64),
+    0 3px 3px rgba(0,0,0,.44)!important;
+}
+</style>
+
+
+<style id="gold-match-monthly-title">
+/* 金文字を「月別管理」の文字色と同系統の落ち着いたゴールドへ統一 */
+.section-title,.project-name,.employee-name,.card b,.card strong,
+h1,h2,h3,#dash .dash-card .label,body .small,body .label,
+body .field label,body .project-sales-label,body #monthly .month-row span,
+nav button,.btn.gray,
+#employees .employee-name,#employees h3,#employees .name,#dash .employee-dash-name,
+.sales-gold,.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount,
+#monthly .month-row.total b{
+  background:none!important;
+  color:#f0c95a!important;
+  -webkit-text-fill-color:#f0c95a!important;
+  -webkit-text-stroke:.22px #e7edf1!important;
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.20),
+    0 2px 2px rgba(0,0,0,.48)!important;
+}
+</style>
+
+
+<style id="luxury-gold-v9">
+/* 高級感重視：派手すぎない深い24Kゴールド */
+.section-title,.project-name,.employee-name,.card b,.card strong,
+h1,h2,h3,#dash .dash-card .label,body .small,body .label,
+body .field label,body .project-sales-label,body #monthly .month-row span,
+nav button,.btn.gray,
+#employees .employee-name,#employees h3,#employees .name,#dash .employee-dash-name,
+.sales-gold,.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount,
+#monthly .month-row.total b{
+  background:linear-gradient(180deg,
+    #fff0a3 0%,
+    #e7c45c 18%,
+    #b98a24 38%,
+    #f1d276 52%,
+    #9b6c17 69%,
+    #d7ad42 84%,
+    #f4dc8a 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  -webkit-text-stroke:.24px #d8dee3!important;
+  text-shadow:
+    0 1px 0 rgba(255,246,205,.26),
+    0 2px 1px rgba(74,46,5,.56),
+    0 3px 3px rgba(0,0,0,.34)!important;
+}
+</style>
+
+
+<style id="luxury-white-v10">
+/* ===== MODERN LUXURY WHITE ===== */
+html,body{
+ background:
+   radial-gradient(circle at 50% -10%,#ffffff 0%,#f8f8f6 35%,#eeeeeb 100%)!important;
+ color:#171717!important;
+}
+body:before{
+ content:"";position:fixed;inset:0;pointer-events:none;
+ background:linear-gradient(120deg,rgba(255,255,255,.75),transparent 32%,rgba(180,180,175,.06) 55%,transparent 75%);
+}
+
+/* 白磁・アルミ調カード */
+.card,.employee-premium-card,#monthly .month-card{
+ background:linear-gradient(145deg,#ffffff 0%,#f7f7f5 48%,#e9e9e6 100%)!important;
+ border:1px solid #c4c6c7!important;
+ border-top-color:#fff!important;
+ box-shadow:
+   inset 0 1px 0 #fff,
+   inset 0 -1px 0 rgba(80,80,80,.08),
+   0 8px 22px rgba(25,30,34,.10)!important;
+}
+nav{
+ background:linear-gradient(180deg,#fff,#f1f1ef 55%,#dededb)!important;
+ border:1px solid #c4c6c7!important;
+ box-shadow:inset 0 1px 0 #fff,0 6px 18px rgba(0,0,0,.10)!important;
+}
+nav button{color:#202020!important;-webkit-text-fill-color:#202020!important}
+nav button.active{
+ background:linear-gradient(180deg,#35383a,#101112)!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ border:1px solid #080808!important;
+}
+input,select,textarea{
+ background:linear-gradient(180deg,#fff,#f1f1ef)!important;
+ color:#151515!important;-webkit-text-fill-color:#151515!important;
+ border:1px solid #b9bcbe!important;
+ box-shadow:inset 0 1px 3px rgba(0,0,0,.08)!important;
+}
+input::placeholder,textarea::placeholder{
+ color:#666!important;-webkit-text-fill-color:#666!important;opacity:1!important;
+}
+.btn.gray{
+ background:linear-gradient(180deg,#fff,#e4e4e1)!important;
+ color:#171717!important;-webkit-text-fill-color:#171717!important;
+ border:1px solid #b9bcbe!important;
+}
+.btn.primary{
+ background:linear-gradient(180deg,#3a3d3f,#111213)!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ border:1px solid #050505!important;
+}
+
+/* 通常文字は黒系で視認性を高く */
+.section-title,.project-name,.employee-name,.card b,.card strong,h1,h2,h3,
+#dash .dash-card .label,body .small,body .label,body .field label,
+body .project-sales-label,body #monthly .month-row span,
+#employees .employee-name,#employees h3,#employees .name,#dash .employee-dash-name{
+ background:none!important;
+ color:#202020!important;
+ -webkit-text-fill-color:#202020!important;
+}
+
+/* 金数字は白背景に合う上品な濃いゴールド */
+.sales-gold,.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount,
+#monthly .month-row.total b{
+ background:linear-gradient(180deg,#d9b64d 0%,#9e7416 44%,#e0c163 62%,#80600e 100%)!important;
+ -webkit-background-clip:text!important;background-clip:text!important;
+ color:transparent!important;-webkit-text-fill-color:transparent!important;
+}
+/* 赤数字は濃いルビーレッド */
+.expense-red{
+ background:linear-gradient(180deg,#e44857,#9e0b1c 52%,#690613)!important;
+ -webkit-background-clip:text!important;background-clip:text!important;
+ color:transparent!important;-webkit-text-fill-color:transparent!important;
+}
+
+/* 文字・数字すべてに極細ブラック縁 */
+body *{
+ -webkit-text-stroke:.18px rgba(0,0,0,.82)!important;
+}
+/* 大きな数字は少しだけ輪郭を明確に */
+.value,.sales-gold,.expense-red,.project-sales-number,
+.month-row b,.employee-premium-card strong,.expense b,.annual-values span{
+ -webkit-text-stroke:.28px rgba(0,0,0,.90)!important;
+}
+/* 白文字ボタンだけは黒縁で可読性確保 */
+nav button.active,.btn.primary{
+ -webkit-text-stroke:.18px #000!important;
+}
+
+/* 月別カードはジュエリーケース風の二重枠 */
+#monthly .month-card{
+ border:1px solid #aeb2b4!important;
+ box-shadow:
+ inset 0 0 0 3px #fafaf8,
+ inset 0 0 0 4px #d3d5d5,
+ inset 0 1px 0 #fff,
+ 0 10px 25px rgba(0,0,0,.11)!important;
+}
+#monthly .month-card:before{
+ background:linear-gradient(90deg,transparent,#a8abad,#fff,#a8abad,transparent)!important;
+}
+</style>
+
+
+<style id="white-gold-accent-v11">
+/* 全体：文字の影を完全に撤去 */
+body *, body *::before, body *::after{
+ text-shadow:none!important;
+}
+
+/* ホワイト背景に上品なゴールドアクセント */
+html,body{
+ background:
+   radial-gradient(circle at 12% 8%,rgba(214,169,46,.12),transparent 24%),
+   radial-gradient(circle at 90% 30%,rgba(181,132,22,.09),transparent 26%),
+   linear-gradient(135deg,transparent 0 46%,rgba(199,153,39,.055) 46% 46.7%,transparent 46.7% 100%),
+   linear-gradient(180deg,#ffffff 0%,#f8f7f3 55%,#efeee9 100%)!important;
+}
+body:before{
+ content:""!important;
+ position:fixed!important;inset:0!important;pointer-events:none!important;
+ background:
+   linear-gradient(120deg,transparent 0 17%,rgba(204,157,39,.12) 17.1% 17.35%,transparent 17.45% 100%),
+   linear-gradient(300deg,transparent 0 12%,rgba(204,157,39,.08) 12.1% 12.35%,transparent 12.45% 100%)!important;
+}
+
+/* カードに細いゴールドのアクセント */
+.card,.employee-premium-card,#monthly .month-card{
+ border:1px solid #c9b16a!important;
+ border-top-color:#e9d99f!important;
+ box-shadow:
+   inset 0 1px 0 #fff,
+   inset 0 0 0 1px rgba(210,168,54,.08),
+   0 8px 22px rgba(25,30,34,.09)!important;
+}
+.card:before,.employee-premium-card:before{
+ background:linear-gradient(90deg,transparent,#b98a24,#f1d274,#b98a24,transparent)!important;
+}
+
+/* 金色をより強く、深い純金色へ */
+.sales-gold,.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount,
+#monthly .month-row.total b{
+ background:linear-gradient(180deg,
+   #ffe778 0%,
+   #e3b51d 18%,
+   #a96e00 38%,
+   #f1c82c 53%,
+   #8d5700 70%,
+   #dba713 84%,
+   #ffd94c 100%)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+ color:transparent!important;
+ -webkit-text-fill-color:transparent!important;
+ -webkit-text-stroke:.28px #2b2414!important;
+ text-shadow:none!important;
+}
+
+/* 見出し・名前などにも控えめな高級ゴールドを増やす */
+.section-title,h1,h2,h3,.project-name,.employee-name,
+#employees .employee-name,#employees .name,#dash .employee-dash-name{
+ color:#a97812!important;
+ -webkit-text-fill-color:#a97812!important;
+ -webkit-text-stroke:.20px rgba(0,0,0,.82)!important;
+ text-shadow:none!important;
+}
+
+/* ナビ・月別枠にも金ライン */
+nav{
+ border-color:#b99a48!important;
+ box-shadow:inset 0 1px 0 #fff,0 6px 18px rgba(0,0,0,.08)!important;
+}
+#monthly .month-card{
+ border-color:#b79235!important;
+ box-shadow:
+   inset 0 0 0 3px #fbfaf6,
+   inset 0 0 0 4px rgba(185,138,36,.42),
+   inset 0 1px 0 #fff,
+   0 10px 25px rgba(0,0,0,.10)!important;
+}
+#monthly .month-card:before{
+ background:linear-gradient(90deg,transparent,#9e7011,#f0cf65,#9e7011,transparent)!important;
+ height:2px!important;
+}
+</style>
+
+
+<style id="monthly-bg-and-nav-order-v12">
+/* 月別欄に残っていた紺色部分を、全体の白×金背景と統一 */
+#monthly,
+#monthly .monthly-sales-inner,
+#monthly .month-card,
+#monthly .month-row,
+#monthly .month-row.total{
+  background-color:transparent!important;
+}
+#monthly .monthly-sales-inner{
+  background:
+    linear-gradient(145deg,#ffffff 0%,#f8f7f3 52%,#efeee9 100%)!important;
+  border:1px solid #c9b16a!important;
+  box-shadow:inset 0 1px 0 #fff,0 8px 22px rgba(25,30,34,.08)!important;
+}
+
+/* 全体タブを一番右へ */
+nav{
+  display:flex!important;
+}
+nav button[data-tab="dash"],
+nav button[data-target="dash"],
+nav button[onclick*="'dash'"],
+nav button[onclick*='"dash"']{
+  order:99!important;
+}
+</style>
+
+
+<style id="v13-month-card-final">
+/* 月別カード本体をページ背景と同じ白×金トーンに統一 */
+#monthly .month-card,
+#monthly .monthly-sales-inner{
+  background:
+    radial-gradient(circle at 12% 8%,rgba(214,169,46,.12),transparent 24%),
+    radial-gradient(circle at 90% 30%,rgba(181,132,22,.09),transparent 26%),
+    linear-gradient(180deg,#ffffff 0%,#f8f7f3 55%,#efeee9 100%)!important;
+  background-color:#f8f7f3!important;
+}
+#monthly .month-row,
+#monthly .month-row.total{
+  background:transparent!important;
+  background-color:transparent!important;
+}
+/* 念のため全体ボタンを視覚上も必ず最後へ */
+nav button[data-tab="dash"],
+nav button[data-target="dash"],
+nav button[onclick*="'dash'"],
+nav button[onclick*='"dash"']{
+  order:9999!important;
+}
+</style>
+
+
+<style id="sales-gold-unify-v14">
+/* 月別欄「売上高」の数字と同じ金色を、全体の金文字へ統一 */
+.section-title,.project-name,.employee-name,
+#employees .employee-name,#employees h3,#employees .name,
+#dash .employee-dash-name,
+.card b,.card strong,h1,h2,h3,
+#dash .dash-card .label,
+body .small,body .label,body .field label,body .project-sales-label,
+nav button,.btn.gray,
+.sales-gold,.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount,
+#monthly .month-row.total b,
+#monthly .month-row.total span:first-child{
+  color:#e2ad31!important;
+  -webkit-text-fill-color:transparent!important;
+  background:linear-gradient(90deg,
+    #8f5900 0%,
+    #ffd45a 18%,
+    #fff2a6 38%,
+    #c4850a 57%,
+    #ffe681 78%,
+    #9b6100 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  -webkit-text-stroke:.30px #111!important;
+  text-shadow:none!important;
+  font-weight:850!important;
+}
+
+/* 月別の合計ラベルも明示的に同じ金色 */
+#monthly .month-row.total span{
+  color:#e2ad31!important;
+  -webkit-text-fill-color:transparent!important;
+  background:linear-gradient(90deg,#8f5900 0%,#ffd45a 18%,#fff2a6 38%,#c4850a 57%,#ffe681 78%,#9b6100 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  -webkit-text-stroke:.30px #111!important;
+  text-shadow:none!important;
+}
+</style>
+
+
+<style id="darker-gold-v15">
+/* 全体の金色を少しだけ暗く、落ち着いた高級ゴールドへ */
+.section-title,.project-name,.employee-name,
+#employees .employee-name,#employees h3,#employees .name,
+#dash .employee-dash-name,
+.card b,.card strong,h1,h2,h3,
+#dash .dash-card .label,
+body .small,body .label,body .field label,body .project-sales-label,
+nav button,.btn.gray,
+.sales-gold,.project-sales-number,
+#monthly .monthly-sales-inner .month-title,
+#monthly .monthly-sales-inner .month-sales-amount,
+#monthly .month-row.total b,
+#monthly .month-row.total span{
+  background:linear-gradient(90deg,
+    #714500 0%,
+    #c99a2d 18%,
+    #e0c267 38%,
+    #a56d08 57%,
+    #d6b34e 78%,
+    #794900 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  -webkit-text-stroke:.30px #111!important;
+  text-shadow:none!important;
+}
+</style>
+
+
+
+<section id="daily" style="display:none">
+  <div class="card daily-card">
+    <div class="daily-head">
+      <div>
+        <div class="daily-title-row"><div class="daily-title">勤務表</div>
+<button type="button" class="daily-close" onclick="closeDailyTab()">× 閉じる</button></div>
+        <div class="daily-sub">サイディング工事日報　<span class="gold">古谷外装</span></div>
+      </div>
+      <div class="daily-controls"><button type="button" class="btn" onclick="printDailyReport()">印刷</button><button type="button" class="btn" onclick="printBothDailyReports()">岡本・ダニエルまとめて印刷</button>
+        <label>従業員<select id="dailyEmployee"></select></label>
+        <label>月<input id="dailyMonth" type="month"></label>
+      </div>
+    </div>
+    <div class="daily-table-wrap">
+      <table class="daily-table">
+        <thead><tr><th>日</th><th>曜</th><th>場所・メーカー・お施主様名</th><th>人工</th></tr></thead>
+        <tbody id="dailyBody"></tbody>
+        <tfoot><tr><td colspan="3">合計人工</td><td id="dailyTotal">0</td></tr></tfoot>
+      </table>
+    </div>
+  </div>
+</section>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+
+<style id="furuya-gold-dust-v18">
+/* 最上部 Furuya gaiso：大型・鏡面ゴールド */
+header .fg-script,
+header h1.fg-script{
+  font-size:clamp(40px,11vw,68px)!important;
+  line-height:1.05!important;
+  margin:10px 0 14px!important;
+  letter-spacing:.025em!important;
+  background:linear-gradient(180deg,
+    #fff9c7 0%,
+    #ffe45a 12%,
+    #ffb900 27%,
+    #fff2a0 39%,
+    #c77a00 52%,
+    #ffd322 65%,
+    #fff6b6 76%,
+    #d88b00 90%,
+    #ffcf19 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;
+  color:transparent!important;
+  -webkit-text-stroke:.45px #6f4700!important;
+  filter:drop-shadow(0 1px 0 rgba(255,255,255,.7))
+         drop-shadow(0 3px 2px rgba(96,55,0,.38))!important;
+}
+
+/* ヘッダー黒背景に金粉 */
+header{
+  position:relative!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 8% 24%,#ffd85a 0 1px,transparent 1.7px),
+    radial-gradient(circle at 19% 72%,#b97b0d 0 1.2px,transparent 1.8px),
+    radial-gradient(circle at 31% 38%,#ffe99a 0 .9px,transparent 1.6px),
+    radial-gradient(circle at 44% 81%,#d69a1e 0 1.1px,transparent 1.8px),
+    radial-gradient(circle at 57% 19%,#fff0a6 0 .8px,transparent 1.5px),
+    radial-gradient(circle at 69% 63%,#c88914 0 1.2px,transparent 1.9px),
+    radial-gradient(circle at 81% 31%,#ffd758 0 1px,transparent 1.7px),
+    radial-gradient(circle at 93% 76%,#a86e0b 0 1.1px,transparent 1.8px),
+    linear-gradient(180deg,#17140d 0%,#080704 52%,#151006 100%)!important;
+  background-size:
+    71px 63px,83px 77px,97px 91px,109px 103px,
+    89px 79px,121px 107px,103px 93px,131px 119px,100% 100%!important;
+  border-bottom:1px solid #a97918!important;
+  box-shadow:inset 0 -1px 0 rgba(255,218,96,.20)!important;
+}
+header:after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(115deg,transparent 20%,rgba(255,224,118,.10) 37%,transparent 50%),
+    radial-gradient(ellipse at 50% 100%,rgba(205,146,28,.14),transparent 60%)!important;
+}
+header .fg-script{position:relative!important;z-index:2!important;}
+</style>
+
+
+<style id="daily-report-v19">
+.daily-card{padding:16px!important}
+.daily-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;margin-bottom:14px;flex-wrap:wrap}
+.daily-title{font-size:30px;font-weight:900;letter-spacing:.22em;color:#e0b74e}
+.daily-sub{font-size:13px;margin-top:5px}.daily-sub .gold{font-weight:800;color:#d8aa39}
+.daily-controls{display:flex;gap:8px;flex-wrap:wrap}.daily-controls label{font-size:12px;font-weight:800}
+.daily-controls select,.daily-controls input{display:block;margin-top:4px;background:#0e0d09;color:#f5e4aa;border:1px solid #8f6b20;border-radius:8px;padding:8px}
+.daily-table-wrap{overflow:auto;border:1px solid #7d6429;border-radius:10px}
+.daily-table{width:100%;border-collapse:collapse;min-width:650px;background:rgba(5,5,4,.72)}
+.daily-table th,.daily-table td{border:1px solid rgba(197,160,70,.48);padding:5px 6px;text-align:center}
+.daily-table th{background:linear-gradient(#2a2415,#0b0a07);color:#e5bd55;font-size:12px}
+.daily-table td:nth-child(3){text-align:left}
+.daily-table input{width:100%;box-sizing:border-box;background:transparent;border:0;color:#f6e7ba;font:inherit;padding:7px 4px;outline:none}
+.daily-table input[type=number]{text-align:center;min-width:58px}
+.daily-table .sun{color:#e16d61}.daily-table .sat{color:#79a9dd}
+.daily-table tfoot td{font-weight:900;color:#e1b34a;background:#151107}
+@media(max-width:600px){.daily-title{font-size:25px}.daily-card{padding:10px!important}}
+</style>
+
+
+<style id="daily-simple-print-v21">
+/* 日報は通常時、日報タブを開いた時だけ表示 */
+
+/* 日報画面は白黒・シンプル */
+#daily .daily-card{
+  background:#fff!important;color:#000!important;border:1px solid #222!important;
+  box-shadow:none!important;border-radius:8px!important;
+}
+#daily .daily-title,#daily .daily-sub,#daily .daily-sub .gold{
+  color:#000!important;background:none!important;-webkit-text-fill-color:#000!important;
+  text-shadow:none!important;filter:none!important;
+}
+#daily .daily-controls label{color:#000!important}
+#daily .daily-controls select,#daily .daily-controls input,
+#daily .daily-project-select{
+  background:#fff!important;color:#000!important;border:1px solid #555!important;
+}
+#daily .daily-table-wrap{border:1px solid #000!important}
+#daily .daily-table{background:#fff!important;color:#000!important}
+#daily .daily-table th,#daily .daily-table td{
+  border:1px solid #000!important;color:#000!important;background:#fff!important;
+}
+#daily .daily-table th,#daily .daily-table tfoot td{
+  background:#f3f3f3!important;color:#000!important;
+}
+#daily .daily-table input{color:#000!important;background:#fff!important}
+#daily .daily-table .sun,#daily .daily-table .sat{color:#000!important}
+
+/* 印刷時は日報だけをA4白黒で出す */
+@media print{
+  body *{visibility:hidden!important}
+  #daily,#daily *{visibility:visible!important}
+  #daily{display:block!important;position:absolute!important;left:0;top:0;width:100%!important;margin:0!important;padding:0!important}
+  #daily .daily-card{border:0!important;border-radius:0!important;padding:0!important}
+  #daily .daily-controls{display:none!important}
+  #daily .daily-table-wrap{overflow:visible!important;border:0!important}
+  #daily .daily-table{min-width:0!important;width:100%!important;font-size:10pt!important}
+  #daily .daily-table th,#daily .daily-table td{padding:3px 4px!important}
+  @page{size:A4 portrait;margin:12mm}
+}
+</style>
+
+
+<style id="daily-v22-fixes">
+#daily .daily-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#daily .daily-close{background:#fff!important;color:#000!important;border:1px solid #222!important;border-radius:6px;padding:7px 11px;font-weight:800}
+#daily .daily-man-select{width:72px;background:#fff!important;color:#000!important;border:1px solid #555!important;border-radius:5px;padding:7px 4px;text-align:center}
+#daily .daily-man-select:disabled{background:#eee!important;color:#777!important}
+@media print{#daily .daily-close{display:none!important}}
+</style>
+
+
+
+
+
+
+
+
+<style id="nav-safe-v26">
+nav{position:relative!important;z-index:20!important;pointer-events:auto!important}
+nav button{pointer-events:auto!important;touch-action:manipulation!important}
+body::before,body::after,header::before,header::after{pointer-events:none!important}
+</style>
+
+<style id="print-preview-v32">.print-preview-modal{z-index:99999!important}.print-preview-shell{background:#ddd!important;max-width:900px!important}.print-preview-actions{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;padding:10px;background:#fff}.print-sheet{background:#fff;color:#000;margin:10px auto;padding:20px;max-width:794px}.print-sheet h1{text-align:center;color:#000!important;-webkit-text-fill-color:#000!important;background:none!important}.print-brand{text-align:right;font-weight:800}.print-meta{display:flex;justify-content:space-between;margin:8px 0}.print-sheet table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px}.print-sheet th,.print-sheet td{border:1px solid #000;padding:4px;text-align:center;color:#000!important;background:#fff!important}.print-sheet th:nth-child(1){width:55px}.print-sheet th:nth-child(2){width:38px}.print-sheet th:nth-child(4){width:55px}.print-sheet .site{text-align:left}.print-sheet tfoot td{font-weight:800}@media print{body *{visibility:hidden!important}#printPreviewModal,#printPreviewModal *{visibility:visible!important}#printPreviewModal{display:block!important;position:absolute!important;inset:0!important;background:#fff!important}.print-preview-shell{position:static!important;background:#fff!important;padding:0!important;max-width:none!important}.print-preview-actions{display:none!important}.print-sheet{max-width:none!important;margin:0!important;padding:0!important}@page{size:A4 portrait;margin:10mm}}</style>
+<style id="print-v33-fix">
+#printPreviewModal{
+ display:none;position:fixed!important;inset:0!important;z-index:2147483647!important;
+ background:rgba(0,0,0,.82)!important;overflow:auto!important;padding:12px!important;
+ pointer-events:auto!important;
+}
+#printPreviewModal.show{display:block!important}
+#printPreviewModal .print-preview-shell{display:block!important;position:relative!important;pointer-events:auto!important}
+#printPreviewModal .print-preview-actions{display:flex!important;pointer-events:auto!important}
+#printPreviewModal .print-preview-actions button{
+ display:block!important;position:relative!important;z-index:2147483647!important;
+ pointer-events:auto!important;touch-action:manipulation!important;min-height:44px!important;
+}
+@media print{
+ #printPreviewModal .print-preview-actions{display:none!important}
+}
+</style>
+
+
+<style id="print-v34-ios-fix">
+#printPreviewPrint{
+ -webkit-appearance:none!important;
+ appearance:none!important;
+ cursor:pointer!important;
+ pointer-events:auto!important;
+ touch-action:manipulation!important;
+ position:relative!important;
+ z-index:2147483647!important;
+ min-width:120px!important;
+ min-height:48px!important;
+}
+#printPreviewModal.printing .print-preview-actions{display:none!important}
+body.daily-printing{overflow:visible!important}
+@media print{
+ #printPreviewModal{position:absolute!important;inset:0!important;overflow:visible!important;padding:0!important;background:#fff!important}
+ #printPreviewModal .print-preview-actions{display:none!important}
+}
+</style>
+
+
+<style id="actual-print-screen-v37">
+.actual-print-screen{
+ position:fixed!important;inset:0!important;z-index:2147483647!important;
+ background:#e5e5e5!important;overflow:auto!important;color:#000!important;
+}
+.actual-print-toolbar{
+ position:sticky!important;top:0!important;z-index:10!important;
+ display:flex!important;justify-content:space-between!important;gap:12px!important;
+ padding:12px!important;background:#fff!important;border-bottom:1px solid #bbb!important;
+}
+.actual-print-toolbar button{
+ min-height:48px!important;pointer-events:auto!important;touch-action:manipulation!important;
+}
+.actual-print-body{padding:12px!important}
+.actual-print-body .print-sheet{margin:0 auto!important}
+@media print{
+ body *{visibility:hidden!important}
+ #actualPrintScreen,#actualPrintScreen *{visibility:visible!important}
+ #actualPrintScreen{display:block!important;position:absolute!important;inset:0!important;background:#fff!important;overflow:visible!important}
+ #actualPrintScreen .actual-print-toolbar{display:none!important}
+ #actualPrintBody{padding:0!important}
+ #actualPrintBody .print-sheet{margin:0!important;padding:0!important;max-width:none!important}
+ @page{size:A4 portrait;margin:10mm}
+}
+</style>
+
+<style id="v38-note">
+.actual-print-note{background:#fff;color:#000;padding:8px 12px;text-align:center;font-size:13px;border-bottom:1px solid #ccc}
+@media print{.actual-print-note{display:none!important}}
+</style>
+<style id="combined-daily-print-v39">
+.combined-sheet{break-after:page;page-break-after:always}
+.combined-sheet:last-child{break-after:auto;page-break-after:auto}
+</style>
+
+<style id="v41-print-button-fix">
+#actualPrintScreen .actual-print-toolbar,#actualPrintScreen .actual-print-toolbar button{pointer-events:auto!important}
+#actualPrintScreen .actual-print-toolbar button{touch-action:manipulation!important;-webkit-appearance:none!important;appearance:none!important;position:relative!important;z-index:2147483647!important}
+</style>
+<style id="annual-chart-restore-v43">
+.annual-chart-wrap{overflow-x:auto;padding:18px 4px 4px}
+.annual-chart{height:230px;min-width:720px;display:flex;align-items:flex-end;gap:10px;border-bottom:1px solid rgba(180,145,70,.45);padding:0 8px}
+.annual-month{flex:1;min-width:48px;text-align:center}
+.annual-bars{height:185px;display:flex;align-items:flex-end;justify-content:center;gap:4px}
+.annual-bar{width:16px;min-height:0;border-radius:3px 3px 0 0}
+.annual-bar.sales{background:linear-gradient(180deg,#d5b45d,#8f6c22)}
+.annual-bar.cost{background:linear-gradient(180deg,#777,#333)}
+.annual-label{font-size:11px;margin-top:6px;white-space:nowrap}
+</style>
+
+
+<style id="annual-values-v44">
+.annual-bars{height:220px!important;overflow:visible}
+.annual-bar-col{height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-width:25px}
+.annual-value{font-size:14px;font-weight:900;line-height:1.1;white-space:nowrap;margin-bottom:5px}
+.annual-value.sales-value{color:#b9953e}
+.annual-value.cost-value{color:#aaa}
+</style>
+
+<style id="month-history-v46">
+.month-history-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.month-history-bar input[type="month"]{max-width:190px}
+</style>
+<style id="v52-open-tab-text">
+/* v52: タブ見出しはそのまま。タブ内は「数字だけ」の表示を除き黒＋金の極細縁取り */
+main section .v52-text-gold{
+  color:#050505!important;
+  -webkit-text-fill-color:#050505!important;
+  -webkit-text-stroke:.18px #c89b2b!important;
+  text-shadow:none!important;
+}
+main section input.v52-text-gold::placeholder,
+main section textarea.v52-text-gold::placeholder{
+  color:#050505!important;-webkit-text-fill-color:#050505!important;
+  -webkit-text-stroke:.18px #c89b2b!important;opacity:.72!important;
+}
+nav button,nav button.active{-webkit-text-stroke:initial!important;}
+</style>
+<script>
+(function(){
+ const numericOnly=/^[\s¥￥$€£+\-−△▲▼()（）\[\],，.．:%％\/\\]*[0-9０-９][0-9０-９\s¥￥$€£+\-−△▲▼()（）\[\],，.．:%％\/\\]*$/;
+ function mark(){
+  document.querySelectorAll('main section *').forEach(el=>{
+   if(el.closest('nav'))return;
+   const tag=el.tagName;
+   let t='';
+   if(tag==='INPUT'||tag==='TEXTAREA') t=el.getAttribute('placeholder')||'';
+   else if(tag==='SELECT') t='select';
+   else {
+    const hasElement=[...el.childNodes].some(n=>n.nodeType===1);
+    if(hasElement)return;
+    t=(el.textContent||'').trim();
+   }
+   if(t && !numericOnly.test(t)) el.classList.add('v52-text-gold');
+   else el.classList.remove('v52-text-gold');
+  });
+ }
+ document.addEventListener('DOMContentLoaded',()=>{mark();new MutationObserver(mark).observe(document.body,{childList:true,subtree:true,characterData:true});});
+})();
+</script>
+</head>
+<body>
+<header>
+<h1 class="fg-script">Furuya gaiso</h1>
+</header>
+<nav>
+<button id="tProjects" class="active" onclick="tab('projects')">現場</button><button id="tMonthly" onclick="tab('monthly')">月別</button><button id="tReceipts" onclick="tab('receipts')">経費</button><button id="tDaniel" onclick="tab('daniel')">オセイダニエル</button><button id="tOkamoto" onclick="tab('okamoto')">岡本啓矢</button>
+
+
+<button id="tAnnual" onclick="tab('annual')">年間比較</button><button id="tDash" onclick="openProtectedDash()">全体</button><button id="tDaily" onclick="tab('daily')">日報</button></nav>
+<main><section id="dash" style="display:none"></section><section id="projects">
+  <div class="section-title">現場</div>
+  <div class="card month-history-bar" id="projectsMonthBar">
+    <b>表示する月</b>
+    <input id="projectsMonthFilter" type="month" onchange="setProjectsMonth(this.value)"><span id="projectMonthHint" class="small"></span>
+    <button class="btn gray" type="button" onclick="showAllProjects()">すべて表示</button>
+  </div>
+  <div class="card project-create-card">
+    <div class="field">
+      <label>現場名</label>
+      <input id="projectNameInput" type="text" autocomplete="off" placeholder="現場名">
+    </div>
+    <div class="field">
+      <label>発注金額（円）</label>
+      <input id="projectAmountInput" type="number" inputmode="numeric" min="0" step="1" placeholder="発注金額">
+    </div>
+    <button type="button" class="btn primary project-add-btn" id="projectAddButton" onclick="createProjectDirect()">追加する</button>
+  </div>
+  <div id="projectList"></div>
+</section><section id="monthly" style="display:none"></section><section id="daniel" style="display:none"></section><section id="okamoto" style="display:none"></section><section id="employees" style="display:none"></section><section id="receipts" style="display:none"></section><section id="annual" style="display:none">
+  <div class="section-title">年間 売上・経費比較</div>
+  <div class="card annual-chart-card">
+    <div class="row between">
+      <div>
+        <b id="annualTitle">2026年 月別比較</b>
+        <div class="small">売上高と経費を1月〜12月で比較</div>
+      </div>
+      <select id="annualYear" onchange="renderAnnualChart()"></select>
+    </div>
+    <div class="annual-legend"><span><i class="legend-sales"></i>売上高</span><span><i class="legend-cost"></i>経費</span></div>
+    <div class="annual-chart-wrap"><div id="annualChart" class="annual-chart"></div></div>
+  </div>
+</section><footer>データはこの端末のブラウザに保存されます。重要なデータは定期的にバックアップしてください。</footer></main>
+
+
+
+
+
+
+
+
+<div class="modal" id="dashAmountModal"><div class="sheet">
+<div class="row between"><h2 id="dashAmountTitle" style="margin:0">金額設定</h2><button class="btn gray" onclick="closeM('dashAmountModal')">閉じる</button></div><hr>
+<div class="form"><input type="hidden" id="dashAmountKey"><div class="field"><label>金額（円）</label><input id="dashAmountInput" type="number" inputmode="numeric"></div><button class="btn primary" onclick="saveDashAmount()">保存する</button></div>
+</div></div>
+
+<div class="modal" id="subcontractModal"><div class="sheet">
+<div class="row between"><h2 style="margin:0">毎月固定の外注費</h2><button class="btn gray" onclick="closeM('subcontractModal')">閉じる</button></div><hr>
+<div class="form">
+<div class="field"><label>毎月の外注費（円）</label><input id="subcontractMonthlyInput" type="number" inputmode="numeric" placeholder="例：300000"></div>
+<div class="small">一度登録すると、変更するまで毎月同じ金額を自動計上します。</div>
+<button class="btn primary" onclick="saveSubcontractMonthly()">保存する</button>
+</div></div></div>
+
+<div class="modal" id="empCardModal"><div class="sheet">
+<div class="row between"><h2 id="empCardTitle" style="margin:0">カード利用入力</h2><button class="btn gray" onclick="closeM('empCardModal')">閉じる</button></div><hr>
+<div class="form">
+<input type="hidden" id="ecEmp">
+<div class="field"><label>日付</label><input id="ecDate" type="date"></div>
+<div class="field"><label>区分</label><select id="ecType"><option>カード代</option></select></div>
+<div class="field"><label>金額（円）</label><input id="ecAmount" type="number" inputmode="numeric"></div>
+<div class="field"><label>メモ</label><input id="ecMemo" placeholder="ガソリン、買い物など"></div>
+<button class="btn primary" onclick="saveEmpCard()">保存する</button>
+</div></div></div>
+
+<div class="modal" id="vehicleModal"><div class="sheet">
+<div class="row between"><h2 style="margin:0">毎月固定の車両代</h2><button class="btn gray" onclick="closeM('vehicleModal')">閉じる</button></div><hr>
+<div class="form">
+<div class="field"><label>毎月の車両代（円）</label><input id="vehicleMonthlyInput" type="number" inputmode="numeric" placeholder="例：50000"></div>
+<div class="small">一度登録すると、変更するまで毎月同じ金額を月別管理表へ自動計上します。</div>
+<button class="btn primary" onclick="saveVehicleMonthly()">保存する</button>
+</div></div></div>
+
+<div class="modal" id="employeeModal"><div class="sheet">
+<div class="row between"><h2 id="empTitle" style="margin:0">従業員登録</h2><button class="btn gray" onclick="closeM('employeeModal')">閉じる</button></div><hr>
+<div class="form">
+<div class="field"><label>従業員名 *</label><input id="empName" placeholder="例：田中 太郎"></div>
+<div class="field"><label>1人工単価（円） *</label><input id="empRate" type="number" inputmode="numeric" placeholder="20000"></div>
+<div class="field"><label>メモ</label><input id="empMemo" placeholder="例：職長"></div>
+<button class="btn primary" onclick="saveEmployee()">保存する</button>
+</div></div></div>
+
+<div class="modal" id="projectModal"><div class="sheet">
+<div class="row between"><h2 id="pTitle" style="margin:0">現場追加</h2><button class="btn gray" onclick="closeM('projectModal')">閉じる</button></div><hr>
+<div class="form">
+<div class="field"><label>現場名 *</label><input id="pName" placeholder="例：○○様邸"></div>
+<div class="field"><label>元請会社</label><input id="pClient" placeholder="例：○○建設"></div>
+<div class="field"><label>現場住所</label><input id="pAddress"></div>
+<div class="field"><label>発注金額（円） *</label><input id="pAmount" type="number" inputmode="numeric"></div>
+<div class="row"><div class="field" style="flex:1"><label>着工日</label><input id="pStart" type="date"></div><div class="field" style="flex:1"><label>完工日</label><input id="pEnd" type="date"></div></div>
+<div class="field"><label>請求月</label><input id="pBillMonth" type="month"></div>
+<div class="field"><label>メモ</label><textarea id="pMemo"></textarea></div>
+<button class="btn primary" onclick="saveProject()">保存する</button></div></div></div>
+
+<div class="modal" id="detailModal"><div class="sheet">
+<div class="row between"><h2 id="dName" style="margin:0"></h2><button class="btn gray" onclick="closeM('detailModal')">閉じる</button></div><div id="detail"></div>
+</div></div>
+
+<div class="modal" id="expenseModal"><div class="sheet">
+<div class="row between"><h2 id="eTitle" style="margin:0">原価を追加</h2><button class="btn gray" onclick="closeM('expenseModal')">閉じる</button></div><hr>
+<div class="form"><div class="field"><label>原価区分</label><select id="eCat"><option>従業員人工</option><option>材料費</option><option>外注費</option><option>車両経費</option><option>駐車場代</option><option>ガソリン代</option><option>高速代</option><option>道具代</option><option>飲食代</option><option>その他経費</option></select></div>
+<div id="normalFields"><div class="field"><label>金額（円） *</label><input id="eAmount" type="number" inputmode="numeric"></div></div>
+<div id="laborFields" style="display:none"><div class="row"><div class="field" style="flex:1"><label>従業員名 *</label><select id="eWorker"></select></div><div class="field" style="flex:1"><label>人工数</label><input id="eDays" type="number" step=".5" placeholder="1"></div></div>
+<div class="field"><label>1人工単価（円）</label><input id="eRate" type="number" readonly></div>
+</div>
+<div class="field"><label>日付</label><input id="eDate" type="date"></div><div class="field"><label>メモ</label><input id="eMemo" placeholder="例：外壁施工"></div>
+<button class="btn primary" onclick="saveExpense()">保存する</button></div></div></div>
+
+
+
+<div class="modal" id="dailyModal"><div class="sheet">
+<div class="row between"><h2 style="margin:0">日報入力</h2><button class="btn gray" onclick="closeM('dailyModal')">閉じる</button></div><hr>
+<div class="form">
+<div class="field"><label>日付</label><input id="drDate" type="date"></div>
+<div class="field"><label>現場 *</label><select id="drProject"></select></div>
+<div class="field"><label>従業員</label><select id="drWorker"></select></div>
+<div class="row"><div class="field" style="flex:1"><label>人工数</label><input id="drDays" type="number" step=".5" placeholder="1"></div><div class="field" style="flex:1"><label>人工単価</label><input id="drRate" type="number" readonly></div></div>
+<div class="field"><label>駐車場代</label><input id="drParking" type="number" inputmode="numeric" placeholder="0"></div>
+<div class="field"><label>ガソリン代</label><input id="drGas" type="number" inputmode="numeric" placeholder="0"></div>
+<div class="field"><label>高速代</label><input id="drHighway" type="number" inputmode="numeric" placeholder="0"></div>
+<div class="field"><label>メモ</label><input id="drMemo" placeholder="作業内容など"></div>
+<button class="btn primary" onclick="saveDaily()">日報を保存</button>
+</div></div></div>
+
+<div class="modal" id="receiptModal"><div class="sheet">
+<div class="row between"><h2 style="margin:0">経費を追加</h2><button class="btn gray" onclick="closeM('receiptModal')">閉じる</button></div><hr>
+<div class="form">
+<div class="field" id="rProjectField"><label>現場 *</label><select id="rProject"></select></div>
+<div class="field"><label>種類 *</label><select id="rCat" onchange="toggleReceiptProject()"><option>駐車場代</option><option>高速代</option><option>ガソリン代</option><option>道具代</option><option>飲食代</option></select></div>
+<div class="field"><label>日付</label><input id="rDate" type="date"></div>
+<div class="field"><label>金額（円） *</label><input id="rAmount" type="number" inputmode="numeric"></div>
+
+
+<div class="small">領収書の金額を登録して、経費合計を管理します。</div>
+<button class="btn primary" onclick="saveReceipt()">金額を保存</button>
+</div></div></div>
+
+<div class="modal" id="invoiceModal"><div class="sheet">
+<div class="row between"><h2 style="margin:0">請求・入金</h2><button class="btn gray" onclick="closeM('invoiceModal')">閉じる</button></div><hr>
+<div class="form"><div class="field"><label>請求金額</label><input id="iAmount" type="number"></div><div class="field"><label>請求日</label><input id="iDate" type="date"></div><div class="field"><label>入金予定日</label><input id="iDue" type="date"></div><div class="field"><label>入金日（未入金なら空欄）</label><input id="iPaidDate" type="date"></div>
+<button class="btn primary" onclick="saveInvoice()">保存する</button></div></div></div>
+
+<div class="modal print-preview-modal" id="printPreviewModal"><div class="sheet print-preview-shell"><div class="print-preview-actions"><button id="printPreviewBack" class="btn gray" type="button" onclick="closePrintPreview();return false;">← 戻る</button><button id="printPreviewPrint" class="btn primary" type="button" onclick="doDailyPrint()">印刷画面を開く</button></div><div id="printPreviewBody"></div></div></div>
+<div id="actualPrintScreen" class="actual-print-screen" style="display:none">
+  <div class="actual-print-toolbar">
+    <button type="button" class="btn gray" onclick="closeActualPrint();return false;">← 日報に戻る</button>
+    <button type="button" class="btn primary" onclick="actualPrintNow()">印刷する</button>
+  </div>
+  <div class="actual-print-note">「印刷する」を押すとiPhoneの印刷画面が開きます。</div><div id="actualPrintBody" class="actual-print-body"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+let data=JSON.parse(localStorage.getItem('furuyagaiso_v2')||'[]'),employees=[{id:'osei-daniel',name:'オセイ　ダニエル',rate:Number(localStorage.getItem('rate_osei')||0)},{id:'okamoto-keiya',name:'岡本　啓矢',rate:Number(localStorage.getItem('rate_okamoto')||0)}],receipts=JSON.parse(localStorage.getItem('furuyagaiso_receipts')||'[]'),editing=null,current=null,editingEmp=null,vehicleMonthly=Number(localStorage.getItem('furuyagaiso_vehicle_monthly')||0),taxMonthly=Number(localStorage.getItem('furuyagaiso_tax_monthly')||0),adminMonthly=Number(localStorage.getItem('furuyagaiso_admin_monthly')||0),otherMonthly=Number(localStorage.getItem('furuyagaiso_other_monthly')||0),danielMonthly=Number(localStorage.getItem('furuyagaiso_daniel_monthly')||0),okamotoMonthly=Number(localStorage.getItem('furuyagaiso_okamoto_monthly')||0),subcontractMonthly=Number(localStorage.getItem('furuyagaiso_subcontract_monthly')||0),employeeCards=JSON.parse(localStorage.getItem('furuyagaiso_employee_cards')||'[]'),globalCosts=JSON.parse(localStorage.getItem('furuyagaiso_global_costs')||'[]');
+const yen=n=>new Intl.NumberFormat('ja-JP').format(Math.round(n||0))+'円';
+const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const ex=p=>p.costs||[];
+const totalCost=p=>ex(p).reduce((s,x)=>s+Number(x.amount||0),0);
+const profit=p=>Number(p.amount||0)-totalCost(p);
+const rate=p=>Number(p.amount)?profit(p)/Number(p.amount)*100:0;
+
+
+
+function persistLocal(){localStorage.setItem('furuyagaiso_v2',JSON.stringify(data));localStorage.setItem('furuyagaiso_employees',JSON.stringify(employees));localStorage.setItem('furuyagaiso_receipts',JSON.stringify(receipts));localStorage.setItem('furuyagaiso_vehicle_monthly',String(vehicleMonthly));localStorage.setItem('furuyagaiso_subcontract_monthly',String(subcontractMonthly));localStorage.setItem('furuyagaiso_tax_monthly',String(taxMonthly));localStorage.setItem('furuyagaiso_admin_monthly',String(adminMonthly));localStorage.setItem('furuyagaiso_other_monthly',String(otherMonthly));localStorage.setItem('furuyagaiso_daniel_monthly',String(danielMonthly));localStorage.setItem('furuyagaiso_okamoto_monthly',String(okamotoMonthly));localStorage.setItem('furuyagaiso_global_costs',JSON.stringify(globalCosts));localStorage.setItem('furuyagaiso_employee_cards',JSON.stringify(employeeCards));localStorage.setItem('rate_osei',String(employees[0].rate||0));localStorage.setItem('rate_okamoto',String(employees[1].rate||0))}
+
+let cloudReady=false, cloudApplying=false, cloudTimer=null;
+const firebaseConfig={
+  apiKey:"AIzaSyByFtxoOa6v7RXvI7R23vOAOHNgMGXEjqc",
+  authDomain:"furuyagaiso.firebaseapp.com",
+  projectId:"furuyagaiso",
+  storageBucket:"furuyagaiso.firebasestorage.app",
+  messagingSenderId:"47152217815",
+  appId:"1:47152217815:web:09bf490c64b9d3e6a8ba92",
+  measurementId:"G-ECEGW6KGFC"
+};
+firebase.initializeApp(firebaseConfig);
+const cloudDb=firebase.firestore();
+const cloudRef=cloudDb.collection("furuyagaiso").doc("shared");
+
+function cloudState(){
+ return {
+  data,employees,receipts,vehicleMonthly,taxMonthly,adminMonthly,otherMonthly,dailyReports,
+  danielMonthly,okamotoMonthly,subcontractMonthly,employeeCards,globalCosts,
+  updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+ };
+}
+function persist(){
+ persistLocal();
+ if(cloudApplying||!cloudReady)return;
+ clearTimeout(cloudTimer);
+ cloudTimer=setTimeout(()=>cloudRef.set(cloudState(),{merge:true}).catch(e=>{
+   console.error("Firestore save error",e);
+   toast("共有保存に失敗しました");
+ }),120);
+}
+function applyCloud(v){
+ if(!v)return;
+ cloudApplying=true;
+ if(Array.isArray(v.data))data=v.data;
+ if(Array.isArray(v.employees))employees=v.employees;
+ if(Array.isArray(v.receipts))receipts=v.receipts;
+ if(v.vehicleMonthly!=null)vehicleMonthly=Number(v.vehicleMonthly||0);
+ if(v.taxMonthly!=null)taxMonthly=Number(v.taxMonthly||0);
+ if(v.adminMonthly!=null)adminMonthly=Number(v.adminMonthly||0);
+ if(v.otherMonthly!=null)otherMonthly=Number(v.otherMonthly||0);
+ if(v.danielMonthly!=null)danielMonthly=Number(v.danielMonthly||0);
+ if(v.okamotoMonthly!=null)okamotoMonthly=Number(v.okamotoMonthly||0);
+ if(v.subcontractMonthly!=null)subcontractMonthly=Number(v.subcontractMonthly||0);
+ if(Array.isArray(v.employeeCards))employeeCards=v.employeeCards;
+ if(Array.isArray(v.globalCosts))globalCosts=v.globalCosts;
+ if(v.dailyReports&&typeof v.dailyReports==='object'){dailyReports=v.dailyReports;saveDailyLocal(); if(typeof renderDaily==='function')renderDaily();}
+ persistLocal();
+ cloudApplying=false;
+ if(typeof render==="function")render();
+}
+async function startCloudSync(){
+ try{
+  const snap=await cloudRef.get();
+  if(snap.exists){
+    applyCloud(snap.data());
+  }else{
+    await cloudRef.set(cloudState());
+  }
+  cloudReady=true;
+  cloudRef.onSnapshot(ds=>{
+    if(ds.exists)applyCloud(ds.data());
+  },e=>{
+    console.error("Firestore listen error",e);
+    toast("共有接続を確認してください");
+  });
+ }catch(e){
+  console.error("Firestore init error",e);
+  toast("共有接続に失敗しました");
+ }
+}
+function toast(s){let x=document.getElementById('toast');x.textContent=s;x.style.display='block';setTimeout(()=>x.style.display='none',1600)}
+
+let dashUnlocked=false;
+function openProtectedDash(){
+ if(dashUnlocked){tab('dash');return;}
+ let m=document.getElementById('dashPassModal');
+ if(!m)return;
+ document.getElementById('dashPassInput').value='';
+ document.getElementById('dashPassError').style.display='none';
+ m.classList.add('show');
+ setTimeout(()=>document.getElementById('dashPassInput').focus(),80);
+}
+function checkDashPass(){
+ let input=document.getElementById('dashPassInput');
+ if(input.value==='1611'){
+   dashUnlocked=true;
+   closeM('dashPassModal');
+   tab('dash');
+ }else{
+   document.getElementById('dashPassError').style.display='block';
+   input.select();
+ }
+}
+function tab(t){if(t==='daniel'||t==='okamoto'){const code=prompt((t==='daniel'?'オセイダニエル':'岡本啓矢')+'のパスコードを入力してください');const correct=t==='daniel'?'1423':'0219';if(code!==correct){if(code!==null)alert('パスコードが違います');return;}}['dash','projects','monthly','employees','daniel','okamoto','receipts','annual','daily'].forEach(x=>{let el=document.getElementById(x);if(el)el.style.display=x===t?'block':'none'});document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));if(t==='dash')document.getElementById('tDash').classList.add('active');if(t==='projects')document.getElementById('tProjects').classList.add('active');if(t==='monthly')document.getElementById('tMonthly').classList.add('active');if(t==='daniel')document.getElementById('tDaniel').classList.add('active');if(t==='okamoto')document.getElementById('tOkamoto').classList.add('active');if(t==='receipts')document.getElementById('tReceipts').classList.add('active');if(t==='annual')document.getElementById('tAnnual').classList.add('active');if(t==='daily'){document.getElementById('tDaily').classList.add('active');if(typeof initDaily==='function')initDaily();}render();if(t==='annual')renderAnnualChart()}
+function render(){
+ try{renderDash()}catch(e){console.error('dash',e)}
+ try{renderProjects()}catch(e){console.error('projects',e)}
+ try{renderMonthly()}catch(e){console.error('monthly',e)}
+ try{renderEmployeeTabs()}catch(e){console.error('employee tabs',e)}
+ try{renderReceipts()}catch(e){console.error('receipts',e)}
+ try{updateWorkerSelect()}catch(e){console.error('workers',e)}
+ try{renderAnnualChart()}catch(e){console.error('annual',e)}
+}
+
+
+function openEmpCard(id){
+ let e=employees.find(x=>x.id===id);if(!e)return;
+ document.getElementById('ecEmp').value=id;document.getElementById('empCardTitle').textContent=e.name+'｜カード利用';
+ document.getElementById('ecDate').value=new Date().toISOString().slice(0,10);document.getElementById('ecAmount').value='';document.getElementById('ecMemo').value='';
+ document.getElementById('empCardModal').classList.add('show'); renderAnnualChart();
+}
+function saveEmpCard(){
+ let employeeId=document.getElementById('ecEmp').value,amount=Number(document.getElementById('ecAmount').value||0);
+ if(!amount)return alert('金額を入力してください');
+ employeeCards.push({id:Date.now().toString(),employeeId,date:document.getElementById('ecDate').value,type:document.getElementById('ecType').value,amount,memo:document.getElementById('ecMemo').value});
+ persist();closeM('empCardModal');render();toast('カード利用を保存しました');
+}
+function delEmpCard(id){if(!confirm('このカード利用を削除しますか？'))return;employeeCards=employeeCards.filter(x=>x.id!==id);persist();render()}
+function renderEmployees(){
+ let html=employees.map(e=>{
+  let rows=employeeCards.filter(x=>x.employeeId===e.id).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  let priv=rows.filter(x=>x.type==='カード代'||x.type==='プライベートのカード代').reduce((a,x)=>a+Number(x.amount||0),0);
+  let details=rows.map(x=>`<div class="expense"><div class="row between"><div><b>${x.date||''}｜${esc(x.type)}</b><div class="small">${esc(x.memo||'')}</div></div><div><b>${yen(x.amount)}</b><button class="btn danger" style="margin-left:6px;padding:6px 8px" onclick="delEmpCard('${x.id}')">削除</button></div></div></div>`).join('');
+  return `<div class="employee-premium-card"><div class="employee-name">${esc(e.name)}</div><div class="employee-card-grid single-card-grid"><div><span>カード代</span><strong>${yen(priv)}</strong></div></div><button class="btn primary" onclick="openEmpCard('${e.id}')">＋ カード利用を入力</button>${details}</div>`;
+ }).join('');
+ document.getElementById('employees').innerHTML=`<div class="section-title">従業員カード管理</div>${html}`;
+}
+function employeeSalaryInfo(){
+ let month=new Date().toISOString().slice(0,7);
+ let jobs=(Array.isArray(data)?data:[]).filter(p=>monthOf(p)===month);
+ let sales=jobs.reduce((a,p)=>a+Number(p.amount||0),0);
+ let mc=(Array.isArray(data)?data:[]).flatMap(p=>{try{return ex(p)||[]}catch(e){return []}}).filter(x=>(x.date||'').slice(0,7)===month);
+ let mg=(Array.isArray(globalCosts)?globalCosts:[]).filter(x=>(x.date||'').slice(0,7)===month);
+ let sum=c=>mc.filter(x=>x.category===c).reduce((a,x)=>a+Number(x.amount||0),0),gsum=c=>mg.filter(x=>x.category===c).reduce((a,x)=>a+Number(x.amount||0),0);
+ let shown=['従業員人工','材料費','外注費','車両経費','駐車場代','ガソリン代','高速代','道具代','飲食代'];
+ let misc=mc.filter(x=>!shown.includes(x.category)).reduce((a,x)=>a+Number(x.amount||0),0)+mg.filter(x=>!['駐車場代','高速代','ガソリン代','道具代','飲食代'].includes(x.category)).reduce((a,x)=>a+Number(x.amount||0),0);
+ let expenses=Number(subcontractMonthly||0)+sum('外注費')+Number(vehicleMonthly||0)+sum('車両経費')+sum('駐車場代')+gsum('駐車場代')+sum('ガソリン代')+gsum('ガソリン代')+sum('高速代')+gsum('高速代')+sum('道具代')+gsum('道具代')+sum('飲食代')+gsum('飲食代')+Number(otherMonthly||0)+misc;
+ let base=sales-sales*.10-(sales-sales*.10)*.15-expenses;
+ return {month,base};
+}
+function renderEmployeeTabs(){
+ let info=employeeSalaryInfo();
+ [{id:'osei-daniel',target:'daniel',title:'オセイダニエル',pct:.25},{id:'okamoto-keiya',target:'okamoto',title:'岡本啓矢',pct:.33}].forEach(cfg=>{
+  let e=employees.find(x=>x.id===cfg.id)||employees.find(x=>(x.name||'').includes(cfg.title.includes('ダニエル')?'ダニエル':'岡本'));
+  let rows=employeeCards.filter(x=>e&&String(x.employeeId)===String(e.id)).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  let cardTotal=rows.filter(x=>x.type==='カード代'||x.type==='プライベートのカード代').reduce((a,x)=>a+Number(x.amount||0),0);
+  let salary=info.base*cfg.pct-cardTotal;
+  let details=rows.map(x=>`<div class="expense"><div class="row between"><div><b>${x.date||''}｜${esc(x.type)}</b><div class="small">${esc(x.memo||'')}</div></div><div><b>${yen(x.amount)}</b><button class="btn danger" style="margin-left:6px;padding:6px 8px" onclick="delEmpCard('${x.id}')">削除</button></div></div></div>`).join('');
+  let el=document.getElementById(cfg.target);if(!el)return;
+  el.innerHTML=`<div class="section-title">${cfg.title}</div><div class="employee-premium-card"><div class="employee-card-grid"><div><span>給料</span><strong>${yen(Math.round(salary))}</strong></div><div><span>カード代</span><strong>${yen(cardTotal)}</strong></div></div>${e?`<button class="btn primary" onclick="openEmpCard('${e.id}')">＋ カード利用を入力</button>`:''}${details}</div>`;
+ });
+}
+function openEmployee(id=null){
+ editingEmp=id;
+ let e=id?employees.find(x=>x.id===id):null;
+ document.getElementById('empTitle').textContent=e?'従業員編集':'従業員登録';
+ document.getElementById('empName').value=e?.name||'';
+ document.getElementById('empRate').value=e?.rate||'';
+ document.getElementById('empMemo').value=e?.memo||'';
+ document.getElementById('employeeModal').classList.add('show');
+}
+function saveEmployee(){
+ let name=document.getElementById('empName').value.trim(),rate=Number(document.getElementById('empRate').value);
+ if(!name||!rate)return alert('従業員名と1人工単価を入力してください');
+ let e={id:editingEmp||Date.now().toString(),name,rate,memo:document.getElementById('empMemo').value};
+ if(editingEmp)employees=employees.map(x=>x.id===editingEmp?e:x);else employees.push(e);
+ persist();closeM('employeeModal');render();toast('従業員を保存しました');
+}
+function editEmployee(id){openEmployee(id)}
+function deleteEmployee(id){
+ let used=data.some(p=>ex(p).some(x=>x.employeeId===id));
+ if(used)return alert('この従業員は現場の人工記録で使用中のため削除できません。名前を残しておくか、先に該当する人工記録を削除してください。');
+ if(!confirm('この従業員を削除しますか？'))return;
+ employees=employees.filter(x=>x.id!==id);persist();render();toast('従業員を削除しました');
+}
+function updateWorkerSelect(){
+ let sel=document.getElementById('eWorker');if(!sel)return;
+ let old=sel.value;
+ sel.innerHTML=employees.length?employees.map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join(''):'<option value="">先に従業員を登録してください</option>';
+ if(employees.some(e=>e.id===old))sel.value=old;
+ updateWorkerRate();
+}
+function updateWorkerRate(){
+ let id=document.getElementById('eWorker')?.value,e=employees.find(x=>x.id===id);
+ if(e)document.getElementById('eRate').value=e.rate;
+}
+
+
+
+
+function openDashAmount(key,title){
+ document.getElementById('dashAmountKey').value=key;document.getElementById('dashAmountTitle').textContent=title;
+ let map={tax:taxMonthly,admin:adminMonthly,other:otherMonthly,daniel:danielMonthly,okamoto:okamotoMonthly};
+ document.getElementById('dashAmountInput').value=map[key]||'';
+ document.getElementById('dashAmountModal').classList.add('show');
+}
+function saveDashAmount(){
+ let k=document.getElementById('dashAmountKey').value,v=Number(document.getElementById('dashAmountInput').value||0);
+ if(k==='tax')taxMonthly=v;if(k==='admin')adminMonthly=v;if(k==='other')otherMonthly=v;if(k==='daniel')danielMonthly=v;if(k==='okamoto')okamotoMonthly=v;
+ persist();closeM('dashAmountModal');render();toast('金額を保存しました');
+}
+function openSubcontractMonthly(){
+ document.getElementById('subcontractMonthlyInput').value=subcontractMonthly||'';
+ document.getElementById('subcontractModal').classList.add('show');
+}
+function saveSubcontractMonthly(){
+ subcontractMonthly=Number(document.getElementById('subcontractMonthlyInput').value||0);
+ persist();closeM('subcontractModal');render();toast('毎月の外注費を保存しました');
+}
+function openVehicleMonthly(){
+ document.getElementById('vehicleMonthlyInput').value=vehicleMonthly||'';
+ document.getElementById('vehicleModal').classList.add('show');
+}
+function saveVehicleMonthly(){
+ vehicleMonthly=Number(document.getElementById('vehicleMonthlyInput').value||0);
+ persist();closeM('vehicleModal');render();toast('毎月の車両代を保存しました');
+}
+
+function monthOf(p){
+ if(p&&p.billMonth&&/^\d{4}-\d{2}$/.test(String(p.billMonth)))return String(p.billMonth);
+ var d=(p&&(p.start||p.date||p.createdAt))||'';
+ if(d && String(d).length>=7)return String(d).slice(0,7);
+ return new Date().toISOString().slice(0,7);
+}
+function renderDash(){
+ let month=new Date().toISOString().slice(0,7);
+ let jobs=(Array.isArray(data)?data:[]).filter(p=>monthOf(p)===month);
+ let sales=jobs.reduce((a,p)=>a+Number(p.amount||0),0);
+ let mc=(Array.isArray(data)?data:[]).flatMap(p=>{try{return ex(p)||[]}catch(e){return []}}).filter(x=>(x.date||'').slice(0,7)===month);
+ let mg=(Array.isArray(globalCosts)?globalCosts:[]).filter(x=>(x.date||'').slice(0,7)===month);
+ let sum=c=>mc.filter(x=>x.category===c).reduce((a,x)=>a+Number(x.amount||0),0);
+ let gsum=c=>mg.filter(x=>x.category===c).reduce((a,x)=>a+Number(x.amount||0),0);
+ let shownCats=['従業員人工','材料費','外注費','車両経費','駐車場代','ガソリン代','高速代','道具代','飲食代'];
+ let miscCosts=mc.filter(x=>!shownCats.includes(x.category)).reduce((a,x)=>a+Number(x.amount||0),0)
+  +mg.filter(x=>!['駐車場代','高速代','ガソリン代','道具代','飲食代'].includes(x.category)).reduce((a,x)=>a+Number(x.amount||0),0);
+ let subcontract=Number(subcontractMonthly||0)+sum('外注費');
+ let vehicle=Number(vehicleMonthly||0)+sum('車両経費');
+ let parking=sum('駐車場代')+gsum('駐車場代');
+ let gasoline=sum('ガソリン代')+gsum('ガソリン代');
+ let highway=sum('高速代')+gsum('高速代');
+ let tools=sum('道具代')+gsum('道具代');
+ let food=sum('飲食代')+gsum('飲食代');
+ let other=Number(otherMonthly||0)+miscCosts;
+ let expenses=subcontract+vehicle+parking+gasoline+highway+tools+food+other;
+ let tax=sales*.10;
+ let admin=(sales-tax)*.15;
+ let base=sales-tax-admin-expenses;
+ let danielPrivate=0,okamotoPrivate=0;
+ let cards=Array.isArray(employeeCards)?employeeCards:[];
+ let emps=Array.isArray(employees)?employees:[];
+ cards.forEach(c=>{
+   let emp=emps.find(e=>String(e.id)===String(c.employeeId));
+   let nm=String(emp?.name||c.employee||c.name||c.worker||'');
+   let type=String(c.type||c.kind||c.category||'');
+   let amt=Number(c.amount||0);
+   let isCard=(type==='カード代'||type==='プライベートのカード代'||type.includes('プライベート'));
+   if(!isCard)return;
+   if(nm.includes('ダニエル')||nm.includes('オセイ'))danielPrivate+=amt;
+   if(nm.includes('岡本')||nm.includes('啓矢'))okamotoPrivate+=amt;
+ });
+ let daniel=base*.25-danielPrivate,okamoto=base*.33-okamotoPrivate;
+ let card=(label,value,cls,onclick='')=>`<div class="card dash-card"><div class="label ${(label.includes("ダニエル")||label.includes("岡本"))?"employee-dash-name":""}">${label}</div><div class="value ${cls}">${yen(Math.round(value))}</div>${onclick?`<button class="btn gray dash-edit" onclick="${onclick}">変更</button>`:''}</div>`;
+ document.getElementById('dash').innerHTML=`<div class="dash-two-col">
+  <div class="dash-col">
+   ${card('売上',sales,'sales-gold')}
+   ${card('消費税',tax,'expense-red')}
+   ${card('事務手数料',admin,'expense-red')}
+   ${card('経費',expenses,'expense-red')}
+   ${card('オセイ　ダニエル',daniel,'sales-gold')}
+  </div>
+  <div class="dash-col">
+   ${card('その他',other,'expense-red',"openDashAmount('other','その他')")}
+   ${card('外注',subcontract,'expense-red',"openSubcontractMonthly()")}
+   ${card('車両',vehicle,'expense-red',"openVehicleMonthly()")}
+   ${card('岡本　啓矢',okamoto,'sales-gold')}
+  </div>
+ </div>`;
+}
+function listHTML(arr){if(!arr.length)return '<div class="empty">現場がありません</div>';return arr.map(p=>`<div class="project" onclick="openDetail('${p.id}')"><div class="row between"><div class="name">${esc(p.name)}</div><div class="${profit(p)<0?'loss':'money'}">${yen(profit(p))}</div></div><div class="bar"><i style="width:${Math.max(0,Math.min(100,rate(p)))}%"></i></div><div class="small" style="margin-top:6px">${esc(p.client||'')}　${p.invoice?.paidDate?'入金済':'未入金'}</div></div>`).join('')}
+
+
+
+
+
+function deleteProject(id){
+ let p=data.find(x=>String(x.id)===String(id));
+ if(!p)return;
+ if(!confirm(`「${p.name||'この現場'}」を削除しますか？\nこの現場に紐づく駐車場代も削除されます。`))return;
+ data=data.filter(x=>String(x.id)!==String(id));
+ receipts=receipts.filter(r=>String(r.projectId||'')!==String(id));
+ if(String(current||'')===String(id))current=null;
+ persist();
+ render();
+ toast('現場を削除しました');
+}
+
+
+
+function editProject(id){
+ let p=data.find(x=>String(x.id)===String(id));if(!p)return;
+ let n=prompt('現場名',p.name||'');if(n===null)return;
+ n=n.trim();if(!n)return alert('現場名を入力してください');
+ let a=prompt('発注金額（円）',String(Number(p.amount||0)));if(a===null)return;
+ a=Number(String(a).replace(/,/g,''));
+ if(!Number.isFinite(a)||a<0)return alert('正しい発注金額を入力してください');
+ p.name=n;p.amount=a;persist();render();
+ if(typeof toast==='function')toast('現場を変更しました');
+}
+
+function createProjectDirect(){
+ var n=document.getElementById('projectNameInput'),a=document.getElementById('projectAmountInput');
+ if(!n||!a)return false;
+ var name=n.value.trim(), amount=Number(String(a.value||'').replace(/,/g,''));
+ if(!name){alert('現場名を入力してください');return false;}
+ if(!a.value||!Number.isFinite(amount)){alert('発注金額を入力してください');return false;}
+ if(!Array.isArray(data))data=[];
+ var selectedMonth=window.projectsSelectedMonth||document.getElementById('projectsMonthFilter')?.value||new Date().toISOString().slice(0,7);
+ var projectDate=selectedMonth+'-01';
+ data.push({id:'p'+Date.now(),name:name,amount:amount,createdAt:projectDate,start:projectDate,billMonth:selectedMonth,expenses:[]});
+ persist(); n.value=''; a.value=''; render(); toast(selectedMonth.replace('-','年')+'月に現場を追加しました'); return false;
+}
+window.projectsSelectedMonth=window.projectsSelectedMonth||"";
+function setProjectsMonth(v){window.projectsSelectedMonth=v||"";renderProjects();}
+function showAllProjects(){
+ window.projectsSelectedMonth="";
+ const x=document.getElementById("projectsMonthFilter");
+ if(x)x.value="";
+ renderProjects();
+}
+function clearProjectsMonthFilter(){showAllProjects();}
+function renderProjects(){
+ const mf=document.getElementById("projectsMonthFilter");
+ if(mf)mf.value=window.projectsSelectedMonth||"";
+ const selectedMonth=window.projectsSelectedMonth||"";
+ const hint=document.getElementById("projectMonthHint");
+ if(hint)hint.textContent=selectedMonth?("この月に追加："+selectedMonth.replace("-","年")+"月"):"追加先：今月";
+
+ const root=document.getElementById('projectList');
+ if(!root)return;
+ if(!Array.isArray(data))data=[];
+ if(data.length===0){
+   root.innerHTML='<div class="card"><div class="small">登録されている現場はありません。</div></div>';
+   return;
+ }
+ const visibleProjects=selectedMonth?data.filter(p=>monthOf(p)===selectedMonth):data;
+ if(visibleProjects.length===0){root.innerHTML='<div class="card"><div class="small">この月の現場はありません。</div></div>';return;}
+ root.innerHTML=visibleProjects.map(p=>`
+   <div class="card rebuilt-project-card">
+     <div class="project-name">${esc(p.name||'現場')}</div>
+     <div class="project-sales-block">
+       <span class="project-sales-label">発注金額</span>
+       <span class="project-sales-number">${yen(Number(p.amount||0))}</span>
+     </div>
+     <div class="project-actions">
+       <button type="button" class="btn gray" onclick="editProject('${p.id}')">編集</button>
+       <button type="button" class="btn danger project-delete-btn" onclick="deleteProject('${p.id}')">削除</button>
+     </div>
+   </div>`).join('');
+}
+
+function renderAnnualChart(){
+ try{
+  const chart=document.getElementById("annualChart"),sel=document.getElementById("annualYear"),title=document.getElementById("annualTitle");
+  if(!chart||!sel)return;
+  const nowY=new Date().getFullYear();
+  const years=new Set([nowY]);
+  (data||[]).forEach(p=>{const m=monthOf(p);if(m&&/^\d{4}-/.test(m))years.add(Number(m.slice(0,4)));});
+  (globalCosts||[]).forEach(x=>{if(x.date)years.add(Number(String(x.date).slice(0,4)));});
+  const ys=[...years].filter(Boolean).sort((a,b)=>b-a);
+  const prev=Number(sel.value)||nowY;
+  sel.innerHTML=ys.map(y=>`<option value="${y}">${y}年</option>`).join("");
+  sel.value=ys.includes(prev)?String(prev):String(ys[0]||nowY);
+  const y=Number(sel.value)||nowY;
+  if(title)title.textContent=y+"年 月別比較";
+  const vals=[];
+  for(let m=1;m<=12;m++){
+    const ym=`${y}-${String(m).padStart(2,"0")}`;
+    const jobs=(data||[]).filter(p=>monthOf(p)===ym);
+    const sales=jobs.reduce((a,p)=>a+Number(p.amount||0),0);
+    const mc=(data||[]).flatMap(p=>{try{return ex(p)||[]}catch(e){return[]}}).filter(x=>String(x.date||"").slice(0,7)===ym);
+    const mg=(globalCosts||[]).filter(x=>String(x.date||"").slice(0,7)===ym);
+    const sum=c=>mc.filter(x=>x.category===c).reduce((a,x)=>a+Number(x.amount||0),0);
+    const gsum=c=>mg.filter(x=>x.category===c).reduce((a,x)=>a+Number(x.amount||0),0);
+    const shown=["従業員人工","材料費","外注費","車両経費","駐車場代","ガソリン代","高速代","道具代","飲食代"];
+    const subcontract=Number(subcontractMonthly||0)+sum("外注費");
+    const vehicle=Number(vehicleMonthly||0)+sum("車両経費");
+    const other=Number(otherMonthly||0)+mc.filter(x=>!shown.includes(x.category)).reduce((a,x)=>a+Number(x.amount||0),0)+mg.filter(x=>!["駐車場代","高速代","ガソリン代","道具代","飲食代"].includes(x.category)).reduce((a,x)=>a+Number(x.amount||0),0);
+    const expenses=subcontract+vehicle+sum("駐車場代")+sum("ガソリン代")+gsum("ガソリン代")+sum("高速代")+gsum("高速代")+sum("道具代")+gsum("道具代")+sum("飲食代")+gsum("飲食代")+other;
+    vals.push({m,sales,expenses});
+  }
+  const max=Math.max(1,...vals.flatMap(v=>[v.sales,v.expenses]));
+  chart.innerHTML=vals.map(v=>{
+    const sh=Math.max(v.sales?3:0,Math.round(v.sales/max*180));
+    const eh=Math.max(v.expenses?3:0,Math.round(v.expenses/max*180));
+    const short=n=>{n=Number(n||0);if(n>=100000000)return (n/100000000).toFixed(n%100000000?1:0)+"億";if(n>=10000)return Math.round(n/10000)+"万";return n.toLocaleString("ja-JP");};
+    return `<div class="annual-month"><div class="annual-bars"><div class="annual-bar-col"><div class="annual-value sales-value">${short(v.sales)}</div><div class="annual-bar sales" style="height:${sh}px" title="売上高 ${yen(v.sales)}"></div></div><div class="annual-bar-col"><div class="annual-value cost-value">${short(v.expenses)}</div><div class="annual-bar cost" style="height:${eh}px" title="経費 ${yen(v.expenses)}"></div></div></div><div class="annual-label">${v.m}月</div></div>`;
+  }).join("");
+ }catch(e){console.error("annual chart",e)}
+}
+function showAllMonthly(){window.monthlySelectedMonth="";renderMonthly();}
+function renderMonthly(){
+ try{
+  let currentMonth=new Date().toISOString().slice(0,7);
+  let salesMonths=data.map(p=>monthOf(p)).filter(x=>x&&x!=='未設定');
+  let costMonths=data.flatMap(p=>ex(p).map(x=>(x.date||'').slice(0,7))).filter(Boolean);
+  let invoiceMonths=data.map(p=>((p.invoice&&p.invoice.date)||'').slice(0,7)).filter(Boolean);
+  let globalMonths=(globalCosts||[]).map(x=>(x.date||'').slice(0,7)).filter(Boolean);
+  let months=[...new Set([currentMonth,...salesMonths,...costMonths,...invoiceMonths,...globalMonths])].sort().reverse();
+  if(window.monthlySelectedMonth)months=months.filter(x=>x===window.monthlySelectedMonth);
+  let cards=months.map(month=>{
+   let jobs=(Array.isArray(data)?data:[]).filter(p=>monthOf(p)===month);
+   let sales=jobs.reduce((a,p)=>a+Number(p.amount||0),0);
+   let mc=(Array.isArray(data)?data:[]).flatMap(p=>{try{return ex(p)||[]}catch(e){return []}}).filter(x=>(x.date||'').slice(0,7)===month);
+   let mg=(Array.isArray(globalCosts)?globalCosts:[]).filter(x=>(x.date||'').slice(0,7)===month);
+   let sum=c=>mc.filter(x=>x.category===c).reduce((a,x)=>a+Number(x.amount||0),0);
+   let gsum=c=>mg.filter(x=>x.category===c).reduce((a,x)=>a+Number(x.amount||0),0);
+   let labor=sum('従業員人工'),material=sum('材料費'),subcontract=subcontractMonthly+sum('外注費');
+   let vehicle=Number(vehicleMonthly||0)+sum('車両経費');
+   let parking=sum('駐車場代'),gasoline=sum('ガソリン代')+gsum('ガソリン代');
+   let highway=sum('高速代')+gsum('高速代'),tools=sum('道具代')+gsum('道具代'),food=sum('飲食代')+gsum('飲食代');
+   let shownCats=['従業員人工','材料費','外注費','車両経費','駐車場代','ガソリン代','高速代','道具代','飲食代'];
+   let other=Number(otherMonthly||0)+(mc.filter(x=>!shownCats.includes(x.category)).reduce((a,x)=>a+Number(x.amount||0),0)+mg.filter(x=>!['駐車場代','高速代','ガソリン代','道具代','飲食代'].includes(x.category)).reduce((a,x)=>a+Number(x.amount||0),0));
+   let cost=mc.reduce((a,x)=>a+Number(x.amount||0),0)+mg.reduce((a,x)=>a+Number(x.amount||0),0)+Number(vehicleMonthly||0);
+   let displayedExpenses=subcontract+vehicle+parking+gasoline+highway+tools+food+other;
+   let finalTotal=sales-displayedExpenses;
+   let profit=finalTotal;
+   let invoices=data.filter(p=>(((p.invoice&&p.invoice.date)||'').slice(0,7)===month));
+   let billed=invoices.reduce((a,p)=>a+Number((p.invoice&&p.invoice.amount)||0),0);
+   let paid=invoices.filter(p=>p.invoice&&p.invoice.paidDate).reduce((a,p)=>a+Number(p.invoice.amount||0),0);
+   let row=(label,val,cls='')=>`<div class="month-row ${cls}"><span>${label}</span><b class="${label==='合計'?'sales-gold':'expense-red'}">${yen(val)}</b></div>`;
+   let title=month.slice(0,4)+'年'+Number(month.slice(5,7))+'月';
+   return `<div class="month-card">
+   <div class="month-head monthly-sales-right">
+     <div class="monthly-sales-inner">
+       <div class="month-title sales-gold">${title}売上</div>
+       <div class="month-sales-amount sales-gold">${yen(sales)}</div>
+     </div>
+   </div>
+   ${row('外注費',subcontract)}
+   ${row('車両代',vehicle)}
+   ${row('駐車場代',parking)}
+   ${row('ガソリン代',gasoline)}
+   ${row('高速代',highway)}
+   ${row('道具代',tools)}
+   ${row('飲食代',food)}
+   ${row('その他',other)}
+   ${row('合計',finalTotal,'total')}
+  </div>`;
+  }).join('');
+  document.getElementById('monthly').innerHTML=`<div class="section-title">月別管理</div><div class="card month-history-bar"><b>表示する月</b><input id="monthlyMonthFilter" type="month" value="${window.monthlySelectedMonth||''}" onchange="window.monthlySelectedMonth=this.value;renderMonthly()"><button class="btn gray" type="button" onclick="showAllMonthly()">すべて表示</button></div><div class="month-stack">${cards}</div>`;
+ }catch(err){
+  document.getElementById('monthly').innerHTML='<div class="section-title">月別管理</div><div class="card">月別データの表示でエラーが発生しました。再読み込みしてください。</div>';
+  console.error(err);
+ }
+}
+function openProject(id=null){editing=id;let p=id?data.find(x=>x.id===id):null;document.getElementById('pTitle').textContent=p?'現場編集':'現場追加';let m={pName:p?.name,pClient:p?.client,pAddress:p?.address,pAmount:p?.amount,pStart:p?.start,pEnd:p?.end,pBillMonth:p?.billMonth,pMemo:p?.memo};['pName','pClient','pAddress','pAmount','pStart','pEnd','pBillMonth','pMemo'].forEach(k=>document.getElementById(k).value=m[k]||'');document.getElementById('projectModal').classList.add('show')}
+function saveProject(){let name=document.getElementById('pName').value.trim(),amount=Number(document.getElementById('pAmount').value);if(!name||!amount)return alert('現場名と発注金額を入力してください');let old=editing?data.find(x=>x.id===editing):null;let p={id:editing||Date.now().toString(),name,client:document.getElementById('pClient').value,address:document.getElementById('pAddress').value,amount,start:document.getElementById('pStart').value,end:document.getElementById('pEnd').value,billMonth:document.getElementById('pBillMonth').value,memo:document.getElementById('pMemo').value,costs:old?.costs||[],invoice:old?.invoice||null};if(editing)data=data.map(x=>x.id===editing?p:x);else data.push(p);persist();closeM('projectModal');render();if(typeof renderDaily==='function')renderDaily();toast('現場を保存しました')}
+function openDetail(id){
+ let p=data.find(x=>x.id===id);if(!p)return;current=id;
+ let modal=document.getElementById('detailModal'),el=modal?modal.querySelector('.sheet'):null;if(!el)return;
+ let parking=ex(p).filter(x=>x.category==='駐車場代').reduce((a,x)=>a+Number(x.amount||0),0);
+ el.innerHTML=`<div class="row between"><div><h2 style="margin:0">${esc(p.name||'現場詳細')}</h2><div class="small">${esc(p.client||p.builder||'')}</div></div><button class="btn gray" onclick="closeM('detailModal')">閉じる</button></div><hr>
+ <div class="card">
+  <div class="row between"><span>発注金額</span><b>${yen(p.amount||0)}</b></div>
+  
+  ${p.start?`<div class="row between"><span>開始日</span><b>${p.start}</b></div>`:''}
+  ${p.end?`<div class="row between"><span>完了日</span><b>${p.end}</b></div>`:''}
+ </div>
+ 
+ <div class="row" style="margin-top:12px"><button class="btn gray" onclick="editProject('${p.id}')">現場情報を編集</button></div>`;
+ modal.classList.add('show');
+}
+function openCost(){document.getElementById('eCat').value='従業員人工';updateWorkerSelect();if(!employees.length){if(confirm('従業員が未登録です。先に登録しますか？')){closeM('detailModal');tab('employees');openEmployee();}return}toggleCost();document.getElementById('eAmount').value='';document.getElementById('eWorker').value='';document.getElementById('eDays').value='1';document.getElementById('eRate').value='';document.getElementById('eDate').value=new Date().toISOString().slice(0,10);document.getElementById('eMemo').value='';document.getElementById('expenseModal').classList.add('show')}
+document.getElementById('eWorker').onchange=updateWorkerRate;document.getElementById('eCat').onchange=toggleCost;function toggleCost(){let labor=document.getElementById('eCat').value==='従業員人工';document.getElementById('laborFields').style.display=labor?'block':'none';document.getElementById('normalFields').style.display=labor?'none':'block'}
+function saveExpense(){let p=data.find(x=>x.id===current),cat=document.getElementById('eCat').value,obj={category:cat,date:document.getElementById('eDate').value,memo:document.getElementById('eMemo').value};if(cat==='従業員人工'){let d=Number(document.getElementById('eDays').value),r=Number(document.getElementById('eRate').value);if(!d||!r)return alert('人工数と1人工単価を入力してください');let emp=employees.find(x=>x.id===document.getElementById('eWorker').value);if(!emp)return alert('従業員を選択してください');obj.employeeId=emp.id;obj.worker=emp.name;obj.days=d;obj.rate=r;obj.amount=d*r}else{let a=Number(document.getElementById('eAmount').value);if(!a)return alert('金額を入力してください');obj.amount=a}p.costs=p.costs||[];p.costs.push(obj);persist();closeM('expenseModal');openDetail(current);render();toast('原価を追加しました')}
+
+function receiptSelectedMonth(){
+ return window.receiptsSelectedMonth||new Date().toISOString().slice(0,7);
+}
+function setReceiptsMonth(v){window.receiptsSelectedMonth=v||new Date().toISOString().slice(0,7);renderReceipts();}
+function receiptProjectOptions(preferredId=''){
+ let sel=document.getElementById('rProject'); if(!sel)return;
+ let date=document.getElementById('rDate')?.value||'';
+ let month=(date&&date.length>=7)?date.slice(0,7):receiptSelectedMonth();
+ let ps=data.filter(p=>monthOf(p)===month);
+ sel.innerHTML='<option value="">現場を選択</option>'+ps.map(p=>`<option value="${p.id}">${esc(p.name||'現場')}</option>`).join('');
+ if(preferredId&&ps.some(p=>String(p.id)===String(preferredId)))sel.value=preferredId;
+}
+function toggleReceiptProject(){
+ let wrap=document.getElementById('rProjectField');
+ let cat=document.getElementById('rCat')?.value||'';
+ if(wrap)wrap.style.display=cat==='駐車場代'?'block':'none';
+ if(cat==='駐車場代')receiptProjectOptions(document.getElementById('rProject')?.value||'');
+}
+function openReceipt(projectId=null,cat='駐車場代'){
+ let month=receiptSelectedMonth();
+ document.getElementById('rCat').value=cat;
+ document.getElementById('rDate').value=month+'-01';
+ document.getElementById('rAmount').value='';
+ receiptProjectOptions(projectId||'');
+ toggleReceiptProject();
+ document.getElementById('receiptModal').classList.add('show');
+}
+function compressImage(file){
+ return new Promise((resolve,reject)=>{let rd=new FileReader();rd.onload=()=>{let img=new Image();img.onload=()=>{let max=900,sc=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',.68))};img.onerror=reject;img.src=rd.result};rd.onerror=reject;rd.readAsDataURL(file)});
+}
+async function saveReceipt(){
+ let cat=document.getElementById('rCat').value,date=document.getElementById('rDate').value,a=Number(document.getElementById('rAmount').value||0);
+ if(!a)return alert('金額を入力してください');
+ let projectId=null;
+ if(cat==='駐車場代'){
+   let ps=document.getElementById('rProject');
+   projectId=ps?ps.value:null;
+   if(!projectId)return alert('現場を選択してください');
+ }
+ let id=Date.now().toString();
+ receipts.push({id,projectId,category:cat,date,amount:a});
+ if(projectId){
+   let p=data.find(x=>x.id===projectId);
+   if(p){
+     if(!Array.isArray(p.expenses))p.expenses=[];
+     p.expenses.push({id:'e'+id,receiptId:id,category:cat,date,amount:a});
+   }
+ }else{
+   globalCosts.push({id:'g'+id,receiptId:id,category:cat,date,amount:a});
+ }
+ persist();closeM('receiptModal');render();toast('経費を保存しました');
+}
+function delReceipt(id){
+ if(!confirm('この経費を削除しますか？'))return;
+ receipts=receipts.filter(r=>r.id!==id);globalCosts=globalCosts.filter(c=>c.receiptId!==id);data.forEach(p=>{p.costs=(p.costs||[]).filter(c=>c.receiptId!==id)});persist();render();
+}
+function receiptList(rr){
+ return rr.map(r=>`<div class="expense"><div class="row between"><span class="small">${r.date||''}</span><b class="expense-red">${yen(r.amount)}</b><button class="btn danger" onclick="delReceipt('${r.id}')">削除</button></div></div>`).join('');
+}
+function deleteAllReceiptsForMonth(){
+ let month=receiptSelectedMonth();
+ let title=month.slice(0,4)+'年'+Number(month.slice(5,7))+'月';
+ let ids=new Set(receipts.filter(r=>(r.date||'').slice(0,7)===month).map(r=>String(r.id)));
+ if(!ids.size)return alert(title+'の経費入力はありません');
+ if(!confirm(title+'の経費欄に入力した情報を一括削除しますか？\nこの操作は元に戻せません。'))return;
+ receipts=receipts.filter(r=>!ids.has(String(r.id)));
+ globalCosts=globalCosts.filter(c=>!ids.has(String(c.receiptId||'')));
+ data.forEach(p=>{
+   p.costs=(p.costs||[]).filter(c=>!ids.has(String(c.receiptId||'')));
+   p.expenses=(p.expenses||[]).filter(c=>!ids.has(String(c.receiptId||'')));
+ });
+ persist();render();toast(title+'の経費を一括削除しました');
+}
+function renderReceipts(){
+ let month=receiptSelectedMonth();
+ let monthReceipts=receipts.filter(r=>(r.date||'').slice(0,7)===month);
+ let global=['ガソリン代','高速代','道具代','飲食代'].map(cat=>{
+   let rr=monthReceipts.filter(r=>!r.projectId&&r.category===cat),sum=rr.reduce((a,r)=>a+Number(r.amount||0),0);
+   return `<div class="card" style="margin-bottom:10px"><div class="row between"><div><b>${cat}</b><div class="value expense-red" style="font-size:18px">${yen(sum)}</div></div><button class="btn primary" onclick="openReceipt(null,'${cat}')">＋追加</button></div>${receiptList(rr)}</div>`;
+ }).join('');
+ let pr=monthReceipts.filter(r=>r.category==='駐車場代'),psum=pr.reduce((a,r)=>a+Number(r.amount||0),0);
+ let monthProjects=data.filter(p=>monthOf(p)===month);
+ let parkingGroups=monthProjects.map(p=>{
+   let list=pr.filter(r=>String(r.projectId)===String(p.id));
+   if(!list.length)return '';
+   let total=list.reduce((a,r)=>a+Number(r.amount||0),0);
+   return `<div class="parking-project"><div class="row between"><span class="small">${esc(p.name||'現場')}</span><b class="expense-red">${yen(total)}</b></div>${receiptList(list)}</div>`;
+ }).join('');
+ let parking=`<div class="card" style="margin-bottom:10px"><div class="row between"><div><b>駐車場代</b><div class="value expense-red" style="font-size:18px">${yen(psum)}</div></div><button class="btn primary" onclick="openReceipt(null,'駐車場代')">＋追加</button></div>${parkingGroups||'<div class="small">まだ入力がありません</div>'}</div>`;
+ let title=month.slice(0,4)+'年'+Number(month.slice(5,7))+'月';
+ document.getElementById('receipts').innerHTML=`<div class="section-title">経費</div><div class="card month-history-bar"><b>表示する月</b><input type="month" value="${month}" onchange="setReceiptsMonth(this.value)"><button class="btn danger" type="button" onclick="deleteAllReceiptsForMonth()">${title}を一括削除</button></div>${parking}${global}<div class="small">※駐車場代の現場名は、選択した月に登録されている現場だけ表示します。</div>`;
+}
+function openInvoice(){let p=data.find(x=>x.id===current),i=p.invoice||{};document.getElementById('iAmount').value=i.amount||p.amount;document.getElementById('iDate').value=i.date||new Date().toISOString().slice(0,10);document.getElementById('iDue').value=i.due||'';document.getElementById('iPaidDate').value=i.paidDate||'';document.getElementById('invoiceModal').classList.add('show')}
+function saveInvoice(){let p=data.find(x=>x.id===current);p.invoice={amount:Number(document.getElementById('iAmount').value),date:document.getElementById('iDate').value,due:document.getElementById('iDue').value,paidDate:document.getElementById('iPaidDate').value};persist();closeM('invoiceModal');openDetail(current);render();toast('請求・入金情報を保存しました')}
+function delCost(i){if(!confirm('この原価を削除しますか？'))return;let p=data.find(x=>x.id===current);p.costs.splice(i,1);persist();openDetail(current);render()}
+function delProject(id){if(!confirm('この現場と原価・請求情報を削除しますか？'))return;data=data.filter(x=>x.id!==id);persist();closeM('detailModal');render();toast('現場を削除しました')}
+function closeM(id){document.getElementById(id).classList.remove('show')}
+render();
+
+document.addEventListener('keydown',e=>{
+ if(e.key==='Enter' && document.getElementById('dashPassModal')?.classList.contains('show')) checkDashPass();
+});
+
+
+
+
+
+
+
+
+document.addEventListener('keydown',function(e){
+ if(e.key==='Enter' && (e.target.id==='projectNameInput' || e.target.id==='projectAmountInput')){
+   e.preventDefault();
+   createProjectDirect();
+ }
+});
+
+</script>
+<div class="modal" id="dashPassModal"><div class="sheet">
+  <div class="row between">
+    <h2 style="margin:0">全体を開く</h2>
+    <button class="btn gray" onclick="closeM('dashPassModal')">閉じる</button>
+  </div>
+  <hr>
+  <div class="form">
+    <div class="field">
+      <label>パスコード</label>
+      <input id="dashPassInput" type="password" inputmode="numeric" maxlength="4" placeholder="4桁">
+    </div>
+    <div id="dashPassError" class="small" style="display:none;color:#ff6574;margin-bottom:8px">パスコードが違います</div>
+    <button class="btn primary" onclick="checkDashPass()">開く</button>
+  </div>
+</div></div>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  if (typeof tab === 'function') tab('projects');
+  var rd=document.getElementById('rDate'); if(rd)rd.addEventListener('change',function(){if(document.getElementById('rCat')?.value==='駐車場代')receiptProjectOptions(document.getElementById('rProject')?.value||'');});
+});
+</script>
+
+<script>
+window.addEventListener('load',function(){ setTimeout(startCloudSync,150); });
+</script>
+
+<script id="daily-report-js-v19">
+function closeDailyTab(){
+  if(typeof tab==="function"){tab("projects");return;}
+  document.getElementById("daily")?.classList.remove("active");
+  document.querySelector('[data-tab="daily"]')?.classList.remove("active");
+  document.querySelector('[data-tab="projects"]')?.click();
+}
+
+
+function printBothDailyReports(){
+ const mon=document.getElementById("dailyMonth");
+ const monthText=mon?.value||"";
+ if(!monthText){alert("月を選択してください");return;}
+ const parts=monthText.split("-"),yy=Number(parts[0]),mm=Number(parts[1]);
+ const days=new Date(yy,mm,0).getDate(),week=["日","月","火","水","木","金","土"];
+ const escb=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+ const pname=id=>{if(id==="__OFF__")return "休み";const x=(data||[]).find(v=>String(v.id)===String(id));return x?[x.name,x.client].filter(Boolean).join("　"):""};
+ const all=dailyEmployees();
+ const findName=word=>all.find(n=>String(n).replace(/[\s　]+/g,"").includes(word))||"";
+ const targets=[findName("岡本"),findName("ダニエル")].filter(Boolean);
+ if(targets.length<2){alert("岡本さん・ダニエルさんの従業員データを確認してください");return;}
+
+ function makeSheet(name){
+   const key=name+"__"+monthText,rows=dailyReports[key]||{};
+   let trs="",total=0;
+   for(let d=1;d<=days;d++){
+     const r=rows[d]||{},off=r.projectId==="__OFF__",man=off?"":(r.man??"");
+     if(!off)total+=Number(man)||0;
+     trs+=`<tr><td>${mm}/${d}</td><td>${week[new Date(yy,mm-1,d).getDay()]}</td><td class="site">${escb(pname(r.projectId))}</td><td>${escb(man)}</td></tr>`;
+   }
+   return `<section class="print-sheet combined-sheet"><h1>勤務表</h1><div class="print-brand">古谷外装</div>
+   <div class="print-meta"><span>${yy}年 ${mm}月分</span><span>氏名　<b>${escb(name)}</b></span></div>
+   <table><thead><tr><th>日</th><th>曜</th><th>場所・メーカー・お施主様名</th><th>人工</th></tr></thead>
+   <tbody>${trs}</tbody><tfoot><tr><td colspan="3">合計</td><td>${total}</td></tr></tfoot></table></section>`;
+ }
+ const body=document.getElementById("actualPrintBody");
+ if(body)body.innerHTML=targets.map(makeSheet).join("");
+ const screen=document.getElementById("actualPrintScreen");
+ if(screen)screen.style.display="block";
+}
+function printDailyReport(){
+  const emp=document.getElementById("dailyEmployee"),mon=document.getElementById("dailyMonth");
+  const employeeName=emp?.options[emp.selectedIndex]?.text||"",monthText=mon?.value||"";
+  const rows=dailyReports[dailyKey()]||{},p=monthText.split("-"),yy=Number(p[0]),mm=Number(p[1]);
+  const days=new Date(yy,mm,0).getDate(),week=["日","月","火","水","木","金","土"];
+  const escp=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+  const pname=id=>{if(id==="__OFF__")return "休み";const x=(data||[]).find(v=>String(v.id)===String(id));return x?[x.name,x.client].filter(Boolean).join("　"):""};
+  let rowsHtml="",total=0;
+  for(let d=1;d<=days;d++){const r=rows[d]||{},off=r.projectId==="__OFF__",man=off?"":(r.man??"");if(!off)total+=Number(man)||0;
+    rowsHtml+=`<tr><td>${mm}/${d}</td><td>${week[new Date(yy,mm-1,d).getDay()]}</td><td class="site">${escp(pname(r.projectId))}</td><td>${escp(man)}</td></tr>`;}
+  document.getElementById("printPreviewBody").innerHTML=`<div class="print-sheet"><h1>勤務表</h1><div class="print-brand">古谷外装</div><div class="print-meta"><span>${yy}年 ${mm}月分</span><span>氏名　<b>${escp(employeeName)}</b></span></div><table><thead><tr><th>日</th><th>曜</th><th>場所・メーカー・お施主様名</th><th>人工</th></tr></thead><tbody>${rowsHtml}</tbody><tfoot><tr><td colspan="3">合計</td><td>${total}</td></tr></tfoot></table></div>`;
+  const ppm=document.getElementById("printPreviewModal");
+ if(ppm){ppm.style.display="block";ppm.classList.add("show");}
+}
+function closePrintPreview(){
+ const modal=document.getElementById("printPreviewModal");
+ if(modal){
+   modal.classList.remove("show","printing");
+   modal.style.display="none";
+ }
+ document.body.classList.remove("daily-printing");
+ return false;
+}
+function doDailyPrint(){
+ const sheet=document.querySelector("#printPreviewBody .print-sheet");
+ if(!sheet){alert("印刷内容がありません");return;}
+ const screen=document.getElementById("actualPrintScreen");
+ const body=document.getElementById("actualPrintBody");
+ if(body)body.innerHTML=sheet.outerHTML;
+ if(screen)screen.style.display="block";
+}
+function closeActualPrint(){
+ const screen=document.getElementById("actualPrintScreen");
+ if(screen)screen.style.display="none";
+ const modal=document.getElementById("printPreviewModal");
+ if(modal){modal.style.display="none";modal.classList.remove("show","printing");}
+ if(typeof tab==="function")tab("daily");
+}
+
+let fgPrintWasOpened=false;
+function restoreAfterDailyPrint(){
+ if(!fgPrintWasOpened)return;
+ fgPrintWasOpened=false;
+ const screen=document.getElementById("actualPrintScreen");
+ if(screen)screen.style.display="none";
+ const modal=document.getElementById("printPreviewModal");
+ if(modal){modal.style.display="none";modal.classList.remove("show","printing");}
+ if(typeof tab==="function")tab("daily");
+}
+window.addEventListener("afterprint",restoreAfterDailyPrint);
+function actualPrintNow(){
+ const body=document.getElementById("actualPrintBody");
+ if(!body){alert("印刷内容がありません");return;}
+ const html=`<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ <style>@page{size:A4 portrait;margin:10mm}*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;color:#000}
+ body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif}
+ .print-sheet{width:100%;margin:0;padding:0;break-after:page;page-break-after:always}.print-sheet:last-child{break-after:auto;page-break-after:auto}
+ .print-sheet h1{text-align:center;font-size:24px;letter-spacing:.3em;margin:0}.print-brand{text-align:right;font-weight:800}
+ .print-meta{display:flex;justify-content:space-between;margin:8px 0}table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px}
+ th,td{border:1px solid #000;padding:4px;text-align:center}.site{text-align:left}th:nth-child(1){width:55px}th:nth-child(2){width:38px}th:nth-child(4){width:55px}</style>
+ 
+<style id="annual-chart-restore-v43">
+.annual-chart-wrap{overflow-x:auto;padding:18px 4px 4px}
+.annual-chart{height:230px;min-width:720px;display:flex;align-items:flex-end;gap:10px;border-bottom:1px solid rgba(180,145,70,.45);padding:0 8px}
+.annual-month{flex:1;min-width:48px;text-align:center}
+.annual-bars{height:185px;display:flex;align-items:flex-end;justify-content:center;gap:4px}
+.annual-bar{width:16px;min-height:0;border-radius:3px 3px 0 0}
+.annual-bar.sales{background:linear-gradient(180deg,#d5b45d,#8f6c22)}
+.annual-bar.cost{background:linear-gradient(180deg,#777,#333)}
+.annual-label{font-size:11px;margin-top:6px;white-space:nowrap}
+</style>
+
+
+<style id="annual-values-v44">
+.annual-bars{height:220px!important;overflow:visible}
+.annual-bar-col{height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-width:25px}
+.annual-value{font-size:14px;font-weight:900;line-height:1.1;white-space:nowrap;margin-bottom:5px}
+.annual-value.sales-value{color:#b9953e}
+.annual-value.cost-value{color:#aaa}
+</style>
+
+
+<style id="v51-open-tab-text">
+/* v51: タブ見出しの色は維持。開いたタブ内の文字は黒＋金の極細縁取り */
+main section,
+main section *{
+  color:#050505!important;
+  -webkit-text-fill-color:#050505!important;
+  -webkit-text-stroke:.18px #c89b2b!important;
+  text-shadow:none!important;
+}
+main section input::placeholder,
+main section textarea::placeholder{
+  color:#050505!important;
+  -webkit-text-fill-color:#050505!important;
+  -webkit-text-stroke:.18px #c89b2b!important;
+  opacity:.72!important;
+}
+/* ナビゲーション（タブ）の文字色は既存設定をそのまま使う */
+nav button,nav button.active{
+  -webkit-text-stroke:initial!important;
+}
+</style>
+</head><body>${body.innerHTML}</body></html>`;
+ let frame=document.getElementById("dailyPrintFrame");
+ if(!frame){frame=document.createElement("iframe");frame.id="dailyPrintFrame";frame.setAttribute("title","印刷");frame.style.position="fixed";frame.style.left="-10000px";frame.style.top="0";frame.style.width="1px";frame.style.height="1px";frame.style.border="0";document.body.appendChild(frame);}
+ frame.onload=function(){
+   try{
+     fgPrintWasOpened=true;
+     frame.contentWindow.focus();
+     frame.contentWindow.print();
+   }catch(e){
+     fgPrintWasOpened=false;
+     console.error(e);
+     alert("印刷画面を開けませんでした");
+   }
+ };
+ frame.srcdoc=html;
+}
+let dailyReports={};
+try{dailyReports=JSON.parse(localStorage.getItem("fg_dailyReports")||"{}")||{}}catch(e){dailyReports={}}
+function dailyKey(){return (document.getElementById("dailyEmployee")?.value||"") +"__"+(document.getElementById("dailyMonth")?.value||"")}
+function saveDailyLocal(){localStorage.setItem("fg_dailyReports",JSON.stringify(dailyReports))}
+function dailyEmployees(){
+ let names=[];
+ try{
+   (employees||[]).forEach(x=>{let n=typeof x==="string"?x:(x.name||x.employee||"");if(n)names.push(n)});
+   (employeeCards||[]).forEach(x=>{let n=typeof x==="string"?x:(x.name||x.employee||"");if(n)names.push(n)});
+ }catch(e){}
+ const seen=new Set(),out=[];
+ names.forEach(n=>{
+   n=String(n).trim();
+   const key=n.replace(/[\s　]+/g,"").toLowerCase();
+   if(n&&!seen.has(key)){seen.add(key);out.push(n)}
+ });
+ return out;
+}
+function initDaily(){
+ const emp=document.getElementById("dailyEmployee"), mon=document.getElementById("dailyMonth");
+ if(!emp||!mon)return;
+ const keep=emp.value; emp.innerHTML=dailyEmployees().map(n=>`<option>${n}</option>`).join("");
+ if(keep&&[...emp.options].some(o=>o.value===keep))emp.value=keep;
+ if(!mon.value){let d=new Date();mon.value=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")}
+ emp.onchange=renderDaily; mon.onchange=renderDaily; renderDaily();
+}
+function renderDaily(){
+ const body=document.getElementById("dailyBody"),mon=document.getElementById("dailyMonth"); if(!body||!mon?.value)return;
+ let [y,m]=mon.value.split("-").map(Number), days=new Date(y,m,0).getDate(), key=dailyKey(), rows=dailyReports[key]||{};
+ body.innerHTML="";
+ const ja=["日","月","火","水","木","金","土"];
+ for(let d=1;d<=days;d++){
+   let dow=new Date(y,m-1,d).getDay(),r=rows[d]||{};
+   let tr=document.createElement("tr");
+   tr.innerHTML=`<td>${m}/${d}</td><td class="${dow===0?'sun':dow===6?'sat':''}">${ja[dow]}</td>
+   <td><select class="daily-project-select" data-day="${d}" data-f="project">
+      <option value="">現場を選択</option>
+      <option value="__OFF__" ${String(r.projectId||"")==="__OFF__"?"selected":""}>休み</option>
+      ${(data||[]).filter(p=>monthOf(p)===mon.value).map(p=>`<option value="${String(p.id)}" ${String(r.projectId||"")===String(p.id)?"selected":""}>${String((p.name||"")+(p.client?" ／ "+p.client:"")).replace(/</g,"&lt;")}</option>`).join("")}
+   </select></td>
+   <td><select class="daily-man-select" data-day="${d}" data-f="man" ${r.projectId==="__OFF__"?"disabled":""}>
+      <option value="" ${r.man===""||r.man==null?"selected":""}></option>
+      <option value="0.5" ${Number(r.man)===0.5?"selected":""}>0.5</option>
+      <option value="1" ${Number(r.man)===1?"selected":""}>1</option>
+   </select></td>`;
+   body.appendChild(tr);
+ }
+ body.querySelectorAll("input,select").forEach(i=>i.addEventListener("change",saveDailyInput));
+ calcDaily();
+}
+function saveDailyInput(e){
+ let key=dailyKey(),d=e.target.dataset.day,f=e.target.dataset.f;
+ dailyReports[key]=dailyReports[key]||{}; dailyReports[key][d]=dailyReports[key][d]||{};
+ if(f==="man") dailyReports[key][d][f]=e.target.value===""?"":Number(e.target.value);
+ else if(f==="project"){
+   dailyReports[key][d].projectId=e.target.value;
+   if(e.target.value==="__OFF__") dailyReports[key][d].man="";
+ }
+ else dailyReports[key][d][f]=e.target.value;
+ saveDailyLocal();
+ if(f==="project") renderDaily(); else calcDaily();
+ if(typeof cloudReady!=="undefined"&&cloudReady&&typeof cloudRef!=="undefined"){
+   cloudRef.set({dailyReports:dailyReports,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(console.error);
+ }
+}
+function calcDaily(){
+ let key=dailyKey(),rows=dailyReports[key]||{},total=Object.values(rows).reduce((a,r)=>a+(Number(r.man)||0),0);
+ let el=document.getElementById("dailyTotal");if(el)el.textContent=total;
+}
+window.addEventListener("load",()=>setTimeout(initDaily,250));
+</script>
+
+
+
+
+
+
+
+
+
+</body></html><style id="v56-daniel-tab-fullname-fix">
+/* Keep Daniel's full name visible in the top navigation */
+nav button#tDaniel{
+  min-width:132px!important;
+  width:auto!important;
+  flex:0 0 auto!important;
+  padding-left:10px!important;
+  padding-right:10px!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  font-size:12px!important;
+}
+</style>
+<style>
+/* v57: ダニエル・岡本の給料／カード代ボックスを各欄の背景色に統一 */
+#daniel .employee-card-grid>div,
+#okamoto .employee-card-grid>div{
+  background:transparent!important;
+  box-shadow:none!important;
+  border-color:rgba(198,154,58,.28)!important;
+}
+</style>
