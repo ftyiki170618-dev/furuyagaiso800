@@ -3342,8 +3342,8 @@ async function saveReceipt(){
  if(projectId){
    let p=data.find(x=>x.id===projectId);
    if(p){
-     if(!Array.isArray(p.expenses))p.expenses=[];
-     p.expenses.push({id:'e'+id,receiptId:id,category:cat,date,amount:a});
+     if(!Array.isArray(p.costs))p.costs=[];
+     p.costs.push({id:'e'+id,receiptId:id,category:cat,date,amount:a});
    }
  }else{
    globalCosts.push({id:'g'+id,receiptId:id,category:cat,date,amount:a});
