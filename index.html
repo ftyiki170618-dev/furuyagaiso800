@@ -2622,6 +2622,36 @@ nav button,nav button.active{-webkit-text-stroke:initial!important;}
  document.addEventListener('DOMContentLoaded',()=>{mark();new MutationObserver(mark).observe(document.body,{childList:true,subtree:true,characterData:true});});
 })();
 </script>
+
+<style id="furuyagaiso1300-dash-layout">
+/* furuyagaiso1300: 全体欄を見やすい2列配置へ。売上は最上段で全幅表示。 */
+#dash .dash-clean-grid{
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+ gap:10px!important;
+ align-items:stretch!important;
+ width:100%!important;
+}
+#dash .dash-clean-grid>.dash-sales-wide{grid-column:1 / -1!important;min-width:0!important}
+#dash .dash-clean-grid>.dash-sales-wide>.dash-card{min-height:100px!important}
+#dash .dash-clean-grid>.dash-card,
+#dash .dash-clean-grid>.dash-sales-wide>.dash-card{
+ width:100%!important;
+ height:auto!important;
+ min-height:112px!important;
+ margin:0!important;
+ box-sizing:border-box!important;
+}
+#dash .dash-clean-grid .dash-card:has(.dash-edit){min-height:138px!important}
+#dash .dash-clean-grid .dash-card .label{white-space:normal!important;overflow:visible!important}
+#dash .dash-clean-grid .dash-card .value{font-size:clamp(16px,4.4vw,23px)!important}
+@media(max-width:420px){
+ #dash .dash-clean-grid{gap:8px!important}
+ #dash .dash-clean-grid>.dash-card{padding:10px 8px!important}
+ #dash .dash-clean-grid .dash-card .label{font-size:13px!important}
+ #dash .dash-clean-grid .dash-card .dash-edit{margin-top:8px!important}
+}
+</style>
 </head>
 <body>
 <header>
@@ -3058,20 +3088,16 @@ function renderDash(){
  });
  let daniel=base*.25-danielPrivate,okamoto=base*.33-okamotoPrivate;
  let card=(label,value,cls,onclick='')=>`<div class="card dash-card"><div class="label ${(label.includes("ダニエル")||label.includes("岡本"))?"employee-dash-name":""}">${label}</div><div class="value ${cls}">${yen(Math.round(value))}</div>${onclick?`<button class="btn gray dash-edit" onclick="${onclick}">変更</button>`:''}</div>`;
- document.getElementById('dash').innerHTML=`<div class="dash-two-col">
-  <div class="dash-col">
-   ${card('売上',sales,'sales-gold')}
+ document.getElementById('dash').innerHTML=`<div class="dash-clean-grid">
+   <div class="dash-sales-wide">${card('売上',sales,'sales-gold')}</div>
    ${card('消費税',tax,'expense-red')}
    ${card('事務手数料',admin,'expense-red')}
    ${card('経費',expenses,'expense-red')}
-   ${card('オセイ　ダニエル',daniel,'sales-gold')}
-  </div>
-  <div class="dash-col">
    ${card('その他',other,'expense-red',"openDashAmount('other','その他')")}
    ${card('外注',subcontract,'expense-red',"openSubcontractMonthly()")}
    ${card('車両',vehicle,'expense-red',"openVehicleMonthly()")}
+   ${card('オセイ　ダニエル',daniel,'sales-gold')}
    ${card('岡本　啓矢',okamoto,'sales-gold')}
-  </div>
  </div>`;
 }
 function listHTML(arr){if(!arr.length)return '<div class="empty">現場がありません</div>';return arr.map(p=>`<div class="project" onclick="openDetail('${p.id}')"><div class="row between"><div class="name">${esc(p.name)}</div><div class="${profit(p)<0?'loss':'money'}">${yen(profit(p))}</div></div><div class="bar"><i style="width:${Math.max(0,Math.min(100,rate(p)))}%"></i></div><div class="small" style="margin-top:6px">${esc(p.client||'')}　${p.invoice?.paidDate?'入金済':'未入金'}</div></div>`).join('')}
@@ -3557,6 +3583,36 @@ main section textarea::placeholder{
 /* ナビゲーション（タブ）の文字色は既存設定をそのまま使う */
 nav button,nav button.active{
   -webkit-text-stroke:initial!important;
+}
+</style>
+
+<style id="furuyagaiso1300-dash-layout">
+/* furuyagaiso1300: 全体欄を見やすい2列配置へ。売上は最上段で全幅表示。 */
+#dash .dash-clean-grid{
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+ gap:10px!important;
+ align-items:stretch!important;
+ width:100%!important;
+}
+#dash .dash-clean-grid>.dash-sales-wide{grid-column:1 / -1!important;min-width:0!important}
+#dash .dash-clean-grid>.dash-sales-wide>.dash-card{min-height:100px!important}
+#dash .dash-clean-grid>.dash-card,
+#dash .dash-clean-grid>.dash-sales-wide>.dash-card{
+ width:100%!important;
+ height:auto!important;
+ min-height:112px!important;
+ margin:0!important;
+ box-sizing:border-box!important;
+}
+#dash .dash-clean-grid .dash-card:has(.dash-edit){min-height:138px!important}
+#dash .dash-clean-grid .dash-card .label{white-space:normal!important;overflow:visible!important}
+#dash .dash-clean-grid .dash-card .value{font-size:clamp(16px,4.4vw,23px)!important}
+@media(max-width:420px){
+ #dash .dash-clean-grid{gap:8px!important}
+ #dash .dash-clean-grid>.dash-card{padding:10px 8px!important}
+ #dash .dash-clean-grid .dash-card .label{font-size:13px!important}
+ #dash .dash-clean-grid .dash-card .dash-edit{margin-top:8px!important}
 }
 </style>
 </head><body>${body.innerHTML}</body></html>`;
