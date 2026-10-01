@@ -4169,6 +4169,17 @@ header {
   box-sizing:border-box !important;
 }
 </style>
+
+<style id="expense-amount-no-wrap-v1">
+/* 経費明細の金額（例: 1,000円）を1行で表示 */
+html body .parking-project .expense-red,
+html body .expense .expense-red{
+  white-space:nowrap !important;
+  word-break:keep-all !important;
+  overflow-wrap:normal !important;
+  flex-shrink:0 !important;
+}
+</style>
 </head>
 <body>
 <header>
