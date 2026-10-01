@@ -5192,6 +5192,34 @@ input,select,textarea,button{font-size:16px !important;}
 }
 </style>
 
+
+<style id="receipt-modal-current-view-fix">
+/* 経費追加はページ末尾ではなく、今見ている画面の上に固定表示 */
+#receiptModal{
+  position:fixed !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100dvh !important;
+  z-index:99999 !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:12px !important;
+  box-sizing:border-box !important;
+  overflow:hidden !important;
+}
+#receiptModal.show{display:flex !important;}
+#receiptModal .sheet{
+  position:relative !important;
+  width:100% !important;
+  max-width:620px !important;
+  max-height:88dvh !important;
+  overflow:auto !important;
+  border-radius:18px !important;
+  padding:17px 14px 28px !important;
+  margin:0 !important;
+  box-sizing:border-box !important;
+}
+</style>
 </head><body>${body.innerHTML}</body></html>`;
  let frame=document.getElementById("dailyPrintFrame");
  if(!frame){frame=document.createElement("iframe");frame.id="dailyPrintFrame";frame.setAttribute("title","印刷");frame.style.position="fixed";frame.style.left="-10000px";frame.style.top="0";frame.style.width="1px";frame.style.height="1px";frame.style.border="0";document.body.appendChild(frame);}
