@@ -5956,4 +5956,32 @@ html body #monthly .month-row.total,
 html body #monthly .monthly-sales-inner,
 html body #monthly .monthly-sales-right{background:#050505!important;background-image:none!important;}
 html body #monthly .month-stack{background:transparent!important;}
-</style></html>
+</style>
+<style id="monthly-remove-blue-border-final">
+/* 月別欄：残っている紺色の外枠・内枠・影を完全に削除 */
+html body #monthly .month-card{
+  border-color:rgba(214,170,66,.72) !important;
+  outline:none !important;
+  box-shadow:
+    0 8px 22px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,224,145,.12) !important;
+}
+html body #monthly .month-card::after{
+  display:none !important;
+  content:none !important;
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+}
+html body #monthly .month-card::before{
+  border:0 !important;
+}
+html body #monthly .month-head,
+html body #monthly .month-row{
+  border-left:0 !important;
+  border-right:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+}
+</style>
+</html>
