@@ -4220,6 +4220,188 @@ html body #receipts .small:not(.expense-red){
   text-shadow:none !important;
 }
 </style>
+
+<style id="all-flat-text-3d-v1">
+/* 立体感が弱い通常文字に、控えめなハイライト＋下影を追加 */
+html body .small:not(.expense-red),
+html body label,
+html body .field label,
+html body .project-name,
+html body .month-title,
+html body .parking-project .small,
+html body #receipts .card > .row > div > b,
+html body #receipts .small:not(.expense-red),
+html body input,
+html body select,
+html body textarea,
+html body input::placeholder,
+html body textarea::placeholder{
+  text-shadow:
+    0 -1px 0 rgba(255,238,170,.34),
+    0 1px 0 rgba(70,42,8,.90),
+    0 2px 2px rgba(0,0,0,.58) !important;
+}
+
+/* 金色文字は金色のまま立体感だけ追加 */
+html body .small:not(.expense-red),
+html body label,
+html body .field label,
+html body .project-name,
+html body .month-title,
+html body .parking-project .small,
+html body #receipts .card > .row > div > b,
+html body #receipts .small:not(.expense-red){
+  color:#E3B84E !important;
+  -webkit-text-fill-color:#E3B84E !important;
+  -webkit-text-stroke:0 !important;
+}
+
+/* 既に立体表現がある赤い金額やボタン・選択タブは変更しない */
+</style>
+
+<style id="monthly-match-other-sections-v1">
+/* 月別欄のカードを他の欄と同じ黒×金カードへ統一 */
+html body #monthly .month-card,
+html body #monthly .card,
+html body .month-card{
+  background:#050505 !important;
+  border:1px solid rgba(214,170,66,.72) !important;
+  border-radius:18px !important;
+  box-shadow:
+    0 8px 22px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,224,145,.12) !important;
+}
+
+/* 月別カード内の区切り・小項目も黒ベースへ */
+html body .month-card .expense,
+html body .month-card .row,
+html body .month-card .month-history-bar{
+  background:#050505 !important;
+  border-color:rgba(214,170,66,.42) !important;
+}
+
+/* 月別の通常文字を他欄と同じ金色＋立体感 */
+html body .month-card,
+html body .month-card .small,
+html body .month-card b:not(.expense-red),
+html body .month-card span:not(.expense-red),
+html body .month-card .month-title{
+  color:#E3B84E !important;
+  -webkit-text-fill-color:#E3B84E !important;
+  -webkit-text-stroke:0 !important;
+  text-shadow:
+    0 -1px 0 rgba(255,238,170,.34),
+    0 1px 0 rgba(70,42,8,.90),
+    0 2px 2px rgba(0,0,0,.58) !important;
+}
+
+/* 赤い経費金額は現在の赤を維持 */
+html body .month-card .expense-red{
+  -webkit-text-fill-color:inherit;
+}
+</style>
+
+<style id="tabs-items-solid-gold-v1">
+/* 全タブの文字を金色 */
+html body nav button,
+html body nav button *,
+html body .tab,
+html body .tab *{
+  color:#E3B84E !important;
+  -webkit-text-fill-color:#E3B84E !important;
+  -webkit-text-stroke:0 !important;
+  text-shadow:
+    0 -1px 0 rgba(255,239,178,.32),
+    0 1px 0 rgba(70,42,8,.92),
+    0 2px 2px rgba(0,0,0,.55) !important;
+}
+
+/* 各項目名の文字を金色 */
+html body .card b:not(.expense-red),
+html body .project b:not(.expense-red),
+html body .expense b:not(.expense-red),
+html body .month-card b:not(.expense-red),
+html body .parking-project .small,
+html body .section-title,
+html body .project-name,
+html body .month-title{
+  color:#E3B84E !important;
+  -webkit-text-fill-color:#E3B84E !important;
+  -webkit-text-stroke:0 !important;
+  text-shadow:
+    0 -1px 0 rgba(255,239,178,.32),
+    0 1px 0 rgba(70,42,8,.92),
+    0 2px 2px rgba(0,0,0,.55) !important;
+}
+</style>
+
+<style id="item-text-gold-real-fix-v2">
+/* カード・項目内の通常文字をタグに関係なく金色 */
+html body .card :not(button):not(.btn):not(.expense-red):not(.value):not(.money),
+html body .project :not(button):not(.btn):not(.expense-red):not(.value):not(.money),
+html body .expense :not(button):not(.btn):not(.expense-red):not(.value):not(.money),
+html body .month-card :not(button):not(.btn):not(.expense-red):not(.value):not(.money),
+html body .parking-project :not(button):not(.btn):not(.expense-red):not(.value):not(.money){
+  color:#E3B84E !important;
+  -webkit-text-fill-color:#E3B84E !important;
+  -webkit-text-stroke:0 !important;
+  text-shadow:
+    0 -1px 0 rgba(255,239,178,.34),
+    0 1px 0 rgba(70,42,8,.92),
+    0 2px 2px rgba(0,0,0,.58) !important;
+}
+
+/* タブ文字も金色を維持 */
+html body nav button,
+html body nav button *{
+  color:#E3B84E !important;
+  -webkit-text-fill-color:#E3B84E !important;
+  -webkit-text-stroke:0 !important;
+}
+</style>
+
+<style id="site-tab-form-labels-gold-final">
+/* 現場タブ：表示する月 / 現場名 / 発注金額 */
+html body #sites label,
+html body #sites .field label,
+html body #site label,
+html body #site .field label,
+html body #projects label,
+html body #projects .field label,
+html body main label{
+  color:#E3B84E !important;
+  -webkit-text-fill-color:#E3B84E !important;
+  -webkit-text-stroke:0 !important;
+  text-shadow:
+    0 -1px 0 rgba(255,239,178,.35),
+    0 1px 0 rgba(70,42,8,.95),
+    0 2px 2px rgba(0,0,0,.58) !important;
+}
+
+/* 「すべて表示」ボタン */
+html body button[onclick*="showAll"],
+html body button[onclick*="all"],
+html body .btn.gray{
+  color:#E3B84E !important;
+  -webkit-text-fill-color:#E3B84E !important;
+  -webkit-text-stroke:0 !important;
+  text-shadow:
+    0 -1px 0 rgba(255,239,178,.35),
+    0 1px 0 rgba(70,42,8,.95),
+    0 2px 2px rgba(0,0,0,.58) !important;
+}
+
+/* 現場欄の入力欄内の文字・プレースホルダーも金色 */
+html body input,
+html body input::placeholder,
+html body select,
+html body textarea,
+html body textarea::placeholder{
+  color:#E3B84E !important;
+  -webkit-text-fill-color:#E3B84E !important;
+  -webkit-text-stroke:0 !important;
+}
+</style>
 </head>
 <body>
 <header>
@@ -5662,5 +5844,51 @@ nav button#tDaniel{
 #dash{padding-top:72px!important;scroll-margin-top:72px!important;}
 #dash .dash-clean-grid{margin-top:0!important;}
 @media(max-width:600px){#dash{padding-top:78px!important;}}
+</style>
+
+<style id="SITE-GOLD-ABSOLUTE-FINAL">
+/* 現場欄の4項目を、黒文字＋金縁ではなく金色そのものにする */
+html body #projectMonthLabel,
+html body label,
+html body .field > label,
+html body .form > .field > label,
+html body button,
+html body .btn,
+html body input,
+html body input::placeholder{
+  -webkit-text-stroke:0px transparent !important;
+  text-stroke:0px transparent !important;
+}
+
+/* 表示する月・現場名・発注金額 */
+html body label,
+html body .field > label,
+html body .form > .field > label{
+  color:#F2C75C !important;
+  -webkit-text-fill-color:#F2C75C !important;
+  background-image:none !important;
+  -webkit-background-clip:border-box !important;
+  background-clip:border-box !important;
+}
+
+/* すべて表示 */
+html body button[onclick*="show"],
+html body button[onclick*="All"],
+html body button[onclick*="all"]{
+  color:#F2C75C !important;
+  -webkit-text-fill-color:#F2C75C !important;
+  -webkit-text-stroke:0 !important;
+  text-shadow:0 -1px 0 #ffe7a0,0 2px 2px rgba(0,0,0,.7) !important;
+}
+
+/* 入力欄内の 現場名 / 発注金額 も金色 */
+html body input,
+html body input::placeholder{
+  color:#F2C75C !important;
+  -webkit-text-fill-color:#F2C75C !important;
+  -webkit-text-stroke:0 !important;
+  text-shadow:0 1px 1px rgba(0,0,0,.75) !important;
+  opacity:1 !important;
+}
 </style>
 </body></html>
