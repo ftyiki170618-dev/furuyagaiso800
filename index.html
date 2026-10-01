@@ -5984,4 +5984,21 @@ html body #monthly .month-row{
   box-shadow:none !important;
 }
 </style>
+
+<style id="monthly-blue-outline-true-fix">
+/* 原因：過去の [class*="month"] 指定で month-stack 自体に紺色枠が付いていた */
+html body #monthly .month-stack{
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+}
+
+/* 月別全体の外周にも青系の線を残さない */
+html body #monthly{
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+}
+</style>
 </html>
