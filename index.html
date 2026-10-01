@@ -4138,6 +4138,37 @@ header {
 }
 </style>
 
+
+<style id="receipt-modal-ACTUAL-head-fix">
+#receiptModal{
+  position:fixed !important;
+  inset:0 !important;
+  top:0 !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  width:100vw !important;
+  height:100dvh !important;
+  z-index:2147483647 !important;
+  box-sizing:border-box !important;
+  padding:12px !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+  background:rgba(0,0,0,.72) !important;
+}
+#receiptModal.show{display:flex !important;}
+#receiptModal .sheet{
+  position:relative !important;
+  width:100% !important;
+  max-width:620px !important;
+  max-height:calc(100dvh - 24px) !important;
+  overflow-y:auto !important;
+  margin:auto !important;
+  border-radius:18px !important;
+  box-sizing:border-box !important;
+}
+</style>
 </head>
 <body>
 <header>
@@ -4816,7 +4847,19 @@ function openReceipt(projectId=null,cat='駐車場代'){
  document.getElementById('rAmount').value='';
  receiptProjectOptions(projectId||'');
  toggleReceiptProject();
- document.getElementById('receiptModal').classList.add('show');
+ {
+  const m=document.getElementById('receiptModal');
+  m.style.setProperty('position','fixed','important');
+  m.style.setProperty('top','0','important');
+  m.style.setProperty('left','0','important');
+  m.style.setProperty('right','0','important');
+  m.style.setProperty('width','100%','important');
+  m.style.setProperty('height',window.innerHeight+'px','important');
+  m.style.setProperty('z-index','2147483647','important');
+  m.style.setProperty('align-items','center','important');
+  m.style.setProperty('justify-content','center','important');
+  m.classList.add('show');
+}
  setTimeout(()=>{let a=document.getElementById('rAmount');if(a){try{a.focus({preventScroll:true})}catch(e){}}},60);
 }
 function compressImage(file){
@@ -5218,6 +5261,195 @@ input,select,textarea,button{font-size:16px !important;}
   padding:17px 14px 28px !important;
   margin:0 !important;
   box-sizing:border-box !important;
+}
+</style>
+
+<style id="overall-brightness-up-v1">
+/* 全体の雰囲気を保ったまま、暗さを軽減 */
+html body{
+  background-color:#5a402b !important;
+  background-blend-mode:screen,normal !important;
+}
+html body::before{
+  opacity:.38 !important;
+  filter:brightness(1.35) contrast(.90) !important;
+}
+header{
+  filter:brightness(1.22) !important;
+}
+.card,
+.project,
+.month-card,
+.employee-premium-card,
+.expense,
+.month-history-bar{
+  background:rgba(76,55,38,.82) !important;
+  border-color:rgba(244,198,91,.68) !important;
+  box-shadow:
+    0 8px 22px rgba(0,0,0,.20),
+    inset 0 1px 0 rgba(255,225,153,.18) !important;
+}
+nav{
+  background:rgba(46,32,21,.94) !important;
+}
+input,select,textarea{
+  background:#17120d !important;
+  border-color:#b88a36 !important;
+}
+.sheet{
+  background:rgba(67,48,32,.98) !important;
+}
+</style>
+
+<style id="overall-much-brighter-v2">
+/* さらに全体を明るく：黒金・木目は残す */
+html body{
+  background-color:#8a6849 !important;
+  background-blend-mode:screen,normal !important;
+}
+html body::before{
+  opacity:.24 !important;
+  filter:brightness(1.75) contrast(.82) !important;
+}
+header{
+  filter:brightness(1.42) !important;
+}
+.card,
+.project,
+.month-card,
+.employee-premium-card,
+.expense,
+.month-history-bar{
+  background:rgba(112,82,55,.88) !important;
+  border-color:rgba(255,214,112,.82) !important;
+  box-shadow:
+    0 7px 18px rgba(0,0,0,.15),
+    inset 0 1px 0 rgba(255,238,190,.28) !important;
+}
+nav{
+  background:rgba(76,54,35,.96) !important;
+}
+.sheet{
+  background:rgba(102,74,49,.98) !important;
+}
+input,select,textarea{
+  background:#241b13 !important;
+  border-color:#d5a94f !important;
+}
+</style>
+
+<style id="larger-text-all-pages-v1">
+/* 全ページの文字を一段大きく。レイアウトはできるだけコンパクトに維持 */
+html body{font-size:19px !important;}
+html body .small{font-size:16px !important;}
+html body .tiny{font-size:15px !important;}
+html body label,
+html body .field label{font-size:17px !important;}
+html body input,
+html body select,
+html body textarea,
+html body button,
+html body .btn{font-size:18px !important;}
+html body .section-title{font-size:21px !important;}
+html body h1{font-size:28px !important;}
+html body h2{font-size:24px !important;}
+html body h3{font-size:21px !important;}
+html body .value,
+html body .money,
+html body .month-profit,
+html body .month-sales-amount{font-size:21px !important;}
+html body .project .name,
+html body .month-title,
+html body .employee-name{font-size:21px !important;}
+html body th,
+html body td{font-size:16px !important;}
+</style>
+
+<style id="extra-large-text-all-pages-v2">
+/* 全ページをさらに大きく */
+html body{font-size:22px !important;}
+html body .small{font-size:19px !important;}
+html body .tiny{font-size:18px !important;}
+html body label,
+html body .field label{font-size:20px !important;}
+html body input,
+html body select,
+html body textarea,
+html body button,
+html body .btn{font-size:21px !important;}
+html body .section-title{font-size:24px !important;}
+html body h1{font-size:32px !important;}
+html body h2{font-size:28px !important;}
+html body h3{font-size:24px !important;}
+html body .value,
+html body .money,
+html body .month-profit,
+html body .month-sales-amount{font-size:24px !important;}
+html body .project .name,
+html body .month-title,
+html body .employee-name{font-size:24px !important;}
+html body th,
+html body td{font-size:19px !important;}
+</style>
+
+<style id="larger-item-cards-v1">
+/* 各項目カードを大きくして、タッチしやすく見やすく */
+html body .card,
+html body .project,
+html body .month-card,
+html body .employee-premium-card,
+html body .expense,
+html body .month-history-bar{
+  padding:20px 18px !important;
+  margin-bottom:16px !important;
+  border-radius:18px !important;
+  min-height:72px !important;
+}
+
+/* カード内の行間も少し広げる */
+html body .card .row,
+html body .project .row,
+html body .expense .row{
+  gap:12px !important;
+  min-height:42px !important;
+}
+
+/* 項目内ボタンも少し大きく */
+html body .card .btn,
+html body .project .btn,
+html body .expense .btn{
+  min-height:46px !important;
+  padding:10px 16px !important;
+}
+</style>
+
+<style id="project-name-larger-v2">
+/* 現場欄の現場名だけ、さらに大きく */
+html body #projects .project .name,
+html body #projects .project-name,
+html body #projectList .project .name,
+html body #projectList .project-name,
+html body .project .name{
+  font-size:29px !important;
+  line-height:1.25 !important;
+  font-weight:800 !important;
+}
+</style>
+
+<style id="receipt-modal-iphone-current-scroll-v2">
+#receiptModal.show{
+  display:flex !important;
+  box-sizing:border-box !important;
+  padding:12px !important;
+  overflow:hidden !important;
+  background:rgba(0,0,0,.72) !important;
+}
+#receiptModal .sheet{
+  width:100% !important;
+  max-width:620px !important;
+  max-height:calc(100vh - 24px) !important;
+  overflow-y:auto !important;
+  margin:auto !important;
 }
 </style>
 </head><body>${body.innerHTML}</body></html>`;
