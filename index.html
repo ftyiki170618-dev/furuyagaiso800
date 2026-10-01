@@ -4817,6 +4817,7 @@ function openReceipt(projectId=null,cat='駐車場代'){
  receiptProjectOptions(projectId||'');
  toggleReceiptProject();
  document.getElementById('receiptModal').classList.add('show');
+ setTimeout(()=>{let a=document.getElementById('rAmount');if(a){try{a.focus({preventScroll:true})}catch(e){}}},60);
 }
 function compressImage(file){
  return new Promise((resolve,reject)=>{let rd=new FileReader();rd.onload=()=>{let img=new Image();img.onload=()=>{let max=900,sc=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',.68))};img.onerror=reject;img.src=rd.result};rd.onerror=reject;rd.readAsDataURL(file)});
@@ -4864,24 +4865,61 @@ function deleteAllReceiptsForMonth(){
  });
  persist();render();toast(title+'の経費を一括削除しました');
 }
+function expenseToggleKey(type,id=''){
+ return 'expense-open-'+type+(id?'-'+String(id):'');
+}
+function toggleExpenseDetails(type,id=''){
+ let el=document.getElementById(expenseToggleKey(type,id));
+ if(!el)return;
+ el.style.display=(el.style.display==='none'||!el.style.display)?'block':'none';
+}
 function renderReceipts(){
  let month=receiptSelectedMonth();
  let monthReceipts=receipts.filter(r=>(r.date||'').slice(0,7)===month);
+
  let global=['ガソリン代','高速代','道具代','飲食代'].map(cat=>{
-   let rr=monthReceipts.filter(r=>!r.projectId&&r.category===cat),sum=rr.reduce((a,r)=>a+Number(r.amount||0),0);
-   return `<div class="card" style="margin-bottom:10px"><div class="row between"><div><b>${cat}</b><div class="value expense-red" style="font-size:18px">${yen(sum)}</div></div><button class="btn primary" onclick="openReceipt(null,'${cat}')">＋追加</button></div>${receiptList(rr)}</div>`;
+   let rr=monthReceipts.filter(r=>!r.projectId&&r.category===cat),
+       sum=rr.reduce((a,r)=>a+Number(r.amount||0),0),
+       key=expenseToggleKey('cat',cat);
+   return `<div class="card" style="margin-bottom:10px">
+     <div class="row between">
+       <div onclick="toggleExpenseDetails('cat','${cat}')" style="cursor:pointer;flex:1">
+         <b>${cat}</b>
+         <div class="value expense-red" style="font-size:18px">${yen(sum)}</div>
+       </div>
+       <button class="btn primary" onclick="openReceipt(null,'${cat}')">＋追加</button>
+     </div>
+     <div id="${key}" style="display:none">${rr.length?receiptList(rr):'<div class="small">まだ入力がありません</div>'}</div>
+   </div>`;
  }).join('');
- let pr=monthReceipts.filter(r=>r.category==='駐車場代'),psum=pr.reduce((a,r)=>a+Number(r.amount||0),0);
+
+ let pr=monthReceipts.filter(r=>r.category==='駐車場代'),
+     psum=pr.reduce((a,r)=>a+Number(r.amount||0),0);
  let monthProjects=data.filter(p=>monthOf(p)===month);
  let parkingGroups=monthProjects.map(p=>{
    let list=pr.filter(r=>String(r.projectId)===String(p.id));
    if(!list.length)return '';
-   let total=list.reduce((a,r)=>a+Number(r.amount||0),0);
-   return `<div class="parking-project"><div class="row between"><span class="small">${esc(p.name||'現場')}</span><b class="expense-red">${yen(total)}</b></div>${receiptList(list)}</div>`;
+   let total=list.reduce((a,r)=>a+Number(r.amount||0),0),
+       key=expenseToggleKey('parking',p.id);
+   return `<div class="parking-project">
+     <div class="row between" onclick="toggleExpenseDetails('parking','${p.id}')" style="cursor:pointer">
+       <span class="small">${esc(p.name||'現場')}</span>
+       <b class="expense-red">${yen(total)}</b>
+     </div>
+     <div id="${key}" style="display:none">${receiptList(list)}</div>
+   </div>`;
  }).join('');
- let parking=`<div class="card" style="margin-bottom:10px"><div class="row between"><div><b>駐車場代</b><div class="value expense-red" style="font-size:18px">${yen(psum)}</div></div><button class="btn primary" onclick="openReceipt(null,'駐車場代')">＋追加</button></div>${parkingGroups||'<div class="small">まだ入力がありません</div>'}</div>`;
+
+ let parking=`<div class="card" style="margin-bottom:10px">
+   <div class="row between">
+     <div><b>駐車場代</b><div class="value expense-red" style="font-size:18px">${yen(psum)}</div></div>
+     <button class="btn primary" onclick="openReceipt(null,'駐車場代')">＋追加</button>
+   </div>
+   ${parkingGroups||'<div class="small">まだ入力がありません</div>'}
+ </div>`;
+
  let title=month.slice(0,4)+'年'+Number(month.slice(5,7))+'月';
- document.getElementById('receipts').innerHTML=`<div class="section-title">経費</div><div class="card month-history-bar"><b>表示する月</b><input type="month" value="${month}" onchange="setReceiptsMonth(this.value)"><button class="btn danger" type="button" onclick="deleteAllReceiptsForMonth()">${title}を一括削除</button></div>${parking}${global}<div class="small">※駐車場代の現場名は、選択した月に登録されている現場だけ表示します。</div>`;
+ document.getElementById('receipts').innerHTML=`<div class="section-title">経費</div><div class="card month-history-bar"><b>表示する月</b><input type="month" value="${month}" onchange="setReceiptsMonth(this.value)"><button class="btn danger" type="button" onclick="deleteAllReceiptsForMonth()">${title}を一括削除</button></div>${parking}${global}<div class="small">※駐車場代は現場名をタッチ、その他は項目名をタッチすると明細を表示します。</div>`;
 }
 function openInvoice(){let p=data.find(x=>x.id===current),i=p.invoice||{};document.getElementById('iAmount').value=i.amount||p.amount;document.getElementById('iDate').value=i.date||new Date().toISOString().slice(0,10);document.getElementById('iDue').value=i.due||'';document.getElementById('iPaidDate').value=i.paidDate||'';document.getElementById('invoiceModal').classList.add('show')}
 function saveInvoice(){let p=data.find(x=>x.id===current);p.invoice={amount:Number(document.getElementById('iAmount').value),date:document.getElementById('iDate').value,due:document.getElementById('iDue').value,paidDate:document.getElementById('iPaidDate').value};persist();closeM('invoiceModal');openDetail(current);render();toast('請求・入金情報を保存しました')}
