@@ -6025,4 +6025,33 @@ html body #monthly .monthly-sales-inner::after{
   background:none !important;
 }
 </style>
+
+<style id="monthly-label-colors-final-v1">
+/* 月別欄：「表示する月」を金色 */
+html body #monthly > .card label,
+html body #monthly > .card .field label,
+html body #monthly .section-title{
+  color:#F2C75C !important;
+  -webkit-text-fill-color:#F2C75C !important;
+  -webkit-text-stroke:0 !important;
+  text-shadow:0 -1px 0 rgba(255,240,180,.28),0 2px 2px rgba(0,0,0,.65) !important;
+}
+
+/* 月別欄：外注費・車両代・駐車場代・ガソリン代・高速代・道具代・飲食代・その他・ダニエル持分をシルバー */
+html body #monthly .month-row:not(.total) span{
+  color:#D7D7D7 !important;
+  -webkit-text-fill-color:#D7D7D7 !important;
+  -webkit-text-stroke:0 !important;
+  background:none !important;
+  background-image:none !important;
+  text-shadow:0 1px 1px rgba(0,0,0,.75) !important;
+}
+
+/* 合計は今の金色を維持 */
+html body #monthly .month-row.total span{
+  color:#F2C75C !important;
+  -webkit-text-fill-color:#F2C75C !important;
+  -webkit-text-stroke:0 !important;
+}
+</style>
 </html>
