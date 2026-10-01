@@ -4564,6 +4564,7 @@ html body textarea::placeholder{
 </div>
 <div class="toast" id="toast"></div>
 <script>
+let employeeSelectedMonths={daniel:new Date().toISOString().slice(0,7),okamoto:new Date().toISOString().slice(0,7)},dashSelectedMonth=new Date().toISOString().slice(0,7);
 let data=JSON.parse(localStorage.getItem('furuyagaiso_v2')||'[]'),employees=[{id:'osei-daniel',name:'オセイ　ダニエル',rate:Number(localStorage.getItem('rate_osei')||0)},{id:'okamoto-keiya',name:'岡本　啓矢',rate:Number(localStorage.getItem('rate_okamoto')||0)}],receipts=JSON.parse(localStorage.getItem('furuyagaiso_receipts')||'[]'),editing=null,current=null,editingEmp=null,vehicleMonthly=Number(localStorage.getItem('furuyagaiso_vehicle_monthly')||0),taxMonthly=Number(localStorage.getItem('furuyagaiso_tax_monthly')||0),adminMonthly=Number(localStorage.getItem('furuyagaiso_admin_monthly')||0),otherMonthly=Number(localStorage.getItem('furuyagaiso_other_monthly')||0),danielMonthly=Number(localStorage.getItem('furuyagaiso_daniel_monthly')||0),okamotoMonthly=Number(localStorage.getItem('furuyagaiso_okamoto_monthly')||0),subcontractMonthly=Number(localStorage.getItem('furuyagaiso_subcontract_monthly')||0),employeeCards=JSON.parse(localStorage.getItem('furuyagaiso_employee_cards')||'[]'),globalCosts=JSON.parse(localStorage.getItem('furuyagaiso_global_costs')||'[]');
 const yen=n=>new Intl.NumberFormat('ja-JP').format(Math.round(n||0))+'円';
 const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -4703,8 +4704,8 @@ function renderEmployees(){
  }).join('');
  document.getElementById('employees').innerHTML=`<div class="section-title">従業員カード管理</div>${html}`;
 }
-function employeeSalaryInfo(){
- let month=new Date().toISOString().slice(0,7);
+function employeeSalaryInfo(month){
+ month=month||new Date().toISOString().slice(0,7);
  let jobs=(Array.isArray(data)?data:[]).filter(p=>monthOf(p)===month);
  let sales=jobs.reduce((a,p)=>a+Number(p.amount||0),0);
  let mc=(Array.isArray(data)?data:[]).flatMap(p=>{try{return ex(p)||[]}catch(e){return []}}).filter(x=>(x.date||'').slice(0,7)===month);
@@ -4716,16 +4717,25 @@ function employeeSalaryInfo(){
  let base=sales-sales*.10-(sales-sales*.10)*.15-expenses;
  return {month,base};
 }
+function setEmployeeMonth(target,value){
+ employeeSelectedMonths[target]=value||new Date().toISOString().slice(0,7);
+ renderEmployeeTabs();
+}
 function renderEmployeeTabs(){
- let info=employeeSalaryInfo();
  [{id:'osei-daniel',target:'daniel',title:'オセイダニエル',pct:.25},{id:'okamoto-keiya',target:'okamoto',title:'岡本啓矢',pct:.33}].forEach(cfg=>{
+  let month=employeeSelectedMonths[cfg.target]||new Date().toISOString().slice(0,7);
+  let info=employeeSalaryInfo(month);
   let e=employees.find(x=>x.id===cfg.id)||employees.find(x=>(x.name||'').includes(cfg.title.includes('ダニエル')?'ダニエル':'岡本'));
-  let rows=employeeCards.filter(x=>e&&String(x.employeeId)===String(e.id)).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  let rows=employeeCards
+    .filter(x=>e&&String(x.employeeId)===String(e.id)&&(x.date||'').slice(0,7)===month)
+    .sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   let cardTotal=rows.filter(x=>x.type==='カード代'||x.type==='プライベートのカード代').reduce((a,x)=>a+Number(x.amount||0),0);
   let salary=info.base*cfg.pct-cardTotal-(cfg.id==='osei-daniel'?25000:0);
   let details=rows.map(x=>`<div class="expense"><div class="row between"><div><b>${x.date||''}｜${esc(x.type)}</b><div class="small">${esc(x.memo||'')}</div></div><div><b>${yen(x.amount)}</b><button class="btn danger" style="margin-left:6px;padding:6px 8px" onclick="delEmpCard('${x.id}')">削除</button></div></div></div>`).join('');
   let el=document.getElementById(cfg.target);if(!el)return;
-  el.innerHTML=`<div class="section-title">${cfg.title}</div><div class="employee-premium-card"><div class="employee-card-grid"><div><span>給料</span><strong>${yen(Math.round(salary))}</strong></div><div><span>カード代</span><strong>${yen(cardTotal)}</strong></div></div>${e?`<button class="btn primary" onclick="openEmpCard('${e.id}')">＋ カード利用を入力</button>`:''}${details}</div>`;
+  el.innerHTML=`<div class="section-title">${cfg.title}</div>
+  <div class="card employee-month-select"><div class="row between"><b>表示する月</b><input type="month" value="${month}" onchange="setEmployeeMonth('${cfg.target}',this.value)"></div></div>
+  <div class="employee-premium-card"><div class="employee-card-grid"><div><span>給料</span><strong>${yen(Math.round(salary))}</strong></div><div><span>カード代</span><strong>${yen(cardTotal)}</strong></div></div>${e?`<button class="btn primary" onclick="openEmpCard('${e.id}')">＋ カード利用を入力</button>`:''}${details||'<div class="small" style="margin-top:12px">この月のカード利用はありません</div>'}</div>`;
  });
 }
 function openEmployee(id=null){
@@ -4800,8 +4810,9 @@ function monthOf(p){
  if(d && String(d).length>=7)return String(d).slice(0,7);
  return new Date().toISOString().slice(0,7);
 }
+function setDashMonth(value){dashSelectedMonth=value||new Date().toISOString().slice(0,7);renderDash();}
 function renderDash(){
- let month=new Date().toISOString().slice(0,7);
+ let month=dashSelectedMonth||new Date().toISOString().slice(0,7);
  let jobs=(Array.isArray(data)?data:[]).filter(p=>monthOf(p)===month);
  let sales=jobs.reduce((a,p)=>a+Number(p.amount||0),0);
  let mc=(Array.isArray(data)?data:[]).flatMap(p=>{try{return ex(p)||[]}catch(e){return []}}).filter(x=>(x.date||'').slice(0,7)===month);
@@ -4828,7 +4839,7 @@ function renderDash(){
  let danielPrivate=0,okamotoPrivate=0;
  let cards=Array.isArray(employeeCards)?employeeCards:[];
  let emps=Array.isArray(employees)?employees:[];
- cards.forEach(c=>{
+ cards.filter(c=>(c.date||'').slice(0,7)===month).forEach(c=>{
    let emp=emps.find(e=>String(e.id)===String(c.employeeId));
    let nm=String(emp?.name||c.employee||c.name||c.worker||'');
    let type=String(c.type||c.kind||c.category||'');
@@ -4840,7 +4851,7 @@ function renderDash(){
  });
  let daniel=base*.25-danielPrivate-25000,okamoto=base*.33-okamotoPrivate;
  let card=(label,value,cls,onclick='')=>`<div class="card dash-card"><div class="label ${(label.includes("ダニエル")||label.includes("岡本"))?"employee-dash-name":""}">${label}</div><div class="value ${cls}">${yen(Math.round(value))}</div>${onclick?`<button class="btn gray dash-edit" onclick="${onclick}">変更</button>`:''}</div>`;
- document.getElementById('dash').innerHTML=`<div class="dash-clean-grid">
+ document.getElementById('dash').innerHTML=`<div class="card dash-month-select"><div class="row between"><b>表示する月</b><input type="month" value="${month}" onchange="setDashMonth(this.value)"></div></div><div class="dash-clean-grid">
    <div class="dash-sales-wide">${card('売上',sales,'sales-gold')}</div>
    ${card('消費税',tax,'expense-red')}
    ${card('事務手数料',admin,'expense-red')}
@@ -6125,4 +6136,30 @@ html body #okamoto .employee-premium-card *{
   filter:none!important;
  }
 }
-</style></html>
+</style>
+<style id="employee-dash-month-selector-v1">
+html body .employee-month-select,
+html body .dash-month-select{
+  margin-bottom:14px!important;
+  padding:16px 18px!important;
+  background:#050505!important;
+  border:1px solid rgba(214,170,66,.72)!important;
+  border-radius:18px!important;
+}
+html body .employee-month-select b,
+html body .dash-month-select b{
+  color:#F2C75C!important;
+  -webkit-text-fill-color:#F2C75C!important;
+  -webkit-text-stroke:0!important;
+}
+html body .employee-month-select input[type="month"],
+html body .dash-month-select input[type="month"]{
+  width:210px!important;
+  max-width:58%!important;
+  color:#F2C75C!important;
+  -webkit-text-fill-color:#F2C75C!important;
+  background:#050505!important;
+  border:1px solid rgba(214,170,66,.72)!important;
+}
+</style>
+</html>
