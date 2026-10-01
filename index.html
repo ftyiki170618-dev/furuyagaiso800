@@ -5036,6 +5036,7 @@ function renderMonthly(){
    ${row('飲食代',food)}
    ${row('その他',other)}
    ${row('ダニエル持分',danielShare)}
+   ${row('経費合計',displayedExpenses,'expense-total')}
    ${row('合計',finalTotal,'total')}
   </div>`;
   }).join('');
@@ -5205,8 +5206,10 @@ function renderReceipts(){
    ${parkingGroups||'<div class="small">まだ入力がありません</div>'}
  </div>`;
 
+ let expenseTotal=monthReceipts.reduce((a,r)=>a+Number(r.amount||0),0);
  let title=month.slice(0,4)+'年'+Number(month.slice(5,7))+'月';
- document.getElementById('receipts').innerHTML=`<div class="section-title">経費</div><div class="card month-history-bar"><b>表示する月</b><input type="month" value="${month}" onchange="setReceiptsMonth(this.value)"><button class="btn danger" type="button" onclick="deleteAllReceiptsForMonth()">${title}を一括削除</button></div>${parking}${global}<div class="small">※駐車場代は現場名をタッチ、その他は項目名をタッチすると明細を表示します。</div>`;
+ let totalCard=`<div class="card expense-total-card"><div class="row between"><b>経費合計</b><div class="value expense-red">${yen(expenseTotal)}</div></div></div>`;
+ document.getElementById('receipts').innerHTML=`<div class="section-title">経費</div><div class="card month-history-bar"><b>表示する月</b><input type="month" value="${month}" onchange="setReceiptsMonth(this.value)"><button class="btn danger" type="button" onclick="deleteAllReceiptsForMonth()">${title}を一括削除</button></div>${parking}${global}${totalCard}<div class="small">※駐車場代は現場名をタッチ、その他は項目名をタッチすると明細を表示します。</div>`;
 }
 function openInvoice(){let p=data.find(x=>x.id===current),i=p.invoice||{};document.getElementById('iAmount').value=i.amount||p.amount;document.getElementById('iDate').value=i.date||new Date().toISOString().slice(0,10);document.getElementById('iDue').value=i.due||'';document.getElementById('iPaidDate').value=i.paidDate||'';document.getElementById('invoiceModal').classList.add('show')}
 function saveInvoice(){let p=data.find(x=>x.id===current);p.invoice={amount:Number(document.getElementById('iAmount').value),date:document.getElementById('iDate').value,due:document.getElementById('iDue').value,paidDate:document.getElementById('iPaidDate').value};persist();closeM('invoiceModal');openDetail(current);render();toast('請求・入金情報を保存しました')}
@@ -6160,6 +6163,24 @@ html body .dash-month-select input[type="month"]{
   -webkit-text-fill-color:#F2C75C!important;
   background:#050505!important;
   border:1px solid rgba(214,170,66,.72)!important;
+}
+</style>
+
+<style id="expense-total-display-v1">
+html body #monthly .month-row.expense-total,
+html body .expense-total-card{
+  border-top:2px solid rgba(214,170,66,.72)!important;
+  margin-top:8px!important;
+}
+html body #monthly .month-row.expense-total span,
+html body .expense-total-card b{
+  color:#F2C75C!important;
+  -webkit-text-fill-color:#F2C75C!important;
+  -webkit-text-stroke:0!important;
+}
+html body .expense-total-card .value{
+  font-size:28px!important;
+  font-weight:900!important;
 }
 </style>
 </html>
