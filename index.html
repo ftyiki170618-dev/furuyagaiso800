@@ -4180,6 +4180,30 @@ html body .expense .expense-red{
   flex-shrink:0 !important;
 }
 </style>
+
+<style id="parking-total-one-line-real-fix">
+#receipts .parking-project > .row.between{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) max-content !important;
+  column-gap:12px !important;
+  align-items:center !important;
+}
+#receipts .parking-project > .row.between > .small{
+  min-width:0 !important;
+  width:auto !important;
+  overflow-wrap:anywhere !important;
+}
+#receipts .parking-project > .row.between > .expense-red{
+  display:inline-block !important;
+  width:max-content !important;
+  min-width:max-content !important;
+  max-width:none !important;
+  white-space:nowrap !important;
+  word-break:normal !important;
+  overflow-wrap:normal !important;
+  flex:none !important;
+}
+</style>
 </head>
 <body>
 <header>
