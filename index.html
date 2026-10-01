@@ -5891,4 +5891,34 @@ html body input::placeholder{
   opacity:1 !important;
 }
 </style>
+
+<style id="daily-report-black-text-v1">
+/* 日報だけ黒文字で読みやすく */
+html body #daily,
+html body #daily *,
+html body #dailyReport,
+html body #dailyReport *,
+html body .daily,
+html body .daily *,
+html body .daily-report,
+html body .daily-report *{
+  color:#111 !important;
+  -webkit-text-fill-color:#111 !important;
+  -webkit-text-stroke:0 !important;
+  text-shadow:none !important;
+}
+
+/* 日報の入力欄・選択欄も黒文字 */
+html body #daily input,
+html body #daily select,
+html body #daily textarea,
+html body #dailyReport input,
+html body #dailyReport select,
+html body #dailyReport textarea{
+  color:#111 !important;
+  -webkit-text-fill-color:#111 !important;
+  -webkit-text-stroke:0 !important;
+  text-shadow:none !important;
+}
+</style>
 </body></html>
