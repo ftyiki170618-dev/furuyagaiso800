@@ -5921,4 +5921,18 @@ html body #dailyReport textarea{
   text-shadow:none !important;
 }
 </style>
+
+<style id="daily-print-button-gold-text-v1">
+/* 日報の「印刷」ボタンの文字だけ金色 */
+html body #daily button[onclick*="print"],
+html body #dailyReport button[onclick*="print"],
+html body .daily button[onclick*="print"],
+html body .daily-report button[onclick*="print"],
+html body button[onclick*="printDaily"]{
+  color:#F2C75C !important;
+  -webkit-text-fill-color:#F2C75C !important;
+  -webkit-text-stroke:0 !important;
+  text-shadow:0 -1px 0 rgba(255,239,178,.35),0 2px 2px rgba(0,0,0,.7) !important;
+}
+</style>
 </body></html>
