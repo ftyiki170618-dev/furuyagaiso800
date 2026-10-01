@@ -6001,4 +6001,28 @@ html body #monthly{
   box-shadow:none !important;
 }
 </style>
+
+<style id="monthly-sales-blue-lines-remove-final">
+/* 月別欄：売上ボックス内に残っている紺色の線だけ削除 */
+html body #monthly .month-head,
+html body #monthly .monthly-sales-inner,
+html body #monthly .monthly-sales-right,
+html body #monthly .month-title,
+html body #monthly .month-sales-amount{
+  border-color:rgba(214,170,66,.55) !important;
+  outline:none !important;
+  box-shadow:none !important;
+}
+
+/* 青系の内側線を完全に消す */
+html body #monthly .month-head::before,
+html body #monthly .month-head::after,
+html body #monthly .monthly-sales-inner::before,
+html body #monthly .monthly-sales-inner::after{
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  background:none !important;
+}
+</style>
 </html>
